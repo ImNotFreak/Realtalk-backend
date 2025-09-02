@@ -1,7 +1,13 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.5'
     id 'io.spring.dependency-management' version '1.1.7'
+    id "org.openapi.generator" version "7.0.1"
+}
+ext {
+    springAiVersion = "1.0.1"
 }
 
 group = 'backend'
@@ -26,15 +32,48 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.liquibase:liquibase-core'
+    //implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    testImplementation 'io.projectreactor:reactor-test'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:$springAiVersion"
+    }
+}
+
+//tasks.register('generateLessonsModels', GenerateTask) {
+//    generatorName.set("java")
+//    inputSpec.set("$rootDir/openapi-spec/lessons.yaml")
+//    outputDir.set(layout.buildDirectory.dir("generated/lessons").get().asFile.toString())
+//    modelPackage.set("com.example.api.lessons.model")
+//    generateApiDocumentation.set(false)
+//    configOptions.set(
+//            [
+//                    useLombok: "true"
+//            ]
+//    )
+//
+//}
 
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+sourceSets {
+    main {
+        java {
+            srcDirs += [
+                    layout.buildDirectory.dir("generated/lessons/src/main/java").get().asFile
+            ]
+        }
+    }
+}
+
