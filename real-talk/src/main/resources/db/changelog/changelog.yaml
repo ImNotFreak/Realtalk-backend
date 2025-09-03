@@ -1,0 +1,89 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: alexander
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: submission_time
+                  type: TIMESTAMP
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: order_number
+                  type: uuid
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: telegram
+                  type: VARCHAR(255)
+              - column:
+                  name: language_level
+                  type: VARCHAR(10)
+              - column:
+                  name: grammar_topics
+                  type: text[]
+
+        - createTable:
+            tableName: llm_data
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data
+                  type: JSONB
+        - addForeignKeyConstraint:
+            baseTableName: llm_data
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_llm_data_user
+
+        - createTable:
+            tableName: gladia_data
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: gladia_request_id
+                  type: uuid
+              - column:
+                  name: gladia_full_url
+                  type: VARCHAR(255)
+              - column:
+                  name: data
+                  type: JSONB
+        - addForeignKeyConstraint:
+            baseTableName: gladia_data
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_gladia_data_user

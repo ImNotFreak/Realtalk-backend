@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/my_new_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  liquibase:
+    change-log: classpath:/db/changelog/changelog.yaml
+
+gladia:
+  api:
+    key: a37d25af-66b4-4744-ac18-5b725cc3c6b8
+
+reactor:
+  trace:
+    operatorStacktrace: true
