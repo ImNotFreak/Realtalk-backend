@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import real.talk.model.dto.gladia.TranscriptionResultResponse;
 
 import java.util.Map;
 import java.util.UUID;
@@ -27,11 +28,11 @@ public class GladiaData {
     @Column(name = "gladia_request_id")
     private UUID gladiaRequestId;
 
-    @Column(name = "gladia_full_ur")
+    @Column(name = "gladia_full_url")
     private String gladiaFullUrl;
 
     @Column(name = "data")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> data;
+    private TranscriptionResultResponse data;
 
 }
