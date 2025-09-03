@@ -24,26 +24,29 @@ public class TranscriptionService {
 
     private final WebClient webClient;
 
-    public PreRecorderResponse transcribeAudio(String audioUrl) {
-        PreRecorderRequest preRecorderRequest = PreRecorderRequest.builder().build();
+    public Mono<PreRecorderResponse> transcribeAudio(String audioUrl) {
+        PreRecorderRequest preRecorderRequest = PreRecorderRequest.builder()
+                .audioUrl(audioUrl)
+                .build();
 
-        Mono<PreRecorderResponse> transcriptionIdMono = webClient.post()
+        return webClient.post()
                 .uri(GLADIA_PRE_RECORDER_URL)
                 .header(GLADIA_KEY_HEADER, apiKey)
                 .bodyValue(preRecorderRequest)
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, response ->
-                        Mono.error(new RuntimeException("Client Error: " + response.statusCode())))
+                .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
+                        .flatMap(body -> {
+                            log.error("Gladia вернул 4xx: {}", body);
+                            return Mono.error(new RuntimeException("Client Error: " + body));
+                        }))
                 .onStatus(HttpStatusCode::is5xxServerError, response ->
                         Mono.error(new RuntimeException("Server Error: " + response.statusCode())))
                 .bodyToMono(PreRecorderResponse.class);
-
-        return transcriptionIdMono.block();
     }
 
-    public TranscriptionResultResponse getTranscriptionResult(String transcriptionId) {
-        Mono<TranscriptionResultResponse> resultMono = webClient.get()
-                .uri(GLADIA_PRE_RECORDER_URL + "/{id}", transcriptionId)
+    public Mono<TranscriptionResultResponse> getTranscriptionResult(String transcriptionUrl) {
+        return webClient.get()
+                .uri(transcriptionUrl)
                 .header(GLADIA_KEY_HEADER, apiKey)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, response ->
@@ -51,7 +54,5 @@ public class TranscriptionService {
                 .onStatus(HttpStatusCode::is5xxServerError, response ->
                         Mono.error(new RuntimeException("Server Error: " + response.statusCode())))
                 .bodyToMono(TranscriptionResultResponse.class);
-
-        return resultMono.block();
     }
 }
