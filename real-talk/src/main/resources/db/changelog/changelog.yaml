@@ -32,7 +32,7 @@ databaseChangeLog:
                   type: VARCHAR(10)
               - column:
                   name: grammar_topics
-                  type: TEXT
+                  type: text[]
 
         - createTable:
             tableName: llm_data
@@ -72,6 +72,12 @@ databaseChangeLog:
                   type: uuid
                   constraints:
                     nullable: false
+              - column:
+                  name: gladia_request_id
+                  type: uuid
+              - column:
+                  name: gladia_full_url
+                  type: VARCHAR(255)
               - column:
                   name: data
                   type: JSONB

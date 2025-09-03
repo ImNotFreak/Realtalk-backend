@@ -25,7 +25,7 @@ public class UserService {
         user.setEmail(lessonRequest.getEmail());
         user.setTelegram(lessonRequest.getTelegram());
         user.setLanguageLevel(lessonRequest.getLanguageLevel());
-        user.setGrammarTopics(lessonRequest.getGrammarTopics().toString());
+        user.setGrammarTopics(lessonRequest.getGrammarTopics());
 
         userRepository.save(user);
         return user;

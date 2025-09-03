@@ -3,6 +3,7 @@ package real.talk.service.transcription;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -31,14 +32,12 @@ public class TranscriptionService {
                 .header(GLADIA_KEY_HEADER, apiKey)
                 .bodyValue(preRecorderRequest)
                 .retrieve()
-                .bodyToMono(PreRecorderResponse.class)
-                .map(response -> {
-                    try {
-                        return response;
-                    } catch (Exception e) {
-                        throw new RuntimeException("Ошибка парсинга ID транскрипции", e);
-                    }
-                });
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new RuntimeException("Client Error: " + response.statusCode())))
+                .onStatus(HttpStatusCode::is5xxServerError, response ->
+                        Mono.error(new RuntimeException("Server Error: " + response.statusCode())))
+                .bodyToMono(PreRecorderResponse.class);
+
         return transcriptionIdMono.block();
     }
 
@@ -47,14 +46,11 @@ public class TranscriptionService {
                 .uri(GLADIA_PRE_RECORDER_URL + "/{id}", transcriptionId)
                 .header(GLADIA_KEY_HEADER, apiKey)
                 .retrieve()
-                .bodyToMono(TranscriptionResultResponse.class)
-                .map(response -> {
-                    try {
-                        return response;
-                    } catch (Exception e) {
-                        throw new RuntimeException("Ошибка парсинга текста транскрипции", e);
-                    }
-                });
+                .onStatus(HttpStatusCode::is4xxClientError, response ->
+                        Mono.error(new RuntimeException("Client Error: " + response.statusCode())))
+                .onStatus(HttpStatusCode::is5xxServerError, response ->
+                        Mono.error(new RuntimeException("Server Error: " + response.statusCode())))
+                .bodyToMono(TranscriptionResultResponse.class);
 
         return resultMono.block();
     }

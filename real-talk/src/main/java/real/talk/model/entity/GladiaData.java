@@ -24,6 +24,12 @@ public class GladiaData {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "gladia_request_id")
+    private UUID gladiaRequestId;
+
+    @Column(name = "gladia_full_ur")
+    private String gladiaFullUrl;
+
     @Column(name = "data")
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> data;
