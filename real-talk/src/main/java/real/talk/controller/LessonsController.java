@@ -44,9 +44,9 @@ class LessonsController {
     @GetMapping("/lesson")
     public Mono<ResponseEntity<TranscriptionResultResponse>> getReadyLesson(
             @RequestParam("userId") UUID userId,
-            @RequestParam("fullUrl") String fullUrl) {
+            @RequestParam("transcriptionId") UUID transcriptionId) {
 
-        return gladiaService.saveGladiaTranscriptionResultResponse(userId, fullUrl)
+        return gladiaService.saveGladiaTranscriptionResultResponse(userId, transcriptionId)
                 .map(ResponseEntity::ok)
                 .doOnError(e -> log.error("Ошибка в цепочке getReadyLesson", e))
                 .onErrorResume(e -> {

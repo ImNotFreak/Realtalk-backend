@@ -17,6 +17,6 @@ gladia:
   api:
     key: a37d25af-66b4-4744-ac18-5b725cc3c6b8
 
-reactor:
-  trace:
-    operatorStacktrace: true
+logging:
+  level:
+    root: DEBUG
