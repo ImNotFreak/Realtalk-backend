@@ -1,5 +1,6 @@
 package real.talk.model.dto.gladia;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class TranscriptionResultResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Transcription {
+        @JsonProperty("full_transcript")
         private String fullTranscript;
         private List<Utterance> utterances;
     }
