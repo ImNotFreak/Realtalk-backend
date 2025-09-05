@@ -1,20 +1,17 @@
 package real.talk.model.dto.lesson;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class LessonRequest {
     private String name;
     private String orderNumber;
-    private String youtubeLink;
+    private List<String> youtubeLinks;
     private String email;
     private String telegram;
     private String languageLevel;

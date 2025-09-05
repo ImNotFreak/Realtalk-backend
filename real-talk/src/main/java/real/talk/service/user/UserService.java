@@ -7,6 +7,8 @@ import real.talk.model.entity.User;
 import real.talk.repository.user.UserRepository;
 
 import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -15,17 +17,17 @@ public class UserService {
 
 
     public User saveUser(LessonRequest lessonRequest) {
-        if (userRepository.existsByEmail(lessonRequest.getEmail())) {
-            throw new IllegalArgumentException("User with email " + lessonRequest.getEmail() + " already exists");
+        Optional<User> findByEmail = userRepository.findAllByEmail(lessonRequest.getEmail());
+        if (findByEmail.isPresent())  {
+            return findByEmail.get();
         }
 
         User user = new User();
         user.setName(lessonRequest.getName());
+        user.setOrderNumber(UUID.randomUUID());
         user.setSubmissionTime(Instant.now());
         user.setEmail(lessonRequest.getEmail());
         user.setTelegram(lessonRequest.getTelegram());
-        user.setLanguageLevel(lessonRequest.getLanguageLevel());
-        user.setGrammarTopics(lessonRequest.getGrammarTopics());
 
         userRepository.save(user);
         return user;

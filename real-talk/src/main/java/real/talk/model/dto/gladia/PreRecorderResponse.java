@@ -13,5 +13,4 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PreRecorderResponse {
     private UUID id;
-    private String resultUrl;
 }

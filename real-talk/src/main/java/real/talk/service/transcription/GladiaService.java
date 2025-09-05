@@ -2,19 +2,19 @@ package real.talk.service.transcription;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import real.talk.model.dto.gladia.PreRecorderResponse;
 import real.talk.model.dto.gladia.TranscriptionResultResponse;
-import real.talk.model.dto.lesson.LessonRequest;
 import real.talk.model.entity.GladiaData;
-import real.talk.model.entity.User;
+import real.talk.model.entity.Lesson;
+import real.talk.model.entity.enums.DataStatus;
+import real.talk.model.entity.enums.LessonStatus;
 import real.talk.repository.gladia.GladiaDataRepository;
+import real.talk.service.lesson.LessonService;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,50 +23,43 @@ public class GladiaService {
 
     private final TranscriptionService transcriptionService;
     private final GladiaDataRepository gladiaDataRepository;
+    private final LessonService lessonService;
+    @Value("${gladia.create-request.cron}")
+    private String gladiaRequestProcessingCron;
+    @Value("${gladia.get-response.cron}")
+    private String gladiaResponseProcessingCron;
 
 
-    @Transactional
-    public Mono<PreRecorderResponse> saveGladiaPreRecorderResponse(User user,
-                                                             LessonRequest lessonRequest) {
 
-        return transcriptionService.transcribeAudio(lessonRequest.getYoutubeLink())
-                .flatMap(preRecorderResponse -> {
-                    GladiaData gladiaData = new GladiaData();
-                    gladiaData.setUser(user);
-                    gladiaData.setGladiaRequestId(preRecorderResponse.getId());
-                    gladiaData.setGladiaFullUrl(preRecorderResponse.getResultUrl());
-                    // JPA репозиторий блокирующий, оборачиваем в boundedElastic
-                    return Mono.fromCallable(() -> gladiaDataRepository.save(gladiaData))
-                            .subscribeOn(Schedulers.boundedElastic())
-                            .map(saved -> preRecorderResponse); // возвращаем оригинальный ответ
-                });
+    @Scheduled(cron = "${gladia.create-request.cron}")
+    public void processGladiaRequest() {
+        List<Lesson> pendingLessons = lessonService.getPendingLessons();
+
+        pendingLessons.forEach(lesson -> {
+            log.info("Processing lesson {}", lesson);
+            lesson.setStatus(LessonStatus.PROCESSING);
+            PreRecorderResponse preRecorderResponse = transcriptionService.transcribeAudio(lesson.getYoutubeUrl());
+            GladiaData gladiaData = new GladiaData();
+            gladiaData.setLesson(lesson);
+            gladiaData.setStatus(DataStatus.CREATED);
+            gladiaData.setGladiaRequestId(preRecorderResponse.getId());
+            gladiaDataRepository.save(gladiaData);
+            lessonService.saveLesson(lesson);
+            log.info("Finished processing lesson {}", lesson);
+        });
     }
 
-    @Transactional
-    public Mono<TranscriptionResultResponse> saveGladiaTranscriptionResultResponse(UUID userId,
-                                                                                   UUID transcriptionId) {
-        return Mono.fromCallable(() -> gladiaDataRepository.findGladiaDataByGladiaRequestId(transcriptionId))
-                .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(optionalData -> {
-                    if (optionalData.isPresent() && optionalData.get().getData() != null) {
-                        // ✅ Запись уже есть в БД → возвращаем из базы
-                        log.info("Транскрипция для userId={} уже есть в БД, API не вызываем", userId);
-                        return Mono.just(optionalData.get().getData());
-                    } else {
-                        // ❌ В базе нет → идём в API
-                        log.info("Транскрипции для userId={} нет в БД, вызываем API", userId);
-                        return transcriptionService.getTranscriptionResult(transcriptionId)
-                                .flatMap(transcriptionResult ->
-                                        Mono.fromCallable(() -> {
-                                                    GladiaData gladiaData = optionalData.orElseGet(() -> new GladiaData());
-                                                    gladiaData.setData(transcriptionResult);
-                                                    return gladiaDataRepository.save(gladiaData);
-                                                })
-                                                .subscribeOn(Schedulers.boundedElastic())
-                                                .thenReturn(transcriptionResult)
-                                );
-                    }
-                });
-    }
+    @Scheduled(cron = "${gladia.get-response.cron}")
+    public void processGladiaResponse() {
+        List<GladiaData> gladiaDataByStatus = gladiaDataRepository.findGladiaDataByStatus(DataStatus.CREATED);
 
+        gladiaDataByStatus.forEach(gladiaData -> {
+            log.info("Processing gladiaRequest {}", gladiaData.getGladiaRequestId());
+            TranscriptionResultResponse transcriptionResult = transcriptionService.getTranscriptionResult(gladiaData.getGladiaRequestId());
+            gladiaData.setStatus(DataStatus.DONE);
+            gladiaData.setData(transcriptionResult);
+            gladiaDataRepository.save(gladiaData);
+            log.info("Finished processing gladiaRequest {}", gladiaData);
+        });
+    }
 }
