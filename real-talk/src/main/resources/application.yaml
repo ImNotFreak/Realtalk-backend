@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/my_new_db
+    url: jdbc:postgresql://localhost:5432/real_talk
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -11,12 +11,23 @@ spring:
     show-sql: true
 
   liquibase:
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/real_talk
+    user: postgres
+    password: postgres
     change-log: classpath:/db/changelog/changelog.yaml
-
-gladia:
-  api:
-    key: a37d25af-66b4-4744-ac18-5b725cc3c6b8
 
 logging:
   level:
     root: DEBUG
+
+gladia:
+  create-request:
+    cron: "0 * * * * ?"
+  get-response:
+    cron: "0 */5 * * * ?"
+  api:
+    key: a37d25af-66b4-4744-ac18-5b725cc3c6b8
+
+
+

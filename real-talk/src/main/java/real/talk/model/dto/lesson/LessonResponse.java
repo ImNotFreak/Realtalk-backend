@@ -7,19 +7,12 @@ import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class LessonResponse {
-    private Long id;
-    private String name;
-    private String orderNumber;
-    private String youtubeLink;
-    private String email;
-    private String telegram;
-    private String languageLevel;
-    private List<String> grammarTopics;
-    private OffsetDateTime createdAt;
+    private List<UUID> lessonIds;
 }

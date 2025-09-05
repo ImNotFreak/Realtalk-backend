@@ -1,12 +1,15 @@
 package real.talk.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import real.talk.model.dto.gladia.TranscriptionResultResponse;
+import real.talk.model.entity.enums.DataStatus;
+import real.talk.model.entity.enums.LessonStatus;
 
 import java.util.Map;
 import java.util.UUID;
@@ -21,15 +24,17 @@ public class GladiaData {
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "lesson_id", nullable = false)
+    private Lesson lesson;
 
     @Column(name = "gladia_request_id")
     private UUID gladiaRequestId;
 
-    @Column(name = "gladia_full_url")
-    private String gladiaFullUrl;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20)
+    private DataStatus status;
 
     @Column(name = "data")
     @JdbcTypeCode(SqlTypes.JSON)

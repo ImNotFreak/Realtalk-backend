@@ -4,11 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -36,13 +33,4 @@ public class User {
 
     @Column(name = "telegram")
     private String telegram;
-
-    @Column(name = "language_level", length = 10)
-    private String languageLevel;
-
-
-    @Column(name = "grammar_topics", length = Integer.MAX_VALUE, columnDefinition = "text[]")
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    private List<String> grammarTopics;
-
 }
