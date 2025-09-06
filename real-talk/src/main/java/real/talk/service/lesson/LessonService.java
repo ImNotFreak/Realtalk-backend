@@ -19,7 +19,6 @@ public class LessonService {
 
     public List<Lesson> createLessons(User user , LessonRequest lessonRequest) {
 
-
         return lessonRequest.getYoutubeLinks().stream().map(youtubeLink -> {
             Lesson lesson = new Lesson();
             lesson.setId(UUID.randomUUID());
@@ -35,6 +34,10 @@ public class LessonService {
 
     public List<Lesson> getPendingLessons() {
         return lessonRepository.findByStatus(LessonStatus.PENDING);
+    }
+
+    public List<Lesson> getProcessingLessons() {
+        return lessonRepository.findByStatus(LessonStatus.PROCESSING);
     }
 
     public Lesson saveLesson(Lesson  lesson) {

@@ -1,0 +1,1 @@
+Вот расшифровка {transcription}

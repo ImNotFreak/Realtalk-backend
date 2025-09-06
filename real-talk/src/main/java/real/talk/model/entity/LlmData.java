@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import real.talk.model.dto.llm.LlmResponse;
 import real.talk.model.entity.enums.DataStatus;
 
 import java.util.Map;
@@ -32,6 +33,6 @@ public class LlmData {
 
     @Column(name = "data")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> data;
+    private LlmResponse data;
 
 }
