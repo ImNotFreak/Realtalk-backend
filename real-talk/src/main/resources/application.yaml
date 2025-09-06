@@ -17,9 +17,14 @@ spring:
     password: postgres
     change-log: classpath:/db/changelog/changelog.yaml
 
+  ai:
+    openai:
+      model: gpt-3.5-turbo
+      api-key: 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
+
 logging:
   level:
-    root: DEBUG
+    root: INFO
 
 gladia:
   create-request:
@@ -29,5 +34,8 @@ gladia:
   api:
     key: a37d25af-66b4-4744-ac18-5b725cc3c6b8
 
+llm:
+  generate-lesson:
+    cron: "*/10 * * * * *"
 
 
