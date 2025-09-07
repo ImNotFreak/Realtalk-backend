@@ -8,7 +8,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LessonRequest {
+public class LessonCreateRequest {
     private String name;
     private String orderNumber;
     private List<String> youtubeLinks;

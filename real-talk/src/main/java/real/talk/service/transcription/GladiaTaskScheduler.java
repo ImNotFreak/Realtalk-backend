@@ -52,10 +52,12 @@ public class GladiaTaskScheduler {
         gladiaDataByStatus.forEach(gladiaData -> {
             log.info("Processing gladiaRequest {}", gladiaData.getGladiaRequestId());
             TranscriptionResultResponse transcriptionResult = transcriptionService.getTranscriptionResult(gladiaData.getGladiaRequestId());
-            gladiaData.setStatus(DataStatus.DONE);
-            gladiaData.setData(transcriptionResult);
-            gladiaService.saveGladiaData(gladiaData);
-            log.info("Finished processing gladiaRequest {}", gladiaData);
+            if (transcriptionResult.getStatus().equals("done")) {
+                gladiaData.setStatus(DataStatus.DONE);
+                gladiaData.setData(transcriptionResult);
+                gladiaService.saveGladiaData(gladiaData);
+                log.info("Finished processing gladiaRequest {}", gladiaData);
+            }
         });
     }
 }

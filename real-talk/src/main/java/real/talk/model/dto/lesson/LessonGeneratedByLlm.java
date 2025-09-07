@@ -1,4 +1,4 @@
-package real.talk.model.dto.llm;
+package real.talk.model.dto.lesson;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LlmResponse {
+public class LessonGeneratedByLlm {
+    private String youTubeUrl;
     private List<GlossaryItem> glossary;
     private List<Exercise> lexicalExercises;
     private List<Exercise> grammarExercises;
@@ -24,6 +25,7 @@ public class LlmResponse {
         private String translation;
         private String explanation;
         private String example;
+        private Double timeCode;
     }
 
     @Data
@@ -31,6 +33,7 @@ public class LlmResponse {
     @AllArgsConstructor
     public static class Exercise {
         private String type;
+        private String input;
         private List<String> examples;
     }
 

@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import real.talk.model.dto.llm.LlmResponse;
+import real.talk.model.dto.lesson.LessonGeneratedByLlm;
 import real.talk.model.entity.GladiaData;
-import real.talk.model.entity.Lesson;
 import real.talk.model.entity.LlmData;
 import real.talk.model.entity.enums.DataStatus;
 import real.talk.service.lesson.LessonService;
@@ -27,17 +26,13 @@ public class LlmTaskScheduler {
 
     @Scheduled(cron = "${llm.generate-lesson.cron}")
     public void processPendingLessons(){
-        List<Lesson> processingLessons = lessonService.getProcessingLessons();
+        List<real.talk.model.entity.Lesson> processingLessons = lessonService.getLessonsWithGladiaDone();
 
         if (processingLessons == null || processingLessons.isEmpty()) return;
 
         processingLessons
                 .forEach(lesson -> {
                     try {
-                        if (llmDataService.existsByLessonIdAndStatusDone(lesson.getId())){
-                            log.info("Урок уже сгенерирован {}", lesson.getId());
-                            return;
-                        }
 
                         log.info("Обрабатываем урок: id={}", lesson.getId());
                         GladiaData data = gladiaService.getGladiaDataByLessonIdAndStatusDone(lesson.getId())
@@ -45,7 +40,7 @@ public class LlmTaskScheduler {
 
 
                         log.info("GladiaData найдено для урока id={}", lesson.getId());
-                        LlmResponse generatedLesson = gptLessonService.createLesson(lesson, data);
+                        LessonGeneratedByLlm generatedLesson = gptLessonService.createLesson(lesson, data);
                         log.info("Урок сгенерирован GPT для урока id={}", lesson.getId());
 
                         LlmData llmData = new LlmData();

@@ -57,6 +57,15 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     checkConstraint: "status IN ('PENDING', 'PROCESSING', 'READY', 'ERROR')"
+              - column:
+                  name: access
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "status IN ('PUBLIC', 'PRIVATE')"
+              - column:
+                  name: data
+                  type: JSONB
         - addForeignKeyConstraint:
             baseTableName: lessons
             baseColumnNames: user_id
