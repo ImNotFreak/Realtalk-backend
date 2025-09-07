@@ -5,6 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import real.talk.model.dto.lesson.LessonGeneratedByLlm;
+import real.talk.model.entity.enums.LessonAccess;
 import real.talk.model.entity.enums.LessonStatus;
 
 import java.util.List;
@@ -40,4 +44,12 @@ public class Lesson {
     @Column(name = "status", nullable = false, length = 20)
     private LessonStatus status;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "access", nullable = false, length = 20)
+    private LessonAccess access;
+
+    @Column(name = "data")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private LessonGeneratedByLlm data;
 }

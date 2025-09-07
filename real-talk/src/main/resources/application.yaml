@@ -36,6 +36,8 @@ gladia:
 
 llm:
   generate-lesson:
-    cron: "*/10 * * * * *"
+    cron: "0 * * * * ?"
 
-
+lesson:
+  ready-lesson:
+    cron: "0 * * * * ?"

@@ -2,7 +2,7 @@ package real.talk.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import real.talk.model.dto.lesson.LessonRequest;
+import real.talk.model.dto.lesson.LessonCreateRequest;
 import real.talk.model.entity.User;
 import real.talk.repository.user.UserRepository;
 
@@ -16,7 +16,7 @@ public class UserService {
     private final UserRepository userRepository;
 
 
-    public User saveUser(LessonRequest lessonRequest) {
+    public User saveUser(LessonCreateRequest lessonRequest) {
         Optional<User> findByEmail = userRepository.findAllByEmail(lessonRequest.getEmail());
         if (findByEmail.isPresent())  {
             return findByEmail.get();

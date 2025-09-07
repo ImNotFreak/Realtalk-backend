@@ -41,7 +41,8 @@ public class TranscriptionResultResponse {
         private String text;
         private double start;
         private double end;
-        private List<Word> words;
+        //TODO  Вероятно не нужен этот список слов, возможно удалим
+        //private List<Word> words;
     }
 
     @Data

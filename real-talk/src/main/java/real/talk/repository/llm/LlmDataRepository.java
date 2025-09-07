@@ -11,5 +11,5 @@ public interface LlmDataRepository extends JpaRepository<LlmData, UUID> {
 
     Optional<LlmData> findByLessonId(UUID uuid);
 
-    boolean existsByLessonIdAndStatus(UUID uuid, DataStatus status);
+    Optional<LlmData> findByLessonIdAndStatus(UUID uuid,  DataStatus status);
 }

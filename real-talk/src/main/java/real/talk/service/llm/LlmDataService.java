@@ -19,11 +19,10 @@ public class LlmDataService {
         return llmDataRepository.findByLessonId(lessonId);
     }
 
+    public Optional<LlmData> getLlmDataByLessonIdAndStatusDone(UUID lessonId){
+        return llmDataRepository.findByLessonIdAndStatus(lessonId, DataStatus.DONE);
+    }
     public LlmData save(LlmData llmData){
         return llmDataRepository.save(llmData);
-    }
-
-    public boolean existsByLessonIdAndStatusDone(UUID lessonId){
-        return llmDataRepository.existsByLessonIdAndStatus(lessonId, DataStatus.DONE);
     }
 }

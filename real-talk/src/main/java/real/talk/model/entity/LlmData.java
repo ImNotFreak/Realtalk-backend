@@ -6,10 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import real.talk.model.dto.llm.LlmResponse;
+import real.talk.model.dto.lesson.LessonGeneratedByLlm;
 import real.talk.model.entity.enums.DataStatus;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Getter
@@ -24,7 +23,7 @@ public class LlmData {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "lesson_id", nullable = false)
-    private Lesson lesson;
+    private real.talk.model.entity.Lesson lesson;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -33,6 +32,5 @@ public class LlmData {
 
     @Column(name = "data")
     @JdbcTypeCode(SqlTypes.JSON)
-    private LlmResponse data;
-
+    private LessonGeneratedByLlm data;
 }

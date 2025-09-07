@@ -8,8 +8,7 @@ import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import real.talk.model.dto.llm.LlmResponse;
-import real.talk.model.entity.Lesson;
+import real.talk.model.dto.lesson.LessonGeneratedByLlm;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +21,7 @@ public class PromptService {
 
     private final ObjectMapper objectMapper;
 
-    public Prompt createLessonPrompt(Lesson lesson, String transcription) throws IOException {
+    public Prompt createLessonPrompt(real.talk.model.entity.Lesson lesson, String transcription) throws IOException {
         String lessonPromptString = Files.readString(
                 new ClassPathResource("prompts/lesson.st").getFile().toPath()
         );
@@ -47,33 +46,57 @@ public class PromptService {
         return new Prompt(List.of(systemMessage, userMessage));
     }
 
-    private LlmResponse getLlmRepsonseExample(){
-        LlmResponse response = new LlmResponse();
+    private LessonGeneratedByLlm getLlmRepsonseExample(){
+        LessonGeneratedByLlm response = new LessonGeneratedByLlm();
 
-        LlmResponse.GlossaryItem item = new LlmResponse.GlossaryItem(
+        LessonGeneratedByLlm.GlossaryItem item = new LessonGeneratedByLlm.GlossaryItem(
                 "expression",
                 "Цитата из подкаста",
                 "Перевод",
                 "Объяснение",
-                "Другой пример"
+                "Другой пример",
+                null
         );
         response.setGlossary(List.of(item));
 
-        LlmResponse.Exercise lexical = new LlmResponse.Exercise(
+        LessonGeneratedByLlm.Exercise fillTheBlank = new LessonGeneratedByLlm.Exercise(
                 "Вставь пропущенное слово",
+                "Используйте выражения:",
                 List.of("пример1", "пример2")
         );
-        response.setLexicalExercises(List.of(lexical));
 
-        LlmResponse.Exercise grammar = new LlmResponse.Exercise(
-                "Present Perfect",
+        LessonGeneratedByLlm.Exercise truOrFalse = new LessonGeneratedByLlm.Exercise(
+                "Игра «Ложь или правда?»",
+                "Определи, правда или ложь. Если ложь, исправь предложение.",
                 List.of("пример1", "пример2")
         );
-        response.setGrammarExercises(List.of(grammar));
+        LessonGeneratedByLlm.Exercise listening = new LessonGeneratedByLlm.Exercise(
+                "Послушай и отметь слова из списка:",
+                null,
+                List.of("пример1", "пример2")
+        );
+        response.setLexicalExercises(List.of(fillTheBlank, truOrFalse, listening));
+
+        LessonGeneratedByLlm.Exercise grammar1 = new LessonGeneratedByLlm.Exercise(
+                "Grammar exercise",
+                null,
+                List.of("пример1", "пример2")
+        );
+        LessonGeneratedByLlm.Exercise grammar2 = new LessonGeneratedByLlm.Exercise(
+                "Grammar exercise",
+                null,
+                List.of("пример1", "пример2")
+        );
+        LessonGeneratedByLlm.Exercise grammar3 = new LessonGeneratedByLlm.Exercise(
+                "Grammar exercise",
+                null,
+                List.of("пример1", "пример2")
+        );
+        response.setGrammarExercises(List.of(grammar1, grammar2, grammar3));
 
         response.setQuizlet(List.of("термин, перевод", "термин2, перевод2"));
 
-        LlmResponse.Answers answers = new LlmResponse.Answers(
+        LessonGeneratedByLlm.Answers answers = new LessonGeneratedByLlm.Answers(
                 List.of("ответ1", "ответ2"),
                 List.of("ответ1", "ответ2")
         );
