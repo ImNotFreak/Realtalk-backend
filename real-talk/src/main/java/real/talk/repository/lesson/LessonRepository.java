@@ -24,7 +24,7 @@ public interface LessonRepository extends JpaRepository<Lesson, UUID> {
     @Query(value = """
                         SELECT l.* FROM lessons l
                         JOIN llm_data llm ON l.lesson_id = llm.lesson_id
-                        WHERE llm.status = 'DONE'""", nativeQuery = true)
+                        WHERE l.status != 'READY' AND llm.status = 'DONE'""", nativeQuery = true)
     List<Lesson> findProcessingLessonsWithLlmDone();
 
 
