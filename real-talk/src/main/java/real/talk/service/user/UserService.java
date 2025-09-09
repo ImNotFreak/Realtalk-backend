@@ -26,6 +26,8 @@ public class UserService {
         User user = new User();
         user.setName(lessonRequest.getName());
         user.setRole(UserRole.USER);
+        user.setLessonCount(1);
+        user.setDuration(0.0);
         user.setOrderNumber(UUID.randomUUID());
         user.setSubmissionTime(Instant.now());
         user.setEmail(lessonRequest.getEmail());
