@@ -26,7 +26,9 @@ public class TranscriptionResultResponse {
         private String id;
         private String filename;
         private String source;
+        @JsonProperty("audio_duration")
         private Double audioDuration;
+        @JsonProperty("number_of_channels")
         private Integer numberOfChannels;
     }
 
