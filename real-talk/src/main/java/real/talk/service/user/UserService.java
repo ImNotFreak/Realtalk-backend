@@ -18,7 +18,7 @@ public class UserService {
 
 
     public User saveUser(LessonCreateRequest lessonRequest) {
-        Optional<User> findByEmail = userRepository.findAllByEmail(lessonRequest.getEmail());
+        Optional<User> findByEmail = userRepository.findUserByEmail(lessonRequest.getEmail());
         if (findByEmail.isPresent())  {
             return findByEmail.get();
         }
@@ -44,6 +44,10 @@ public class UserService {
 
     public User getUserById(UUID userId) {
         return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
+    }
+
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 
 }

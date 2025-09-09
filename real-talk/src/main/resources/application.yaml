@@ -17,6 +17,18 @@ spring:
     password: postgres
     change-log: classpath:/db/changelog/changelog.yaml
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1012196860639-d4t1tfo8ctsgp8t6e6m3nr3ghohrgidh.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+                - openid
+                - profile
+                - email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
   ai:
     openai:
       model: gpt-3.5-turbo
@@ -41,3 +53,6 @@ llm:
 lesson:
   ready-lesson:
     cron: "0 * * * * ?"
+
+app:
+  frontend-url: http://localhost:3000

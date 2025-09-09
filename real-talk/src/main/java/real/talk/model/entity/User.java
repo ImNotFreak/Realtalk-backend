@@ -36,7 +36,7 @@ public class User {
     private String telegram;
 
     @Column(name = "role")
-    private UserRole role;
+    private UserRole role =  UserRole.USER;
 
     @Column(name = "lesson_count")
     private Integer lessonCount;
