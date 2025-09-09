@@ -9,12 +9,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LessonGeneratedByLlm {
+    private String lessonTopic;
     private String youTubeUrl;
     private List<GlossaryItem> glossary;
     private List<Exercise> lexicalExercises;
     private List<Exercise> grammarExercises;
     private List<String> quizlet;
-    private Answers answers;
+    private List<Answers> lexicalAnswers;
+    private List<Answers> grammarAnswers;
 
     @Data
     @NoArgsConstructor
@@ -41,7 +43,7 @@ public class LessonGeneratedByLlm {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Answers {
-        private List<String> lexicalExercises;
-        private List<String> grammarExercises;
+        private String type;
+        private List<String> answer;
     }
 }

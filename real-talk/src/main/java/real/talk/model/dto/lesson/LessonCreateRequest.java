@@ -14,6 +14,7 @@ public class LessonCreateRequest {
     private List<String> youtubeLinks;
     private String email;
     private String telegram;
+    private String language;
     private String languageLevel;
     private List<String> grammarTopics;
 }

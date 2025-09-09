@@ -17,6 +17,18 @@ public class TranscriptionResultResponse {
     private String id;
     private String status;
     private Result result;
+    private File file;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class File{
+        private String id;
+        private String filename;
+        private String source;
+        private Double audioDuration;
+        private Integer numberOfChannels;
+    }
 
     @Data
     @NoArgsConstructor

@@ -27,6 +27,18 @@ databaseChangeLog:
               - column:
                   name: telegram
                   type: VARCHAR(255)
+              - column:
+                  name: role
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "role IN ('USER', 'ADMIN')"
+              - column:
+                  name: lesson_count
+                  type: int
+              - column:
+                  name: duration
+                  type: double
 
         - createTable:
             tableName: lessons
@@ -43,8 +55,14 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: language
+                  type: VARCHAR(255)
+              - column:
                   name: language_level
                   type: VARCHAR(10)
+              - column:
+                  name: lesson_topic
+                  type: VARCHAR(255)
               - column:
                   name: grammar_topics
                   type: text[]
@@ -62,7 +80,7 @@ databaseChangeLog:
                   type: VARCHAR(20)
                   constraints:
                     nullable: false
-                    checkConstraint: "status IN ('PUBLIC', 'PRIVATE')"
+                    checkConstraint: "access IN ('PUBLIC', 'PRIVATE')"
               - column:
                   name: data
                   type: JSONB

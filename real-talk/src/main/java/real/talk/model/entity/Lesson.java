@@ -28,6 +28,9 @@ public class Lesson {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "language")
+    private String language;
+
     @Size(max = 10)
     @Column(name = "language_level", length = 10)
     private String languageLevel;
@@ -35,6 +38,9 @@ public class Lesson {
     @Size(max = 255)
     @Column(name = "youtube_url")
     private String youtubeUrl;
+
+    @Column(name = "lesson_topic")
+    private String lessonTopic;
 
     @Column(name = "grammar_topics")
     private List<String> grammarTopics;

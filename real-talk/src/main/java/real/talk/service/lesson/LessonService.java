@@ -25,6 +25,7 @@ public class LessonService {
             Lesson lesson = new Lesson();
             lesson.setId(UUID.randomUUID());
             lesson.setUser(user);
+            lesson.setLanguage(lessonRequest.getLanguage());
             lesson.setLanguageLevel(lessonRequest.getLanguageLevel());
             lesson.setGrammarTopics(lessonRequest.getGrammarTopics());
             lesson.setYoutubeUrl(youtubeLink);

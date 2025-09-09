@@ -33,7 +33,8 @@ public class PromptService {
         String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(getLlmRepsonseExample());
         SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(lessonPromptString);
         Message systemMessage = systemPromptTemplate.createMessage(
-                Map.of("languageLevel", lesson.getLanguageLevel(),
+                Map.of("language", lesson.getLanguage(),
+                        "languageLevel", lesson.getLanguageLevel(),
                         "grammarTopics", String.join(", ", lesson.getGrammarTopics()),
                         "lessonJson", json
                 )
@@ -48,7 +49,7 @@ public class PromptService {
 
     private LessonGeneratedByLlm getLlmRepsonseExample(){
         LessonGeneratedByLlm response = new LessonGeneratedByLlm();
-
+        response.setLessonTopic("Общая тема урока");
         LessonGeneratedByLlm.GlossaryItem item = new LessonGeneratedByLlm.GlossaryItem(
                 "expression",
                 "Цитата из подкаста",
@@ -96,11 +97,34 @@ public class PromptService {
 
         response.setQuizlet(List.of("термин, перевод", "термин2, перевод2"));
 
-        LessonGeneratedByLlm.Answers answers = new LessonGeneratedByLlm.Answers(
-                List.of("ответ1", "ответ2"),
-                List.of("ответ1", "ответ2")
+        LessonGeneratedByLlm.Answers fillTheBlankAnswers = new LessonGeneratedByLlm.Answers(
+                "fillTheBlankAnswers",
+                List.of("пример1", "пример2")
         );
-        response.setAnswers(answers);
+
+        LessonGeneratedByLlm.Answers truOrFalseAnswers = new LessonGeneratedByLlm.Answers(
+                "truOrFalseAnswers",
+                List.of("пример1", "пример2")
+        );
+
+        LessonGeneratedByLlm.Answers grammar1Answers = new LessonGeneratedByLlm.Answers(
+                "grammar1Answers",
+                List.of("пример1", "пример2")
+        );
+
+        LessonGeneratedByLlm.Answers grammar2Answers = new LessonGeneratedByLlm.Answers(
+                "grammar2Answers",
+                List.of("пример1", "пример2")
+        );
+
+        LessonGeneratedByLlm.Answers grammar3Answers = new LessonGeneratedByLlm.Answers(
+                "grammar3Answers",
+                List.of("пример1", "пример2")
+        );
+
+
+        response.setLexicalAnswers(List.of(fillTheBlankAnswers, truOrFalseAnswers));
+        response.setGrammarAnswers(List.of(grammar1Answers, grammar2Answers, grammar3Answers));
 
         return response;
     }

@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import real.talk.model.dto.lesson.LessonGeneratedByLlm;
 import real.talk.model.entity.GladiaData;
+import real.talk.model.entity.Lesson;
 import real.talk.model.entity.LlmData;
 import real.talk.model.entity.enums.DataStatus;
 import real.talk.service.lesson.LessonService;
@@ -26,7 +27,7 @@ public class LlmTaskScheduler {
 
     @Scheduled(cron = "${llm.generate-lesson.cron}")
     public void processPendingLessons(){
-        List<real.talk.model.entity.Lesson> processingLessons = lessonService.getLessonsWithGladiaDone();
+        List<Lesson> processingLessons = lessonService.getLessonsWithGladiaDone();
 
         if (processingLessons == null || processingLessons.isEmpty()) return;
 

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
+import real.talk.model.entity.enums.UserRole;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -33,4 +34,13 @@ public class User {
 
     @Column(name = "telegram")
     private String telegram;
+
+    @Column(name = "role")
+    private UserRole role;
+
+    @Column(name = "lesson_count")
+    private Integer lessonCount;
+
+    @Column(name = "duration")
+    private Double duration;
 }

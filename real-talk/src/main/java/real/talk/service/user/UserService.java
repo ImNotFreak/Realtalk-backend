@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import real.talk.model.dto.lesson.LessonCreateRequest;
 import real.talk.model.entity.User;
+import real.talk.model.entity.enums.UserRole;
 import real.talk.repository.user.UserRepository;
 
 import java.time.Instant;
@@ -24,6 +25,7 @@ public class UserService {
 
         User user = new User();
         user.setName(lessonRequest.getName());
+        user.setRole(UserRole.USER);
         user.setOrderNumber(UUID.randomUUID());
         user.setSubmissionTime(Instant.now());
         user.setEmail(lessonRequest.getEmail());
@@ -32,4 +34,14 @@ public class UserService {
         userRepository.save(user);
         return user;
     }
+
+    public User saveUser(User user) {
+        userRepository.save(user);
+        return user;
+    }
+
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
+    }
+
 }
