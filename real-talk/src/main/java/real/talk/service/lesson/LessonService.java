@@ -56,7 +56,7 @@ public class LessonService {
         return lessonRepository.findByStatusAndAccess(LessonStatus.READY, LessonAccess.PUBLIC)
                 .stream().map(lesson -> {
                     LessonGeneratedByLlm lessonData = lesson.getData();
-                    lessonData.setYouTubeUrl(lesson.getYoutubeUrl());
+                    lessonData.setYou_tube_url(lesson.getYoutubeUrl());
                     return lessonData;
                 }).toList();
     }

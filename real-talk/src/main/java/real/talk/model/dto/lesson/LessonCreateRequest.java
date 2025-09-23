@@ -1,5 +1,6 @@
 package real.talk.model.dto.lesson;
 
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.util.List;

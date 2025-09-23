@@ -16,8 +16,8 @@ import static real.talk.util.constants.Headers.GLADIA_KEY_HEADER;
 import static real.talk.util.constants.URLs.GLADIA_PRE_RECORDER_URL;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class TranscriptionService {
 
     @Value("${gladia.api.key}")
