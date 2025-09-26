@@ -12,6 +12,8 @@ import real.talk.model.entity.Lesson;
 import real.talk.model.entity.User;
 import real.talk.service.lesson.LessonService;
 import real.talk.service.user.UserService;
+import real.talk.model.dto.lesson.LessonFilter;
+
 
 import java.util.List;
 
@@ -36,8 +38,23 @@ class LessonsController {
     }
 
     @GetMapping("/public-lessons")
-    public ResponseEntity<List<LessonGeneratedByLlm>> getPublicLessons() {
-        return ResponseEntity.ok(lessonService.getPublicReadyLessons());
+    public ResponseEntity<List<LessonGeneratedByLlm>> getPublicLessons(
+         @RequestParam(required = false) String language,
+         @RequestParam(name = "language_level", required = false) String languageLevel,
+         @RequestParam(name = "lesson_topic", required = false) String lessonTopic,
+         @RequestParam(name = "grammar_contains", required = false) String grammarContains)
+    {
+        var filter = LessonFilter.builder()
+                .language(blankToNull(language))
+                .languageLevel(blankToNull(languageLevel))
+                .lessonTopic(blankToNull(lessonTopic))
+                .grammarContains(blankToNull(grammarContains))
+                .build();
+        return ResponseEntity.ok(lessonService.getPublicReadyLessons(filter));
+    }
+
+    private static String blankToNull(String s) {
+        return (s == null || s.isBlank()) ? null : s;
     }
 
 }
