@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/real_talk
+    username: real_talk
+    password: real_talk
+    driver-class-name: org.postgresql.Driver
+
+  # критично: не подменять DataSource на встраиваемую БД в тестах
+  test:
+    database:
+      replace: NONE
+
+  liquibase:
+    enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        # опционально (Hibernate сам определит по JDBC, но можно зафиксировать):
+        # dialect: org.hibernate.dialect.PostgreSQLDialect
