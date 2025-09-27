@@ -53,7 +53,7 @@ public class SecurityConfig {
                                         u.setOrderNumber(UUID.randomUUID());
                                         u.setLessonCount(1);
                                         u.setDuration(0.0);
-                                        u.setSubmissionTime(Instant.now());
+                                        u.setCreatedAt(Instant.now());
                                         u.setRole(UserRole.USER); // по умолчанию USER
                                         return u;
                                     });

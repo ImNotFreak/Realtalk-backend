@@ -12,6 +12,7 @@ import real.talk.model.entity.enums.DataStatus;
 import real.talk.model.entity.enums.LessonStatus;
 import real.talk.service.lesson.LessonService;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -37,6 +38,7 @@ public class GladiaTaskScheduler {
             gladiaData.setLesson(lesson);
             gladiaData.setStatus(DataStatus.CREATED);
             gladiaData.setGladiaRequestId(preRecorderResponse.getId());
+            gladiaData.setCreatedAt(Instant.now());
             gladiaService.saveGladiaData(gladiaData);
             lessonService.saveLesson(lesson);
             log.info("Finished processing lesson {}", lesson);

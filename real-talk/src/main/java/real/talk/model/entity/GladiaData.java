@@ -11,6 +11,7 @@ import real.talk.model.dto.gladia.TranscriptionResultResponse;
 import real.talk.model.entity.enums.DataStatus;
 import real.talk.model.entity.enums.LessonStatus;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,4 +41,6 @@ public class GladiaData {
     @JdbcTypeCode(SqlTypes.JSON)
     private TranscriptionResultResponse data;
 
+    @Column(name = "created_at")
+    private Instant createdAt;
 }

@@ -11,6 +11,7 @@ import real.talk.model.dto.lesson.LessonGeneratedByLlm;
 import real.talk.model.entity.enums.LessonAccess;
 import real.talk.model.entity.enums.LessonStatus;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,4 +59,7 @@ public class Lesson {
     @Column(name = "data")
     @JdbcTypeCode(SqlTypes.JSON)
     private LessonGeneratedByLlm data;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
 }

@@ -20,7 +20,12 @@ public class UserService {
     public User saveUser(LessonCreateRequest lessonRequest) {
         Optional<User> findByEmail = userRepository.findUserByEmail(lessonRequest.getEmail());
         if (findByEmail.isPresent())  {
-            return findByEmail.get();
+            User user = findByEmail.get();
+            if (user.getTelegram() == null) {
+                user.setTelegram(lessonRequest.getTelegram());
+                userRepository.save(user);
+            }
+            return user;
         }
 
         User user = new User();
@@ -29,7 +34,7 @@ public class UserService {
         user.setLessonCount(1);
         user.setDuration(0.0);
         user.setOrderNumber(UUID.randomUUID());
-        user.setSubmissionTime(Instant.now());
+        user.setCreatedAt(Instant.now());
         user.setEmail(lessonRequest.getEmail());
         user.setTelegram(lessonRequest.getTelegram());
 

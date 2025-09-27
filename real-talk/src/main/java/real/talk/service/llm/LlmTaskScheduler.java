@@ -12,6 +12,7 @@ import real.talk.model.entity.enums.DataStatus;
 import real.talk.service.lesson.LessonService;
 import real.talk.service.transcription.GladiaService;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -48,6 +49,7 @@ public class LlmTaskScheduler {
                         llmData.setLesson(lesson);
                         llmData.setStatus(DataStatus.DONE);
                         llmData.setData(generatedLesson);
+                        llmData.setCreatedAt(Instant.now());
                         llmDataService.save(llmData);
                         log.info("Сгенерированные данные LLM сохранены для урока id={}", lesson.getId());
 

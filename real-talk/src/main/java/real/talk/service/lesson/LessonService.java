@@ -10,6 +10,7 @@ import real.talk.model.entity.enums.LessonAccess;
 import real.talk.model.entity.enums.LessonStatus;
 import real.talk.repository.lesson.LessonRepository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ public class LessonService {
             lesson.setYoutubeUrl(youtubeLink);
             lesson.setStatus(LessonStatus.PENDING);
             lesson.setAccess(LessonAccess.PUBLIC);
+            lesson.setCreatedAt(Instant.now());
             lessonRepository.save(lesson);
             return lesson;
         }).toList();

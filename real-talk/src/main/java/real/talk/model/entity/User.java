@@ -19,9 +19,6 @@ public class User {
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-    @Column(name = "submission_time")
-    private Instant submissionTime;
-
     @Column(name = "name")
     private String name;
 
@@ -43,4 +40,7 @@ public class User {
 
     @Column(name = "duration")
     private Double duration;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
 }
