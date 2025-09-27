@@ -18,10 +18,12 @@ public class JwtService {
     private final JwtEncoder jwtEncoder;
 
 
-    public String generateToken(String email, UserRole role) {
+    public String generateToken(String email, String name, UserRole role) {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(email)
                 .claim("role", role.name())
+                .claim("email", email)
+                .claim("name", name)
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plusSeconds(3600 * 24)) // 24 часа
                 .build();

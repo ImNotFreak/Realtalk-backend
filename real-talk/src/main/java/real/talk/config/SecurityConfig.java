@@ -13,6 +13,9 @@ import real.talk.model.entity.enums.UserRole;
 import real.talk.service.auth.JwtService;
 import real.talk.service.user.UserService;
 
+import java.time.Instant;
+import java.util.UUID;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -47,6 +50,10 @@ public class SecurityConfig {
                                         User u = new User();
                                         u.setEmail(email);
                                         u.setName(name);
+                                        u.setOrderNumber(UUID.randomUUID());
+                                        u.setLessonCount(1);
+                                        u.setDuration(0.0);
+                                        u.setSubmissionTime(Instant.now());
                                         u.setRole(UserRole.USER); // по умолчанию USER
                                         return u;
                                     });
@@ -54,7 +61,7 @@ public class SecurityConfig {
                             userService.saveUser(user);
 
                             // Генерация JWT
-                            String token = jwtService.generateToken(user.getEmail(), user.getRole());
+                            String token = jwtService.generateToken(user.getEmail(), user.getName(), user.getRole());
 
                             // Редирект на фронт с токеном
                             response.sendRedirect(frontendUrl + "/login/success?token=" + token);
