@@ -61,7 +61,7 @@ public class SecurityConfig {
                             userService.saveUser(user);
 
                             // Генерация JWT
-                            String token = jwtService.generateToken(user.getEmail(), user.getName(), user.getRole());
+                            String token = jwtService.generateGmailToken(user.getEmail(), user.getName(), user.getRole());
 
                             // Редирект на фронт с токеном
                             response.sendRedirect(frontendUrl + "/login/success?token=" + token);

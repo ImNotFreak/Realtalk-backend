@@ -18,11 +18,22 @@ public class UserService {
 
 
     public User saveUser(LessonCreateRequest lessonRequest) {
-        Optional<User> findByEmail = userRepository.findUserByEmail(lessonRequest.getEmail());
+        Optional<User> findByEmail = this.getUserByEmail(lessonRequest.getEmail());
+        Optional<User> findByTelegram = this.getUserByTelegramId(lessonRequest.getEmail());
+
         if (findByEmail.isPresent())  {
             User user = findByEmail.get();
-            if (user.getTelegram() == null) {
-                user.setTelegram(lessonRequest.getTelegram());
+            if (user.getTelegramName() == null) {
+                user.setTelegramName(lessonRequest.getTelegram());
+                userRepository.save(user);
+            }
+            return user;
+        }
+
+        if (findByTelegram.isPresent())  {
+            User user = findByTelegram.get();
+            if (user.getEmail() == null) {
+                user.setEmail(lessonRequest.getEmail());
                 userRepository.save(user);
             }
             return user;
@@ -36,7 +47,7 @@ public class UserService {
         user.setOrderNumber(UUID.randomUUID());
         user.setCreatedAt(Instant.now());
         user.setEmail(lessonRequest.getEmail());
-        user.setTelegram(lessonRequest.getTelegram());
+        user.setTelegramName(lessonRequest.getTelegram());
 
         userRepository.save(user);
         return user;
@@ -53,6 +64,14 @@ public class UserService {
 
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
+    }
+
+    public Optional<User> getUserByTelegramId(String telegramId) {
+        return userRepository.findUserByTelegramId(telegramId);
+    }
+
+    public Optional<User> getUserByTelegramName(String telegramName) {
+        return userRepository.findUserByTelegramName(telegramName);
     }
 
 }

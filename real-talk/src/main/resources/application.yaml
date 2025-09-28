@@ -56,3 +56,6 @@ lesson:
 
 app:
   frontend-url: http://localhost:3000
+
+telegram:
+  bot-token:

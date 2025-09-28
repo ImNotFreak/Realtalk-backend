@@ -22,7 +22,10 @@ databaseChangeLog:
                   name: email
                   type: VARCHAR(255)
               - column:
-                  name: telegram
+                  name: telegram_name
+                  type: VARCHAR(255)
+              - column:
+                  name: telegram_id
                   type: VARCHAR(255)
               - column:
                   name: role

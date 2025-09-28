@@ -29,8 +29,11 @@ public class User {
     @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "telegram")
-    private String telegram;
+    @Column(name = "telegram_name")
+    private String telegramName;
+
+    @Column(name = "telegram_id")
+    private String telegramId;
 
     @Column(name = "role")
     private UserRole role =  UserRole.USER;
