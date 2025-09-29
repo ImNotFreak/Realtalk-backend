@@ -39,19 +39,26 @@ class LessonsController {
 
     @GetMapping("/public-lessons")
     public ResponseEntity<List<LessonGeneratedByLlm>> getPublicLessons(
-         @RequestParam(required = false) String language,
-         @RequestParam(name = "language_level", required = false) String languageLevel,
-         @RequestParam(name = "lesson_topic", required = false) String lessonTopic,
-         @RequestParam(name = "grammar_contains", required = false) String grammarContains)
-    {
-        var filter = LessonFilter.builder()
-                .language(blankToNull(language))
-                .languageLevel(blankToNull(languageLevel))
-                .lessonTopic(blankToNull(lessonTopic))
-                .grammarContains(blankToNull(grammarContains))
-                .build();
-        return ResponseEntity.ok(lessonService.getPublicReadyLessons(filter));
-    }
+            @RequestParam(required = false) String language,
+            @RequestParam(name = "language_level", required = false) String languageLevel,
+            @RequestParam(name = "lesson_topic", required = false) String lessonTopic,
+            @RequestParam(name = "grammar_contains", required = false) String grammarContains,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sort
+    ) {
+                var filter = LessonFilter.builder()
+               .language(blankToNull(language))
+               .languageLevel(blankToNull(languageLevel))
+               .lessonTopic(blankToNull(lessonTopic))
+               .grammarContains(blankToNull(grammarContains))
+               .page(page)
+               .size(size)
+               .sort(blankToNull(sort))
+               .build();
+       var resultPage = lessonService.getPublicReadyLessons(filter); // Page<LessonGeneratedByLlm>
+       return ResponseEntity.ok(resultPage.getContent());            // отдаем List, без метаданных
+       }
 
     private static String blankToNull(String s) {
         return (s == null || s.isBlank()) ? null : s;
