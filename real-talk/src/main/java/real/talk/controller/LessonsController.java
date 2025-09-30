@@ -13,10 +13,11 @@ import real.talk.model.entity.User;
 import real.talk.service.lesson.LessonService;
 import real.talk.service.user.UserService;
 import real.talk.model.dto.lesson.LessonFilter;
-import real.talk.model.dto.lesson.LessonFilterNormalizer;
 
 
 import java.util.List;
+
+import static real.talk.util.filters.LessonFilterNormalizer.*;
 
 @RestController
 @RequestMapping("api/v1/lessons")
@@ -57,7 +58,7 @@ class LessonsController {
                .size(size)
                .sort(blankToNull(sort))
                .build();
-               var normalized = LessonFilterNormalizer.normalize(filter);
+               var normalized = normalize(filter);
                if (!normalized.equals(filter)) {
                        log.info("Normalized public-lessons params: from={} to={}", filter, normalized);
                    }
