@@ -13,6 +13,7 @@ import real.talk.model.entity.User;
 import real.talk.service.lesson.LessonService;
 import real.talk.service.user.UserService;
 import real.talk.model.dto.lesson.LessonFilter;
+import real.talk.model.dto.lesson.LessonFilterNormalizer;
 
 
 import java.util.List;
@@ -56,7 +57,11 @@ class LessonsController {
                .size(size)
                .sort(blankToNull(sort))
                .build();
-       var resultPage = lessonService.getPublicReadyLessons(filter); // Page<LessonGeneratedByLlm>
+               var normalized = LessonFilterNormalizer.normalize(filter);
+               if (!normalized.equals(filter)) {
+                       log.info("Normalized public-lessons params: from={} to={}", filter, normalized);
+                   }
+               var resultPage = lessonService.getPublicReadyLessons(normalized); // Page<LessonGeneratedByLlm>
        return ResponseEntity.ok(resultPage.getContent());            // отдаем List, без метаданных
        }
 

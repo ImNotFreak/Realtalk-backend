@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Value;
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class LessonFilter {
     String language;         // eq
     String languageLevel;    // eq

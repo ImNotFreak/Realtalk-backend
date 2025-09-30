@@ -89,10 +89,9 @@ public class LessonService {
         }
 
         // ===== helpers =====
-        private Pageable buildPageable(Integer page, Integer size) {
-        int p = (page == null || page < 0) ? 0 : page;
-        int s = (size == null || size <= 0) ? 20 : Math.min(size, 100);
-        // сортировка делаем внутри SQL через токены; тут оставляем только лимит/оффсет
+    private Pageable buildPageable(Integer page, Integer size) {
+                int p = (page == null || page < 0) ? 0 : page;
+                int s = (size == null || size <= 0) ? 10 : Math.min(size, 50);
                 return PageRequest.of(p, s);
         }
 
