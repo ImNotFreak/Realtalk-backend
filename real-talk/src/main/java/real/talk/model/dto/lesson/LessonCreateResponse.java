@@ -1,16 +1,17 @@
-package real.talk.model.dto.gladia;
+package real.talk.model.dto.lesson;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PreRecorderResponse {
-    private UUID id;
+public class LessonCreateResponse {
+    private List<UUID> lessonIds;
 }

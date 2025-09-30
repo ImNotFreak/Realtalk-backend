@@ -13,9 +13,6 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: submission_time
-                  type: TIMESTAMP
-              - column:
                   name: name
                   type: VARCHAR(255)
               - column:
@@ -28,11 +25,74 @@ databaseChangeLog:
                   name: telegram
                   type: VARCHAR(255)
               - column:
+                  name: role
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "role IN ('USER', 'ADMIN')"
+              - column:
+                  name: lesson_count
+                  type: int
+              - column:
+                  name: duration
+                  type: double
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+
+        - createTable:
+            tableName: lessons
+            columns:
+              - column:
+                  name: lesson_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: language
+                  type: VARCHAR(255)
+              - column:
                   name: language_level
                   type: VARCHAR(10)
               - column:
+                  name: lesson_topic
+                  type: VARCHAR(255)
+              - column:
                   name: grammar_topics
                   type: text[]
+              - column:
+                  name: youtube_url
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "status IN ('PENDING', 'PROCESSING', 'READY', 'ERROR')"
+              - column:
+                  name: access
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "access IN ('PUBLIC', 'PRIVATE')"
+              - column:
+                  name: data
+                  type: JSONB
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: lessons
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_lessons_user
 
         - createTable:
             tableName: llm_data
@@ -44,19 +104,28 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: user_id
+                  name: lesson_id
                   type: uuid
                   constraints:
                     nullable: false
               - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "status IN ('CREATED', 'DONE', 'ERROR')"
+              - column:
                   name: data
                   type: JSONB
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
         - addForeignKeyConstraint:
             baseTableName: llm_data
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: user_id
-            constraintName: fk_llm_data_user
+            baseColumnNames: lesson_id
+            referencedTableName: lessons
+            referencedColumnNames: lesson_id
+            constraintName: fk_llm_data_lesson
 
         - createTable:
             tableName: gladia_data
@@ -68,7 +137,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: user_id
+                  name: lesson_id
                   type: uuid
                   constraints:
                     nullable: false
@@ -76,14 +145,20 @@ databaseChangeLog:
                   name: gladia_request_id
                   type: uuid
               - column:
-                  name: gladia_full_url
-                  type: VARCHAR(255)
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "status IN ('CREATED', 'DONE', 'ERROR')"
               - column:
                   name: data
                   type: JSONB
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
         - addForeignKeyConstraint:
             baseTableName: gladia_data
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: user_id
-            constraintName: fk_gladia_data_user
+            baseColumnNames: lesson_id
+            referencedTableName: lessons
+            referencedColumnNames: lesson_id
+            constraintName: fk_gladia_data_lesson

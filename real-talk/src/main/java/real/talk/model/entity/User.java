@@ -4,11 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import real.talk.model.entity.enums.UserRole;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -20,9 +18,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id", nullable = false)
     private UUID userId;
-
-    @Column(name = "submission_time")
-    private Instant submissionTime;
 
     @Column(name = "name")
     private String name;
@@ -37,12 +32,15 @@ public class User {
     @Column(name = "telegram")
     private String telegram;
 
-    @Column(name = "language_level", length = 10)
-    private String languageLevel;
+    @Column(name = "role")
+    private UserRole role =  UserRole.USER;
 
+    @Column(name = "lesson_count")
+    private Integer lessonCount;
 
-    @Column(name = "grammar_topics", length = Integer.MAX_VALUE, columnDefinition = "text[]")
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    private List<String> grammarTopics;
+    @Column(name = "duration")
+    private Double duration;
 
+    @Column(name = "created_at")
+    private Instant createdAt;
 }
