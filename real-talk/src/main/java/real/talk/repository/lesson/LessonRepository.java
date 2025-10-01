@@ -21,8 +21,10 @@ public interface LessonRepository extends JpaRepository<Lesson, UUID> {
                         SELECT l.* FROM lessons l
                         JOIN gladia_data g ON l.lesson_id = g.lesson_id
                         LEFT JOIN llm_data llm ON l.lesson_id = llm.lesson_id
-                        WHERE g.status = 'DONE' AND llm.lesson_id IS NULL""", nativeQuery = true)
-    List<Lesson> findProcessingLessonsWithGladiaDone();
+                        WHERE g.status = 'DONE' AND llm.lesson_id IS NULL
+                        ORDER BY g.created_at ASC
+                        LIMIT 1""", nativeQuery = true)
+    Optional<Lesson> findProcessingLessonWithGladiaDone();
 
     @Query(value = """
                         SELECT l.* FROM lessons l

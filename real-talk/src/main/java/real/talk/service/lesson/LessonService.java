@@ -17,6 +17,7 @@ import real.talk.repository.lesson.LessonRepository;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -51,8 +52,8 @@ public class LessonService {
         return lessonRepository.findByStatus(LessonStatus.PROCESSING);
     }
 
-    public List<Lesson> getLessonsWithGladiaDone() {
-        return lessonRepository.findProcessingLessonsWithGladiaDone();
+    public Optional<Lesson> getLessonWithGladiaDone() {
+        return lessonRepository.findProcessingLessonWithGladiaDone();
     }
 
     public List<Lesson> getLessonsWithLlmDone() {

@@ -62,8 +62,8 @@ class LessonsController {
                if (!normalized.equals(filter)) {
                        log.info("Normalized public-lessons params: from={} to={}", filter, normalized);
                    }
-               var resultPage = lessonService.getPublicReadyLessons(normalized); // Page<LessonGeneratedByLlm>
-       return ResponseEntity.ok(resultPage.getContent());            // отдаем List, без метаданных
+               var resultPage = lessonService.getPublicReadyLessons(normalized);
+               return ResponseEntity.ok(resultPage.getContent());
        }
 
     private static String blankToNull(String s) {
