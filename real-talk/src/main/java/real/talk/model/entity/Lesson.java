@@ -40,6 +40,10 @@ public class Lesson {
     @Column(name = "youtube_url")
     private String youtubeUrl;
 
+    @Column(name = "tags")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private LessonGeneratedByLlm.Tags tags;
+
     @Column(name = "lesson_topic")
     private String lessonTopic;
 

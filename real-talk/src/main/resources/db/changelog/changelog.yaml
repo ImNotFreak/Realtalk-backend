@@ -61,6 +61,9 @@ databaseChangeLog:
                   name: language_level
                   type: VARCHAR(10)
               - column:
+                  name: tags
+                  type: JSONB
+              - column:
                   name: lesson_topic
                   type: VARCHAR(255)
               - column:
@@ -162,3 +165,10 @@ databaseChangeLog:
             referencedTableName: lessons
             referencedColumnNames: lesson_id
             constraintName: fk_gladia_data_lesson
+
+        - createTable:
+            tableName: white_list
+            columns:
+              - column:
+                  name: email
+                  type: VARCHAR(255)

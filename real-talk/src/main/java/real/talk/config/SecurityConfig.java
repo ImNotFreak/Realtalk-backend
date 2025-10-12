@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import real.talk.model.entity.User;
 import real.talk.model.entity.enums.UserRole;
+import real.talk.repository.whitelist.WhiteListRepository;
 import real.talk.service.auth.JwtService;
 import real.talk.service.user.UserService;
 
@@ -22,6 +23,7 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
     private final UserService userService;
+    private final WhiteListRepository whiteListRepository;
     @Value("${app.frontend-url}")
     private String frontendUrl;
 
@@ -41,6 +43,11 @@ public class SecurityConfig {
 
                             if (email == null) {
                                 response.sendError(400, "Email not provided by Google");
+                                return;
+                            }
+
+                            if (!whiteListRepository.existsByEmail(email)) {
+                                response.sendError(401, "Access denied: you are not allowed to access this resource");
                                 return;
                             }
 

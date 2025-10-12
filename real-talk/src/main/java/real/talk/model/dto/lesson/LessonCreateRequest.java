@@ -11,10 +11,10 @@ import java.util.List;
 @AllArgsConstructor
 public class LessonCreateRequest {
     private String name;
-    private String orderNumber;
-    private List<String> youtubeLinks;
+    //private String orderNumber;
+    private String youtubeLink;
     private String email;
-    private String telegram;
+    //private String telegram;
     private String language;
     private String languageLevel;
     private List<String> grammarTopics;

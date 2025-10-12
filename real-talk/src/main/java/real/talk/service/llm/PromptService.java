@@ -3,7 +3,6 @@ package real.talk.service.llm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.messages.AssistantMessage;
-import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.AssistantPromptTemplate;
@@ -12,7 +11,7 @@ import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import real.talk.model.dto.lesson.LessonGeneratedByLlm;
+import real.talk.model.entity.Lesson;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,9 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PromptService {
 
-    private final ObjectMapper objectMapper;
-
-    public Prompt createLessonPrompt(real.talk.model.entity.Lesson lesson, String transcription) throws IOException {
+    public Prompt createLessonPrompt(Lesson lesson, String transcription) throws IOException {
         String systemPromptString = Files.readString(
                 new ClassPathResource("prompts/system.st").getFile().toPath()
         );

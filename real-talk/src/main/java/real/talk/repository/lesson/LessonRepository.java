@@ -103,5 +103,7 @@ AND (:grammar  IS NULL OR LOWER(array_to_string(l.grammar_topics, ', ')) LIKE LO
 @Param("s2") String sortToken2,
 Pageable pageable
 );
+
+    Boolean existsByIdAndStatusEquals(UUID id, LessonStatus status);
 }
 

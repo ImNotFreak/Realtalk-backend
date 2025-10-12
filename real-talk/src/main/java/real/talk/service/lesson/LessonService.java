@@ -26,22 +26,19 @@ public class LessonService {
 
     private final LessonRepository lessonRepository;
 
-    public List<Lesson> createLessons(User user, LessonCreateRequest lessonRequest) {
-
-        return lessonRequest.getYoutubeLinks().stream().map(youtubeLink -> {
-            Lesson lesson = new Lesson();
-            lesson.setId(UUID.randomUUID());
-            lesson.setUser(user);
-            lesson.setLanguage(lessonRequest.getLanguage());
-            lesson.setLanguageLevel(lessonRequest.getLanguageLevel());
-            lesson.setGrammarTopics(lessonRequest.getGrammarTopics());
-            lesson.setYoutubeUrl(youtubeLink);
-            lesson.setStatus(LessonStatus.PENDING);
-            lesson.setAccess(LessonAccess.PUBLIC);
-            lesson.setCreatedAt(Instant.now());
-            lessonRepository.save(lesson);
-            return lesson;
-        }).toList();
+    public Lesson createLesson(User user, LessonCreateRequest lessonRequest) {
+        Lesson lesson = new Lesson();
+        lesson.setId(UUID.randomUUID());
+        lesson.setUser(user);
+        lesson.setLanguage(lessonRequest.getLanguage());
+        lesson.setLanguageLevel(lessonRequest.getLanguageLevel());
+        lesson.setGrammarTopics(lessonRequest.getGrammarTopics());
+        lesson.setYoutubeUrl(lessonRequest.getYoutubeLink());
+        lesson.setStatus(LessonStatus.PENDING);
+        lesson.setAccess(LessonAccess.PUBLIC);
+        lesson.setCreatedAt(Instant.now());
+        lessonRepository.save(lesson);
+        return lesson;
     }
 
     public List<Lesson> getPendingLessons() {
@@ -60,6 +57,9 @@ public class LessonService {
         return lessonRepository.findProcessingLessonsWithLlmDone();
     }
 
+    public Boolean isLessonReady(UUID lessonId) {
+        return lessonRepository.existsByIdAndStatusEquals(lessonId, LessonStatus.READY);
+    }
     public List<LessonGeneratedByLlm> getPublicReadyLessons() {
         return lessonRepository.findByStatusAndAccess(LessonStatus.READY, LessonAccess.PUBLIC)
                 .stream().map(lesson -> {
