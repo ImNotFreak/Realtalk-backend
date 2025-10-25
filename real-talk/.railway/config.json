@@ -1,5 +1,0 @@
-{
-  "build": "./gradlew bootJar",
-  "start": "java -jar build/libs/*.jar",
-  "type": "java"
-}
