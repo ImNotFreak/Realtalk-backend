@@ -37,10 +37,10 @@ public class LessonGeneratedByLlm {
     public static class Tags {
         private String lesson_theme;
         private String language;
-        private String level;
+        private String language_level;
         private List<String> lexical_fields;
         private String style;
-        private List<String> grammar;
+        private List<String> grammar_topics;
     }
 
     @Data
@@ -60,14 +60,14 @@ public class LessonGeneratedByLlm {
     @AllArgsConstructor
     public static class Exercises {
         private Map<String, LexicalExercise> lexical;
-        private Map<String, GrammarExercise> grammar;
+        private List<GrammarExercise> grammar;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LexicalExercise {
-        private String phrases_pool;
+        private String phrases_paragraph;
         private String note;
         private List<Item> items;
     }
@@ -76,6 +76,7 @@ public class LessonGeneratedByLlm {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class GrammarExercise {
+        private String topic;
         private String instructions;
         private List<Item> items;
     }

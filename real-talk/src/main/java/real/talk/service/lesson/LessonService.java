@@ -32,7 +32,7 @@ public class LessonService {
         lesson.setUser(user);
         lesson.setLanguage(lessonRequest.getLanguage());
         lesson.setLanguageLevel(lessonRequest.getLanguageLevel());
-        lesson.setGrammarTopics(lessonRequest.getGrammarTopics());
+        lesson.setGrammarTopics(lessonRequest.getGrammarTopics().stream().limit(3).toList());
         lesson.setYoutubeUrl(lessonRequest.getYoutubeLink());
         lesson.setStatus(LessonStatus.PENDING);
         lesson.setAccess(LessonAccess.PUBLIC);

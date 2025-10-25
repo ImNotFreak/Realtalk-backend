@@ -39,12 +39,12 @@ public class PromptService {
                 new ClassPathResource("prompts/lesson.json").getFile().toPath()
         );
 
-        String grammarTopics = String.join(", ", lesson.getGrammarTopics());
+        String grammar_topics = String.join(", ", lesson.getGrammarTopics());
         SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemPromptString);
         String systemMessageText = systemPromptTemplate.render(
                 Map.of("language", lesson.getLanguage(),
-                        "languageLevel", lesson.getLanguageLevel(),
-                        "grammarTopics", grammarTopics
+                        "language_level", lesson.getLanguageLevel(),
+                        "grammar_topics", grammar_topics
                 )
         );
         SystemMessage systemMessage = new SystemMessage(systemMessageText);
@@ -52,9 +52,9 @@ public class PromptService {
         PromptTemplate promptTemplate = new PromptTemplate(userPromptString);
         String userMessageText = promptTemplate.render(
                 Map.of("language", lesson.getLanguage(),
-                        "languageLevel", lesson.getLanguageLevel(),
-                        "transcriptText", transcription,
-                        "grammarTopics", grammarTopics));
+                        "language_level", lesson.getLanguageLevel(),
+                        "transcript_text", transcription,
+                        "grammar_topics", grammar_topics));
         UserMessage userMessage = new UserMessage(userMessageText);
 
         AssistantPromptTemplate assistantPromptTemplate = new AssistantPromptTemplate(assistantPromptString);

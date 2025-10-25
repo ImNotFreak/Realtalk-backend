@@ -1,26 +1,21 @@
 {
   "language": "English",
   "language_level": "B1",
-  "grammar_topics": [
-    "Present Perfect vs Past Simple",
-    "First Conditional",
-    "Comparatives and Superlatives"
-  ],
   "transcript_text": "Podcast Host (Maya): Welcome back! Today we’re talking morning routines that set the tone for your day.\nGuest (Leo): Yesterday I hit snooze twice and got stuck in traffic. By the time I reached the office, I was on autopilot.\nMaya: Same here—back-to-back meetings can be a real time-suck. My go-to fix is batching emails in one block.\nLeo: Nice. I also clear the decks before lunch—five minutes to close tabs and tidy notes. It cuts friction.\nMaya: My rule of thumb: if a task takes two minutes, do it in one go.\nLeo: I stumbled upon a great idea last week: schedule a ten-minute pep talk with myself to check in with goals.\nMaya: Love it. If you carve out 25 minutes for deep work, you’ll avoid getting sidetracked by the social scroll.\nLeo: True. I’ve doubled down on phone limits because brain fog hits me mid-morning.\nMaya: If you push back on unnecessary pings, you’ll protect focus.\nLeo: Exactly. And if a meeting has no agenda, I pull the plug.\nMaya: That’s bold—but fair. Quick note: sometimes guests overshare, so we trim that.\nLeo: When the plan clicks, it’s a light-bulb moment. We outline a game plan, work, and wrap up early.\nMaya: If I leave earlier, I’ll avoid traffic; if not, I’ll call it a day at six.\nLeo: This week I have started standing check-ins. Yesterday we touched base with design; it was more productive than chat.\nMaya: Great. One last thing: tiny progress matters—tiny wins stack up.\nLeo: Agreed. Okay, let’s run with it and close here.",
   "language_filter": {
     "target_language": "English",
     "ignore_other_languages": true
   },
   "tags": {
-    "lesson_theme": "Lying is ok sometimes, unpopular opinions",
     "language": "English",
-    "level": "B1",
+    "language_level": "B1",
+    "lesson_theme": "Morning routines and time management at work",
     "lexical_fields": [
       "Everyday life",
       "Health & Wellness"
     ],
     "style": "neutral",
-    "grammar": [
+    "grammar_topics": [
       "Present Perfect vs Past Simple",
       "First Conditional",
       "Comparatives and Superlatives"
@@ -205,59 +200,89 @@
         "note": "Если ложь — дай исправление в answers.",
         "items": [
           {
-            "statement": "The guest was stuck in traffic because he hit snooze.",
+            "sentence": "The guest was stuck in traffic because he hit snooze.",
             "answer": "True"
           },
           {
-            "statement": "\"Go-to fix\" means your least preferred solution.",
+            "sentence": "\"Go-to fix\" means your least preferred solution.",
             "answer": "False"
           },
           {
-            "statement": "Batching means handling similar emails together in one block.",
+            "sentence": "Batching means handling similar emails together in one block.",
             "answer": "True"
           },
           {
-            "statement": "\"Clear the decks\" means to add more tasks before lunch.",
+            "sentence": "\"Clear the decks\" means to add more tasks before lunch.",
             "answer": "False"
           },
           {
-            "statement": "\"In one go\" means doing something without stopping.",
+            "sentence": "\"In one go\" means doing something without stopping.",
             "answer": "True"
           },
           {
-            "statement": "\"Push back\" means to accept every ping immediately.",
+            "sentence": "\"Push back\" means to accept every ping immediately.",
             "answer": "False"
           },
           {
-            "statement": "\"Pull the plug\" means to stop or cancel a meeting.",
+            "sentence": "\"Pull the plug\" means to stop or cancel a meeting.",
             "answer": "True"
           },
           {
-            "statement": "\"Deep work\" refers to scrolling social media for ideas.",
+            "sentence": "\"Deep work\" refers to scrolling social media for ideas.",
             "answer": "False"
           },
           {
-            "statement": "\"Getting sidetracked\" means staying focused on one task.",
+            "sentence": "\"Getting sidetracked\" means staying focused on one task.",
             "answer": "False"
           },
           {
-            "statement": "\"Rule of thumb\" is a strict scientific law.",
+            "sentence": "\"Rule of thumb\" is a strict scientific law.",
             "answer": "False"
           }
         ]
       },
       "listen_and_mark": {
-        "list": [
-          "set the tone",
-          "back-to-back meetings",
-          "go-to",
-          "clear the decks",
-          "deep work",
-          "push back",
-          "pull the plug",
-          "light-bulb moment",
-          "wrap up",
-          "call it a day"
+        "items": [
+          {
+            "sentence": "set the tone",
+            "answer": null
+          },
+          {
+            "sentence": "back-to-back meetings",
+            "answer": null
+          },
+          {
+            "sentence": "go-to",
+            "answer": null
+          },
+          {
+            "sentence": "clear the decks",
+            "answer": null
+          },
+          {
+            "sentence": "deep work",
+            "answer": null
+          },
+          {
+            "sentence": "push back",
+            "answer": null
+          },
+          {
+            "sentence": "pull the plug",
+            "answer": null
+          },
+          {
+            "sentence": "light-bulb moment",
+            "answer": null
+          },
+          {
+            "sentence": "wrap up",
+            "answer": null
+          },
+          {
+            "sentence": "call it a day",
+            "answer": null
+          }
         ]
       }
     },
@@ -403,6 +428,6 @@
     ]
   },
   "quizlet": [
-    "set the tone, задать тон\nhit snooze, нажать кнопку повтора будильника\nstuck in traffic, застрять в пробке\non autopilot, на автопилоте\nback-to-back meetings, встречи одна за другой\ntime-suck, поглотитель времени\ngo-to, любимый вариант\nbatching, группировка задач\nclear the decks, расчистить дела\nrule of thumb, практическое правило\nin one go, за один раз\npep talk, мотивационная мини-речь\ncheck in with, свериться с\ncarve out, выделить (время)\ndeep work, глубокая работа\ngetting sidetracked, отвлекаться\npush back, дать отпор\npull the plug, прекратить",
+    "set the tone, задать тон\nhit snooze, нажать кнопку повтора будильника\nstuck in traffic, застрять в пробке\non autopilot, на автопилоте\nback-to-back meetings, встречи одна за другой\ntime-suck, поглотитель времени\ngo-to, любимый вариант\nbatching, группировка задач\nclear the decks, расчистить дела\nrule of thumb, практическое правило\nin one go, за один раз\npep talk, мотивационная мини-речь\ncheck in with, свериться с\ncarve out, выделить (время)\ndeep work, глубокая работа\ngetting sidetracked, отвлекаться\npush back, дать отпор\npull the plug, прекратить"
   ]
 }
