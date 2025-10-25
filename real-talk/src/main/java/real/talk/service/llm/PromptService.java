@@ -3,7 +3,6 @@ package real.talk.service.llm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.messages.AssistantMessage;
-import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.AssistantPromptTemplate;
@@ -12,7 +11,7 @@ import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import real.talk.model.dto.lesson.LessonGeneratedByLlm;
+import real.talk.model.entity.Lesson;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,9 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PromptService {
 
-    private final ObjectMapper objectMapper;
-
-    public Prompt createLessonPrompt(real.talk.model.entity.Lesson lesson, String transcription) throws IOException {
+    public Prompt createLessonPrompt(Lesson lesson, String transcription) throws IOException {
         String systemPromptString = Files.readString(
                 new ClassPathResource("prompts/system.st").getFile().toPath()
         );
@@ -42,12 +39,12 @@ public class PromptService {
                 new ClassPathResource("prompts/lesson.json").getFile().toPath()
         );
 
-        String grammarTopics = String.join(", ", lesson.getGrammarTopics());
+        String grammar_topics = String.join(", ", lesson.getGrammarTopics());
         SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemPromptString);
         String systemMessageText = systemPromptTemplate.render(
                 Map.of("language", lesson.getLanguage(),
-                        "languageLevel", lesson.getLanguageLevel(),
-                        "grammarTopics", grammarTopics
+                        "language_level", lesson.getLanguageLevel(),
+                        "grammar_topics", grammar_topics
                 )
         );
         SystemMessage systemMessage = new SystemMessage(systemMessageText);
@@ -55,9 +52,9 @@ public class PromptService {
         PromptTemplate promptTemplate = new PromptTemplate(userPromptString);
         String userMessageText = promptTemplate.render(
                 Map.of("language", lesson.getLanguage(),
-                        "languageLevel", lesson.getLanguageLevel(),
-                        "transcriptText", transcription,
-                        "grammarTopics", grammarTopics));
+                        "language_level", lesson.getLanguageLevel(),
+                        "transcript_text", transcription,
+                        "grammar_topics", grammar_topics));
         UserMessage userMessage = new UserMessage(userMessageText);
 
         AssistantPromptTemplate assistantPromptTemplate = new AssistantPromptTemplate(assistantPromptString);

@@ -12,15 +12,36 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LessonGeneratedByLlm {
-    private String tag;
     private String language;
-    private String you_tube_url;
-    private String lesson_theme;
+    private String language_level;
     private String transcript_text;
+    private LanguageFilter language_filter;
+    private Tags tags;
     private List<String> grammar_topics;
     private List<GlossaryItem> glossary;
     private Exercises exercises;
     private List<String> quizlet;
+    private String you_tube_url;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LanguageFilter {
+        private String target_language;
+        private boolean ignore_other_languages;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Tags {
+        private String lesson_theme;
+        private String language;
+        private String language_level;
+        private List<String> lexical_fields;
+        private String style;
+        private List<String> grammar_topics;
+    }
 
     @Data
     @NoArgsConstructor
@@ -39,14 +60,14 @@ public class LessonGeneratedByLlm {
     @AllArgsConstructor
     public static class Exercises {
         private Map<String, LexicalExercise> lexical;
-        private Map<String, GrammarExercise> grammar;
+        private List<GrammarExercise> grammar;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LexicalExercise {
-        private String phrases_pool;
+        private String phrases_paragraph;
         private String note;
         private List<Item> items;
     }
@@ -55,6 +76,7 @@ public class LessonGeneratedByLlm {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class GrammarExercise {
+        private String topic;
         private String instructions;
         private List<Item> items;
     }

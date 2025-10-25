@@ -59,8 +59,7 @@ public class LessonTaskScheduler {
                     lesson.getId(), glossary.size(), utterances.size());
 
             setGlossaryTimeCode(glossary, utterances);
-
-            lesson.setLessonTopic(lessonData.getLesson_theme());
+            lesson.setTags(lessonData.getTags());
             lesson.setData(lessonData);
             lesson.setStatus(LessonStatus.READY);
             lessonService.saveLesson(lesson);

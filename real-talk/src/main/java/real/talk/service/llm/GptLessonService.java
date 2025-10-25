@@ -9,6 +9,7 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.stereotype.Service;
 import real.talk.model.dto.lesson.LessonGeneratedByLlm;
 import real.talk.model.entity.GladiaData;
+import real.talk.model.entity.Lesson;
 
 @Service
 @RequiredArgsConstructor
@@ -19,11 +20,11 @@ public class GptLessonService {
     private final OpenAiChatModel chatModel;
     private final ObjectMapper objectMapper;
 
-    public LessonGeneratedByLlm createLesson(real.talk.model.entity.Lesson lesson, GladiaData gladiaData) {
+    public LessonGeneratedByLlm createLesson(Lesson lesson, GladiaData gladiaData) {
         try {
             // 1️⃣ Первый запрос: создаём контекст на основе Lesson
             Prompt lessonPrompt = promptService.createLessonPrompt(lesson, gladiaData.getData().getResult().getTranscription().getFullTranscript());
-            ChatResponse response = chatModel.call(lessonPrompt); // ответ первого запроса не нужен
+            ChatResponse response = chatModel.call(lessonPrompt);
 
             // 3️⃣ Получаем JSON строку и парсим в LessonJsonResponse
             String gptReply = response.getResult().getOutput().getText();

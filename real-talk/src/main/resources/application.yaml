@@ -32,8 +32,7 @@ spring:
   ai:
     openai:
       model: gpt-3.5-turbo
-      api-key: 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
-
+      api-key: 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
 logging:
   level:
     root: INFO

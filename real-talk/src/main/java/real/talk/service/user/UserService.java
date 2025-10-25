@@ -22,7 +22,7 @@ public class UserService {
         if (findByEmail.isPresent())  {
             User user = findByEmail.get();
             if (user.getTelegram() == null) {
-                user.setTelegram(lessonRequest.getTelegram());
+                //user.setTelegram(lessonRequest.getTelegram());
                 userRepository.save(user);
             }
             return user;
@@ -36,7 +36,7 @@ public class UserService {
         user.setOrderNumber(UUID.randomUUID());
         user.setCreatedAt(Instant.now());
         user.setEmail(lessonRequest.getEmail());
-        user.setTelegram(lessonRequest.getTelegram());
+        //user.setTelegram(lessonRequest.getTelegram());
 
         userRepository.save(user);
         return user;

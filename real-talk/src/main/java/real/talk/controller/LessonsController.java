@@ -13,10 +13,12 @@ import real.talk.model.entity.User;
 import real.talk.service.lesson.LessonService;
 import real.talk.service.user.UserService;
 import real.talk.model.dto.lesson.LessonFilter;
-import real.talk.model.dto.lesson.LessonFilterNormalizer;
 
 
 import java.util.List;
+import java.util.UUID;
+
+import static real.talk.util.filters.LessonFilterNormalizer.*;
 
 @RestController
 @RequestMapping("api/v1/lessons")
@@ -31,11 +33,16 @@ class LessonsController {
     public ResponseEntity<LessonCreateResponse> createLesson(@RequestBody LessonCreateRequest lessonRequest) {
 
         User user = userService.saveUser(lessonRequest);
-        List<Lesson> lessons = lessonService.createLessons(user, lessonRequest);
+        Lesson lesson = lessonService.createLesson(user, lessonRequest);
         LessonCreateResponse createLessonResponse = LessonCreateResponse.builder()
-                .lessonIds(lessons.stream().map(Lesson::getId).toList())
+                .lessonId(lesson.getId())
                 .build();
         return ResponseEntity.ok(createLessonResponse);
+    }
+
+    @GetMapping("/is-lesson-ready/{lessonId}")
+    public ResponseEntity<Boolean> lessonStatus(@PathVariable UUID lessonId) {
+        return ResponseEntity.ok(lessonService.isLessonReady(lessonId));
     }
 
     @GetMapping("/public-lessons")
@@ -48,22 +55,22 @@ class LessonsController {
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sort
     ) {
-                var filter = LessonFilter.builder()
-               .language(blankToNull(language))
-               .languageLevel(blankToNull(languageLevel))
-               .lessonTopic(blankToNull(lessonTopic))
-               .grammarContains(blankToNull(grammarContains))
-               .page(page)
-               .size(size)
-               .sort(blankToNull(sort))
-               .build();
-               var normalized = LessonFilterNormalizer.normalize(filter);
-               if (!normalized.equals(filter)) {
-                       log.info("Normalized public-lessons params: from={} to={}", filter, normalized);
-                   }
-               var resultPage = lessonService.getPublicReadyLessons(normalized); // Page<LessonGeneratedByLlm>
-       return ResponseEntity.ok(resultPage.getContent());            // отдаем List, без метаданных
-       }
+        var filter = LessonFilter.builder()
+                .language(blankToNull(language))
+                .languageLevel(blankToNull(languageLevel))
+                .lessonTopic(blankToNull(lessonTopic))
+                .grammarContains(blankToNull(grammarContains))
+                .page(page)
+                .size(size)
+                .sort(blankToNull(sort))
+                .build();
+        var normalized = normalize(filter);
+        if (!normalized.equals(filter)) {
+            log.info("Normalized public-lessons params: from={} to={}", filter, normalized);
+        }
+        var resultPage = lessonService.getPublicReadyLessons(normalized);
+        return ResponseEntity.ok(resultPage.getContent());
+    }
 
     private static String blankToNull(String s) {
         return (s == null || s.isBlank()) ? null : s;

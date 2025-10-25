@@ -1,14 +1,26 @@
 {
-  "tag": "Фильмы и сериалы",
   "language": "English",
   "language_level": "B1",
-  "grammar_topics": [
-    "Present Perfect vs Past Simple",
-    "First Conditional",
-    "Comparatives and Superlatives"
-  ],
-  "lesson_theme": "Morning routines and time management at work",
-  "transcript_text": "Podcast Host (Maya): Welcome back! Today we’re talking morning routines that set the tone for your day.\nGuest (Leo): Yesterday I hit snooze twice and got stuck in traffic. By the time I reached the office, I was on autopilot.\nMaya: Same here—back-to-back meetings can be a real time-suck. My go-to fix is batching emails in one block.\nLeo: Nice. I also clear the decks before lunch—five minutes to close tabs and tidy notes. It cuts friction.\nMaya: My rule of thumb: if a task takes two minutes, do it in one go.\nLeo: I stumbled upon a great idea last week: schedule a ten-minute pep talk with myself to check in with goals.\nMaya: Love it. If you carve out 25 minutes for deep work, you’ll avoid getting sidetracked by the social scroll.\nLeo: True. I’ve doubled down on phone limits because brain fog hits me mid-morning.\nMaya: If you push back on unnecessary pings, you’ll protect focus.\nLeo: Exactly. And if a meeting has no agenda, I pull the plug.\nMaya: That’s bold—but fair. Quick note: sometimes guests overshare—TMI—so we trim that.\nLeo: When the plan clicks, it’s a light-bulb moment. We outline a game plan, work, and wrap up early.\nMaya: If I leave earlier, I’ll avoid traffic; if not, I’ll call it a day at six.\nLeo: This week I have started standing check-ins. Yesterday we touched base with design; it was more productive than chat.\nMaya: Great. One last thing: tiny progress matters—tiny wins stack up.\nLeo: Agreed. Okay, let’s run with it and close here.",
+  "transcript_text": "Podcast Host (Maya): Welcome back! Today we’re talking morning routines that set the tone for your day.\nGuest (Leo): Yesterday I hit snooze twice and got stuck in traffic. By the time I reached the office, I was on autopilot.\nMaya: Same here—back-to-back meetings can be a real time-suck. My go-to fix is batching emails in one block.\nLeo: Nice. I also clear the decks before lunch—five minutes to close tabs and tidy notes. It cuts friction.\nMaya: My rule of thumb: if a task takes two minutes, do it in one go.\nLeo: I stumbled upon a great idea last week: schedule a ten-minute pep talk with myself to check in with goals.\nMaya: Love it. If you carve out 25 minutes for deep work, you’ll avoid getting sidetracked by the social scroll.\nLeo: True. I’ve doubled down on phone limits because brain fog hits me mid-morning.\nMaya: If you push back on unnecessary pings, you’ll protect focus.\nLeo: Exactly. And if a meeting has no agenda, I pull the plug.\nMaya: That’s bold—but fair. Quick note: sometimes guests overshare, so we trim that.\nLeo: When the plan clicks, it’s a light-bulb moment. We outline a game plan, work, and wrap up early.\nMaya: If I leave earlier, I’ll avoid traffic; if not, I’ll call it a day at six.\nLeo: This week I have started standing check-ins. Yesterday we touched base with design; it was more productive than chat.\nMaya: Great. One last thing: tiny progress matters—tiny wins stack up.\nLeo: Agreed. Okay, let’s run with it and close here.",
+  "language_filter": {
+    "target_language": "English",
+    "ignore_other_languages": true
+  },
+  "tags": {
+    "language": "English",
+    "language_level": "B1",
+    "lesson_theme": "Morning routines and time management at work",
+    "lexical_fields": [
+      "Everyday life",
+      "Health & Wellness"
+    ],
+    "style": "neutral",
+    "grammar_topics": [
+      "Present Perfect vs Past Simple",
+      "First Conditional",
+      "Comparatives and Superlatives"
+    ]
+  },
   "glossary": [
     {
       "term": "set the tone",
@@ -40,7 +52,7 @@
     },
     {
       "term": "back-to-back meetings",
-      "quote": "back-to-back meetings can be a real time-suck.",
+      "quote": "Same here—back-to-back meetings can be a real time-suck.",
       "translation_ru": "встречи одна за другой",
       "explanation_ru": "Серия встреч без перерыва.",
       "another_example": "She had back-to-back meetings all afternoon."
@@ -74,13 +86,6 @@
       "another_example": "Let’s clear the decks before the deadline."
     },
     {
-      "term": "friction",
-      "quote": "It cuts friction.",
-      "translation_ru": "трение; лишние препятствия",
-      "explanation_ru": "Мелкие неудобства, замедляющие работу.",
-      "another_example": "Password managers reduce login friction."
-    },
-    {
       "term": "rule of thumb",
       "quote": "My rule of thumb: if a task takes two minutes, do it in one go.",
       "translation_ru": "практическое правило",
@@ -93,13 +98,6 @@
       "translation_ru": "за один раз",
       "explanation_ru": "Сделать без перерывов или частичного деления.",
       "another_example": "He read the article in one go."
-    },
-    {
-      "term": "stumbled upon",
-      "quote": "I stumbled upon a great idea last week",
-      "translation_ru": "случайно наткнулся",
-      "explanation_ru": "Найти что-то случайно.",
-      "another_example": "She stumbled upon a helpful blog post."
     },
     {
       "term": "pep talk",
@@ -124,7 +122,7 @@
     },
     {
       "term": "deep work",
-      "quote": "carve out 25 minutes for deep work",
+      "quote": "25 minutes for deep work",
       "translation_ru": "глубокая сфокусированная работа",
       "explanation_ru": "Работа без отвлечений над сложными задачами.",
       "another_example": "Deep work helped me finish the report."
@@ -137,101 +135,31 @@
       "another_example": "He gets sidetracked by notifications."
     },
     {
-      "term": "social scroll",
-      "quote": "the social scroll.",
-      "translation_ru": "прокрутка соцсетей",
-      "explanation_ru": "Бесцельное листание соцсетей.",
-      "another_example": "Limit the social scroll during work hours."
-    },
-    {
-      "term": "doubled down",
-      "quote": "I’ve doubled down on phone limits",
-      "translation_ru": "усилил усилия/удвоил ставку",
-      "explanation_ru": "Сделать ещё более решительный шаг в выбранном направлении.",
-      "another_example": "We doubled down on quality this quarter."
-    },
-    {
-      "term": "brain fog",
-      "quote": "because brain fog hits me mid-morning.",
-      "translation_ru": "туман в голове",
-      "explanation_ru": "Снижение ясности мышления и концентрации.",
-      "another_example": "A short walk can lift brain fog."
-    },
-    {
       "term": "push back",
-      "quote": "If you push back on unnecessary pings",
+      "quote": "If you push back on unnecessary pings, you’ll protect focus.",
       "translation_ru": "дать отпор; отказаться",
       "explanation_ru": "Вежливо отклонять или откладывать запрос.",
       "another_example": "She pushed back on the extra meeting."
     },
     {
       "term": "pull the plug",
-      "quote": "I pull the plug.",
+      "quote": "if a meeting has no agenda, I pull the plug.",
       "translation_ru": "отменить; прекратить",
       "explanation_ru": "Резко остановить процесс/встречу.",
       "another_example": "They pulled the plug on the pilot."
-    },
-    {
-      "term": "TMI",
-      "quote": "sometimes guests overshare—TMI—so we trim that.",
-      "translation_ru": "слишком много информации",
-      "explanation_ru": "Когда кто-то делится лишними личными подробностями.",
-      "another_example": "He started describing his injury—TMI!"
-    },
-    {
-      "term": "light-bulb moment",
-      "quote": "it’s a light-bulb moment.",
-      "translation_ru": "озарение",
-      "explanation_ru": "Внезапное понимание/идея.",
-      "another_example": "During the demo, I had a light-bulb moment."
-    },
-    {
-      "term": "game plan",
-      "quote": "We outline a game plan",
-      "translation_ru": "план действий",
-      "explanation_ru": "Стратегия для достижения цели.",
-      "another_example": "Let’s agree on a game plan for launch."
-    },
-    {
-      "term": "wrap up",
-      "quote": "work, and wrap up early.",
-      "translation_ru": "завершить",
-      "explanation_ru": "Закончить деятельность/встречу.",
-      "another_example": "We wrapped up the workshop on time."
-    },
-    {
-      "term": "call it a day",
-      "quote": "I’ll call it a day at six.",
-      "translation_ru": "закончить на сегодня",
-      "explanation_ru": "Прекратить работу на остаток дня.",
-      "another_example": "It’s late—let’s call it a day."
-    },
-    {
-      "term": "touched base",
-      "quote": "Yesterday we touched base with design",
-      "translation_ru": "созвонились/переговорили кратко",
-      "explanation_ru": "Коротко связаться, чтобы обменяться статусом.",
-      "another_example": "I’ll touch base with you tomorrow."
-    },
-    {
-      "term": "run with it",
-      "quote": "let’s run with it and close here.",
-      "translation_ru": "взять идею и развить",
-      "explanation_ru": "Продолжить работу над удачной идеей без промедления.",
-      "another_example": "The manager said to run with it."
     }
   ],
   "exercises": {
     "lexical": {
       "fill_in_the_blank": {
-        "phrases_pool": "hit snooze, stuck in traffic, on autopilot, time-suck, go-to, batching, clear the decks, rule of thumb, in one go, pep talk",
+        "phrases_paragraph": "hit snooze, time-suck, clear the decks, go-to, batching, rule of thumb, in one go, on autopilot, carve out, pep talk",
         "items": [
           {
             "sentence": "After I ___, I missed the early train.",
             "answer": "hit snooze"
           },
           {
-            "sentence": "Emails can be a real ___ if you answer them all day.",
+            "sentence": "Back-to-back meetings can be a real ___.",
             "answer": "time-suck"
           },
           {
@@ -239,36 +167,76 @@
             "answer": "clear the decks"
           },
           {
-            "sentence": "Her ___ fix for messages is ___ them before lunch.",
+            "sentence": "Her ___ fix is ___ emails before lunch.",
             "answer": "go-to; batching"
           },
           {
-            "sentence": "My ___ is to finish two-minute tasks ___",
+            "sentence": "My ___ is to finish two-minute tasks ___.",
             "answer": "rule of thumb; in one go"
+          },
+          {
+            "sentence": "He was ___ by the time he reached the office.",
+            "answer": "on autopilot"
+          },
+          {
+            "sentence": "If you ___ 25 minutes, you’ll avoid the social scroll.",
+            "answer": "carve out"
+          },
+          {
+            "sentence": "Schedule a ten-minute ___ with yourself.",
+            "answer": "pep talk"
+          },
+          {
+            "sentence": "We should ___ on unnecessary pings.",
+            "answer": "push back"
+          },
+          {
+            "sentence": "If a meeting has no agenda, I ___.",
+            "answer": "pull the plug"
           }
         ]
       },
       "true_or_false": {
-        "note": "Если ложь — дай исправление в answers. Помни: TMI — когда кто-то делится слишком личным.",
+        "note": "Если ложь — дай исправление в answers.",
         "items": [
           {
             "sentence": "The guest was stuck in traffic because he hit snooze.",
             "answer": "True"
           },
           {
-            "sentence": "Batching means answering emails one by one throughout the day.",
+            "sentence": "\"Go-to fix\" means your least preferred solution.",
             "answer": "False"
           },
           {
-            "sentence": "Pull the plug means to continue a meeting without an agenda.",
-            "answer": "False"
-          },
-          {
-            "sentence": "TMI is used when someone overshares personal details.",
+            "sentence": "Batching means handling similar emails together in one block.",
             "answer": "True"
           },
           {
-            "sentence": "Clear the decks means adding more tasks before lunch.",
+            "sentence": "\"Clear the decks\" means to add more tasks before lunch.",
+            "answer": "False"
+          },
+          {
+            "sentence": "\"In one go\" means doing something without stopping.",
+            "answer": "True"
+          },
+          {
+            "sentence": "\"Push back\" means to accept every ping immediately.",
+            "answer": "False"
+          },
+          {
+            "sentence": "\"Pull the plug\" means to stop or cancel a meeting.",
+            "answer": "True"
+          },
+          {
+            "sentence": "\"Deep work\" refers to scrolling social media for ideas.",
+            "answer": "False"
+          },
+          {
+            "sentence": "\"Getting sidetracked\" means staying focused on one task.",
+            "answer": "False"
+          },
+          {
+            "sentence": "\"Rule of thumb\" is a strict scientific law.",
             "answer": "False"
           }
         ]
@@ -318,8 +286,9 @@
         ]
       }
     },
-    "grammar": {
-      "present_perfect_vs_past_simple": {
+    "grammar": [
+      {
+        "topic": "Present Perfect vs Past Simple",
         "instructions": "Выбери правильную форму, используя лексику из расшифровки.",
         "items": [
           {
@@ -339,13 +308,34 @@
             "answer": "have doubled down"
           },
           {
-            "sentence": "Maya ___ (leave) earlier yesterday to avoid traffic.",
-            "answer": "left"
+            "sentence": "Last week I ___ (stumble) upon a great idea.",
+            "answer": "stumbled"
+          },
+          {
+            "sentence": "We ___ (run) with it, and today I ___ (feel) more productive.",
+            "answer": "ran; have felt"
+          },
+          {
+            "sentence": "I ___ (leave) earlier yesterday to avoid traffic, and I ___ (arrive) on time.",
+            "answer": "left; arrived"
+          },
+          {
+            "sentence": "So far, we ___ (avoid) getting sidetracked.",
+            "answer": "have avoided"
+          },
+          {
+            "sentence": "By 6 pm, we ___ (call) it a day.",
+            "answer": "called"
+          },
+          {
+            "sentence": "Recently, I ___ (check in) with my goals every morning.",
+            "answer": "have checked in"
           }
         ]
       },
-      "first_conditional": {
-        "instructions": "Выбери правильную форму, используя лексику из расшифровки.",
+      {
+        "topic": "First Conditional",
+        "instructions": "Собери условные предложения первого типа.",
         "items": [
           {
             "sentence": "If you ___ (carve out) 25 minutes, you ___ (avoid) the social scroll.",
@@ -366,11 +356,32 @@
           {
             "sentence": "If we ___ (batch) emails, we ___ (save) time.",
             "answer": "batch; will save"
+          },
+          {
+            "sentence": "If you ___ (clear the decks), you ___ (cut) friction.",
+            "answer": "clear the decks; will cut"
+          },
+          {
+            "sentence": "If I ___ (hit) snooze again, I ___ (be) late.",
+            "answer": "hit; will be"
+          },
+          {
+            "sentence": "If we ___ (outline) a game plan, we ___ (wrap) up early.",
+            "answer": "outline; will wrap"
+          },
+          {
+            "sentence": "If brain fog ___ (hit), I ___ (take) a quick walk.",
+            "answer": "hits; will take"
+          },
+          {
+            "sentence": "If you ___ (check in) with your goals, you ___ (stay) on track.",
+            "answer": "check in; will stay"
           }
         ]
       },
-      "comparatives_superlatives": {
-        "instructions": "Выбери правильную форму, используя лексику из расшифровки.",
+      {
+        "topic": "Comparatives and Superlatives",
+        "instructions": "Поставь сравнительную/превосходную степень прилагательных.",
         "items": [
           {
             "sentence": "Batching is ___ (productive) than answering emails all day.",
@@ -391,41 +402,32 @@
           {
             "sentence": "Wrapping up early felt the ___ (good) today.",
             "answer": "best"
+          },
+          {
+            "sentence": "A pep talk is a ___ (quick) boost than a long meeting.",
+            "answer": "quicker"
+          },
+          {
+            "sentence": "Carving out time is ___ (helpful) than getting sidetracked.",
+            "answer": "more helpful"
+          },
+          {
+            "sentence": "The go-to fix was ___ (simple) than the new idea.",
+            "answer": "simpler"
+          },
+          {
+            "sentence": "Back-to-back meetings are the ___ (bad) time-suck of the week.",
+            "answer": "worst"
+          },
+          {
+            "sentence": "Checking in weekly is ___ (consistent) than doing it monthly.",
+            "answer": "more consistent"
           }
         ]
       }
-    }
+    ]
   },
   "quizlet": [
-    "set the tone, задать тон",
-    "hit snooze, нажать кнопку повтора будильника",
-    "stuck in traffic, застрять в пробке",
-    "on autopilot, на автопилоте",
-    "back-to-back meetings, встречи одна за другой",
-    "time-suck, поглотитель времени",
-    "go-to, любимый вариант",
-    "batching, группировка задач",
-    "clear the decks, расчистить дела",
-    "friction, лишние препятствия",
-    "rule of thumb, практическое правило",
-    "in one go, за один раз",
-    "stumbled upon, случайно наткнулся",
-    "pep talk, мотивационная мини-речь",
-    "check in with, свериться с",
-    "carve out, выделить (время)",
-    "deep work, глубокая работа",
-    "getting sidetracked, отвлекаться",
-    "social scroll, прокрутка соцсетей",
-    "doubled down, усилил усилия",
-    "brain fog, туман в голове",
-    "push back, дать отпор",
-    "pull the plug, прекратить",
-    "TMI, слишком много информации",
-    "light-bulb moment, озарение",
-    "game plan, план действий",
-    "wrap up, завершить",
-    "call it a day, закончить на сегодня",
-    "touched base, переговорили кратко",
-    "run with it, развить идею"
+    "set the tone, задать тон\nhit snooze, нажать кнопку повтора будильника\nstuck in traffic, застрять в пробке\non autopilot, на автопилоте\nback-to-back meetings, встречи одна за другой\ntime-suck, поглотитель времени\ngo-to, любимый вариант\nbatching, группировка задач\nclear the decks, расчистить дела\nrule of thumb, практическое правило\nin one go, за один раз\npep talk, мотивационная мини-речь\ncheck in with, свериться с\ncarve out, выделить (время)\ndeep work, глубокая работа\ngetting sidetracked, отвлекаться\npush back, дать отпор\npull the plug, прекратить"
   ]
 }
