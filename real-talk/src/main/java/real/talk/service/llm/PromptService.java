@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import real.talk.model.entity.Lesson;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
@@ -23,21 +25,10 @@ import java.util.Map;
 public class PromptService {
 
     public Prompt createLessonPrompt(Lesson lesson, String transcription) throws IOException {
-        String systemPromptString = Files.readString(
-                new ClassPathResource("prompts/system.st").getFile().toPath()
-        );
-
-        String userPromptString = Files.readString(
-                new ClassPathResource("prompts/user.st").getFile().toPath()
-        );
-
-        String assistantPromptString = Files.readString(
-                new ClassPathResource("prompts/assistant.st").getFile().toPath()
-        );
-
-        String lessonJson = Files.readString(
-                new ClassPathResource("prompts/lesson.json").getFile().toPath()
-        );
+        String systemPromptString = readResource("prompts/system.st");
+        String userPromptString = readResource("prompts/user.st");
+        String assistantPromptString = readResource("prompts/assistant.st");
+        String lessonJson = readResource("prompts/lesson.json");
 
         String grammar_topics = String.join(", ", lesson.getGrammarTopics());
         SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemPromptString);
@@ -64,6 +55,13 @@ public class PromptService {
         AssistantMessage assistantMessage = new AssistantMessage(lessonJsonText);
 
         return new Prompt(List.of(systemMessage, userMessage, assistantMessage));
+    }
+
+    private String readResource(String path) throws IOException {
+        ClassPathResource resource = new ClassPathResource(path);
+        try (InputStream is = resource.getInputStream()) {
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        }
     }
 
 }
