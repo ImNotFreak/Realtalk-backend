@@ -52,5 +52,3 @@ lesson:
 
 app:
   frontend-url: ${FRONTEND_URL}
-server:
-  forward-headers-strategy: framework
