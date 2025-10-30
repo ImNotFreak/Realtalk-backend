@@ -55,3 +55,7 @@ app:
 
 server:
   forward-headers-strategy: framework
+  tomcat:
+    remoteip:
+      remote-ip-header: x-forwarded-for
+      protocol-header: x-forwarded-proto
