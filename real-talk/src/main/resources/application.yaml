@@ -25,7 +25,7 @@ spring:
               - openid
               - profile
               - email
-            redirect-uri: "${BASE_URL}/login/oauth2/code/google"
+            redirect-uri: "https://chiils-backend-production.up.railway.app/login/oauth2/code/google"
   ai:
     openai:
       model: gpt-3.5-turbo
