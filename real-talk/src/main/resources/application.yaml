@@ -52,6 +52,9 @@ lesson:
 
 app:
   frontend-url: ${FRONTEND_URL}
+  jwt:
+      expiration-seconds: 604800
+      secret-base64: a1b2C3D4E5F6g7h8i9j0K1L2M3N4O5P6q7r8s9t0u1v2w3x4y5z6A7B8C9D0E1F2
 
 server:
   forward-headers-strategy: framework

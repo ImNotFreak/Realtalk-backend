@@ -1,23 +1,37 @@
 package real.talk.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
 
 @Configuration
 public class JwtConfig {
 
-    private final String jwtSecret = "YOUR_VERY_SECURE_JWT_SECRET_256_BITS_MIN";
-
     @Bean
-    public JwtEncoder jwtEncoder() {
-        byte[] keyBytes = jwtSecret.getBytes();
-        SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "HmacSHA256");
-        return new NimbusJwtEncoder(new ImmutableSecret<>(secretKey));
+    public SecretKey jwtSecretKey(@Value("${app.jwt.secret-base64}") String base64) {
+        byte[] bytes = Base64.getDecoder().decode(base64);
+        return new SecretKeySpec(bytes, "HmacSHA256");
     }
 
+    @Bean
+    public JwtEncoder jwtEncoder(SecretKey jwtSecretKey) {
+        return new NimbusJwtEncoder(new ImmutableSecret<>(jwtSecretKey));
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder(SecretKey jwtSecretKey) {
+        return NimbusJwtDecoder.withSecretKey(jwtSecretKey)
+                .macAlgorithm(MacAlgorithm.HS256)
+                .build();
+    }
 }
