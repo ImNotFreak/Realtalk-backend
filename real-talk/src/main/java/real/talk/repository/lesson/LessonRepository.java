@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import real.talk.model.entity.Lesson;
 import real.talk.model.entity.enums.LessonAccess;
 import real.talk.model.entity.enums.LessonStatus;
+import real.talk.model.dto.lesson.LessonLiteResponse;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -105,5 +107,27 @@ Pageable pageable
 );
 
     Boolean existsByIdAndStatusEquals(UUID id, LessonStatus status);
+
+    /**
+     * Лёгкий список уроков без поля data (JSON): выбираем только нужные колонки через JPQL-конструктор.
+     */
+    @Query("""
+           select new real.talk.model.dto.lesson.LessonLiteResponse(
+               l.id,
+               l.youtubeUrl,
+               l.lessonTopic,
+               l.tags,
+               l.createdAt
+           )
+           from Lesson l
+           where l.status = :status
+             and l.access = :access
+           """)
+    Page<LessonLiteResponse> findLiteByStatusAndAccess(
+            @Param("status") LessonStatus status,
+            @Param("access") LessonAccess access,
+            Pageable pageable
+    );
+
 }
 

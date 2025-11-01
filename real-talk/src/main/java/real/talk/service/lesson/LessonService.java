@@ -13,6 +13,10 @@ import real.talk.model.entity.User;
 import real.talk.model.entity.enums.LessonAccess;
 import real.talk.model.entity.enums.LessonStatus;
 import real.talk.repository.lesson.LessonRepository;
+import real.talk.model.dto.lesson.LessonLiteResponse;
+import real.talk.model.dto.lesson.LessonFullResponse;
+
+
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -60,6 +64,47 @@ public class LessonService {
     public Boolean isLessonReady(UUID lessonId) {
         return lessonRepository.existsByIdAndStatusEquals(lessonId, LessonStatus.READY);
     }
+    /**
+     * Полный урок по id: возвращаем мета + весь JSON data (exercises, glossary и т.д.).
+     * Используется для детальной страницы / перехода по ссылке.
+     */
+    public LessonFullResponse getLessonFullById(UUID lessonId) {
+        Lesson l = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new IllegalArgumentException("Lesson not found: " + lessonId));
+
+        // youtubeUrl лежит в колонке, а основной контент — в JSON 'data'
+        LessonGeneratedByLlm data = l.getData();
+        if (data != null) {
+            // дублируем ссылку из колоноки, чтобы фронт мог брать единообразно
+            data.setYou_tube_url(l.getYoutubeUrl());
+        }
+
+        return new LessonFullResponse(
+                l.getId(),
+                l.getYoutubeUrl(),
+                l.getLessonTopic(),
+                l.getTags(),          // JSON Tags (lesson_theme, language, lexical_fields, ...)
+                l.getGrammarTopics(), // список тем грамматики сверху (если нужен на странице)
+                l.getCreatedAt(),
+                data                   // ВЕСЬ контент урока (exercises, glossary, transcript, и т.д.)
+        );
+    }
+
+    /**
+     * Лёгкий список публичных готовых уроков (без JSON 'data'), постранично.
+     * Используется на странице OpenLibrary.
+     */
+    public Page<LessonLiteResponse> getPublicLessonsLite(LessonFilter f) {
+        Pageable pageable = buildPageable(f.getPage(), f.getSize());
+        Page<LessonLiteResponse> page = lessonRepository.findLiteByStatusAndAccess(
+                LessonStatus.READY,
+                LessonAccess.PUBLIC,
+                pageable
+        );
+        return page;
+    }
+
+
     public List<LessonGeneratedByLlm> getPublicReadyLessons() {
         return lessonRepository.findByStatusAndAccess(LessonStatus.READY, LessonAccess.PUBLIC)
                 .stream().map(lesson -> {
