@@ -1,20 +1,17 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/real_talk
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
 
   liquibase:
     enabled: true
-    url: jdbc:postgresql://localhost:5432/real_talk
-    user: postgres
-    password: postgres
     change-log: classpath:/db/changelog/changelog.yaml
 
   security:
@@ -28,14 +25,14 @@ spring:
               - openid
               - profile
               - email
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri: "${BASE_URL}/login/oauth2/code/google"
   ai:
     openai:
       model: gpt-3.5-turbo
       api-key: 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
 logging:
   level:
-    root: INFO
+    root: ERROR
 
 gladia:
   create-request:
@@ -54,4 +51,14 @@ lesson:
     cron: "0 * * * * ?"
 
 app:
-  frontend-url: http://localhost:3000
+  frontend-url: ${FRONTEND_URL}
+  jwt:
+      expiration-seconds: 604800
+      secret-base64: a1b2C3D4E5F6g7h8i9j0K1L2M3N4O5P6q7r8s9t0u1v2w3x4y5z6A7B8C9D0E1F2
+
+server:
+  forward-headers-strategy: framework
+  tomcat:
+    remoteip:
+      remote-ip-header: x-forwarded-for
+      protocol-header: x-forwarded-proto

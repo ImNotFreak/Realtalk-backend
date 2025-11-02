@@ -13,6 +13,9 @@ import real.talk.model.entity.User;
 import real.talk.service.lesson.LessonService;
 import real.talk.service.user.UserService;
 import real.talk.model.dto.lesson.LessonFilter;
+import real.talk.model.dto.lesson.LessonFullResponse;
+import real.talk.model.dto.lesson.LessonLiteResponse;
+
 
 
 import java.util.List;
@@ -46,7 +49,7 @@ class LessonsController {
     }
 
     @GetMapping("/public-lessons")
-    public ResponseEntity<List<LessonGeneratedByLlm>> getPublicLessons(
+    public ResponseEntity<List<LessonLiteResponse>> getPublicLessons(
             @RequestParam(required = false) String language,
             @RequestParam(name = "language_level", required = false) String languageLevel,
             @RequestParam(name = "lesson_topic", required = false) String lessonTopic,
@@ -68,12 +71,20 @@ class LessonsController {
         if (!normalized.equals(filter)) {
             log.info("Normalized public-lessons params: from={} to={}", filter, normalized);
         }
-        var resultPage = lessonService.getPublicReadyLessons(normalized);
+        // теперь берём ЛЁГКИЙ список (meta) без тяжёлого JSON data
+        var resultPage = lessonService.getPublicLessonsLite(normalized);
         return ResponseEntity.ok(resultPage.getContent());
     }
+
 
     private static String blankToNull(String s) {
         return (s == null || s.isBlank()) ? null : s;
     }
+
+    @GetMapping("/{lessonId}")
+    public ResponseEntity<LessonFullResponse> getLessonById(@PathVariable UUID lessonId) {
+        return ResponseEntity.ok(lessonService.getLessonFullById(lessonId));
+    }
+
 
 }
