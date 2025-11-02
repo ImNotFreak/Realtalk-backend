@@ -96,6 +96,25 @@ public class LessonService {
      */
     public Page<LessonLiteResponse> getPublicLessonsLite(LessonFilter f) {
         Pageable pageable = buildPageable(f.getPage(), f.getSize());
+        String email = f.getEmail();
+        if (email != null) {
+            return lessonRepository.findLiteByStatusAndAccessAndEmail(
+                    LessonStatus.READY,
+                    LessonAccess.PUBLIC,
+                    email,
+                    pageable
+            );
+        }else {
+            return lessonRepository.findLiteByStatusAndAccess(
+                    LessonStatus.READY,
+                    LessonAccess.PUBLIC,
+                    pageable
+            );
+        }
+    }
+
+    public Page<LessonLiteResponse> getMyLessonsLite(LessonFilter f) {
+        Pageable pageable = buildPageable(f.getPage(), f.getSize());
         Page<LessonLiteResponse> page = lessonRepository.findLiteByStatusAndAccess(
                 LessonStatus.READY,
                 LessonAccess.PUBLIC,

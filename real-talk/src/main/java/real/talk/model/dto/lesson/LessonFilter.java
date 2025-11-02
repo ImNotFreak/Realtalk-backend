@@ -10,6 +10,7 @@ public class LessonFilter {
     String languageLevel;    // eq
     String lessonTopic;      // contains (case-insensitive)
     String grammarContains; // contains (case-insensitive) по grammar_topics
+    String email; // contains (case-insensitive) по grammar_topics
     Integer page;
     Integer size;
     String sort;

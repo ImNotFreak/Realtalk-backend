@@ -5,17 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import real.talk.model.dto.lesson.LessonCreateRequest;
-import real.talk.model.dto.lesson.LessonCreateResponse;
-import real.talk.model.dto.lesson.LessonGeneratedByLlm;
+import real.talk.model.dto.lesson.*;
 import real.talk.model.entity.Lesson;
 import real.talk.model.entity.User;
 import real.talk.service.lesson.LessonService;
 import real.talk.service.user.UserService;
-import real.talk.model.dto.lesson.LessonFilter;
-import real.talk.model.dto.lesson.LessonFullResponse;
-import real.talk.model.dto.lesson.LessonLiteResponse;
-
 
 
 import java.util.List;
@@ -56,7 +50,8 @@ class LessonsController {
             @RequestParam(name = "grammar_contains", required = false) String grammarContains,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
-            @RequestParam(required = false) String sort
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String email
     ) {
         var filter = LessonFilter.builder()
                 .language(blankToNull(language))
@@ -66,6 +61,7 @@ class LessonsController {
                 .page(page)
                 .size(size)
                 .sort(blankToNull(sort))
+                .email(blankToNull(email))
                 .build();
         var normalized = normalize(filter);
         if (!normalized.equals(filter)) {
@@ -75,7 +71,6 @@ class LessonsController {
         var resultPage = lessonService.getPublicLessonsLite(normalized);
         return ResponseEntity.ok(resultPage.getContent());
     }
-
 
     private static String blankToNull(String s) {
         return (s == null || s.isBlank()) ? null : s;

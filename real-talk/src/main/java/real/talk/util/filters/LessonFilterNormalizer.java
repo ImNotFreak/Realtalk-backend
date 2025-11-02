@@ -24,6 +24,7 @@ public final class LessonFilterNormalizer {
 
         // language=ALL трактуем как отсутствие фильтра
         String language = normalizeAllToNull(f.getLanguage());
+        String email = normalizeAllToNull(f.getEmail());
 
         // whitelist сортировки: language | lesson_topic | createdAt (+ опц. префикс '-')
         if (!isAllowedSort(sort)) {
@@ -35,6 +36,7 @@ public final class LessonFilterNormalizer {
                 .size(size)
                 .sort(sort)
                 .language(language)
+                .email(email)
                 .build();
     }
 

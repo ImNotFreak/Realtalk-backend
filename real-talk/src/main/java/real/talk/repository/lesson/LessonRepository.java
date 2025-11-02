@@ -104,5 +104,26 @@ public interface LessonRepository extends JpaRepository<Lesson, UUID> {
             @Param("access") LessonAccess access,
             Pageable pageable
     );
+
+    @Query("""
+           select new real.talk.model.dto.lesson.LessonLiteResponse(
+               l.id,
+               l.youtubeUrl,
+               l.lessonTopic,
+               l.tags,
+               l.createdAt
+           )
+           from Lesson l
+           join l.user u
+           where l.status = :status
+             and l.access = :access
+             and u.email = :email
+           """)
+    Page<LessonLiteResponse> findLiteByStatusAndAccessAndEmail(
+            @Param("status") LessonStatus status,
+            @Param("access") LessonAccess access,
+            @Param("email") String email,
+            Pageable pageable
+    );
 }
 
