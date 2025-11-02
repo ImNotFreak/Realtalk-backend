@@ -24,6 +24,8 @@ import real.talk.repository.whitelist.WhiteListRepository;
 import real.talk.service.auth.JwtAuthenticationFilter;
 import real.talk.service.auth.JwtService;
 import real.talk.service.user.UserService;
+import org.springframework.http.HttpMethod;
+
 
 import java.time.Instant;
 import java.util.List;
@@ -51,6 +53,10 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/lessons/public-lessons",
+                                "/api/v1/lessons/*"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 // ВАЖНО: для API вместо редиректа отдаём 401
