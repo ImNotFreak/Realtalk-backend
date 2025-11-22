@@ -81,5 +81,4 @@ class LessonsController {
         return ResponseEntity.ok(lessonService.getLessonFullById(lessonId));
     }
 
-
 }
