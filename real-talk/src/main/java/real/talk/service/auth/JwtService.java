@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import real.talk.model.entity.enums.UserRole;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,12 +20,13 @@ public class JwtService {
     @Value("${app.jwt.expiration-seconds:604800}")
     private long expirationSeconds;
 
-    public String generateToken(String email, String name, UserRole role) {
+    public String generateToken(String email, String name, UserRole role, UUID userId) {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(email)
                 .claim("role", role.name())
                 .claim("email", email)
                 .claim("name", name)
+                .claim("userId", userId)
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plusSeconds(expirationSeconds)) // 24 часа
                 .build();
@@ -34,6 +36,9 @@ public class JwtService {
         return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
     }
 
+    public Jwt parseToken(String token) {
+        return jwtDecoder.decode(token);
+    }
     public String extractEmail(String token) {
         Jwt jwt = jwtDecoder.decode(token);
         String sub = jwt.getSubject();

@@ -1,5 +1,6 @@
 package real.talk.model.dto.lesson;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,10 +12,10 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LessonGeneratedByLlm {
     private String language;
     private String language_level;
-    private String transcript_text;
     private LanguageFilter language_filter;
     private Tags tags;
     private List<String> grammar_topics;

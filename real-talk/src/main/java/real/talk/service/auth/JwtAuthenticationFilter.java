@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,16 +32,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (auth != null && auth.startsWith("Bearer ")) {
             String token = auth.substring(7);
             try {
-                // извлеките данные пользователя из токена (email/roles)
+
+                Jwt jwt = jwtService.parseToken(token);
                 String email = jwtService.extractEmail(token); // пример
                 String role = jwtService.extractRole(token);   // пример
 
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(email, null, authorities);
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    JwtAuthenticationToken authentication = new JwtAuthenticationToken(jwt, authorities);
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);;
                 }
             } catch (Exception e) {
                 // невалидный токен -> оставляем без аутентификации, дальше сработает entry point 401

@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changelog.yaml
+
+  - include:
+      file: db/changelog/changelog-collections.yaml
+
+  - include:
+      file: db/changelog/changelog-likes.yaml
+
+  - include:
+      file: db/changelog/changelog-folder.yaml
+
+  - include:
+      file: db/changelog/changelog-words.yaml
+
+  - include:
+      file: db/changelog/changelog-word-sets.yaml
+
+  - include:
+      file: db/changelog/changelog-word-set-words.yaml

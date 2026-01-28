@@ -1,8 +1,7 @@
 {
   "language": "English",
   "language_level": "B1",
-  "transcript_text": "Podcast Host (Maya): Welcome back! Today we’re talking morning routines that set the tone for your day.\nGuest (Leo): Yesterday I hit snooze twice and got stuck in traffic. By the time I reached the office, I was on autopilot.\nMaya: Same here—back-to-back meetings can be a real time-suck. My go-to fix is batching emails in one block.\nLeo: Nice. I also clear the decks before lunch—five minutes to close tabs and tidy notes. It cuts friction.\nMaya: My rule of thumb: if a task takes two minutes, do it in one go.\nLeo: I stumbled upon a great idea last week: schedule a ten-minute pep talk with myself to check in with goals.\nMaya: Love it. If you carve out 25 minutes for deep work, you’ll avoid getting sidetracked by the social scroll.\nLeo: True. I’ve doubled down on phone limits because brain fog hits me mid-morning.\nMaya: If you push back on unnecessary pings, you’ll protect focus.\nLeo: Exactly. And if a meeting has no agenda, I pull the plug.\nMaya: That’s bold—but fair. Quick note: sometimes guests overshare, so we trim that.\nLeo: When the plan clicks, it’s a light-bulb moment. We outline a game plan, work, and wrap up early.\nMaya: If I leave earlier, I’ll avoid traffic; if not, I’ll call it a day at six.\nLeo: This week I have started standing check-ins. Yesterday we touched base with design; it was more productive than chat.\nMaya: Great. One last thing: tiny progress matters—tiny wins stack up.\nLeo: Agreed. Okay, let’s run with it and close here.",
-  "language_filter": {
+   "language_filter": {
     "target_language": "English",
     "ignore_other_languages": true
   },

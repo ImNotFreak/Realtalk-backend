@@ -10,6 +10,7 @@ import real.talk.model.entity.Lesson;
 import real.talk.model.entity.enums.LessonAccess;
 import real.talk.model.entity.enums.LessonStatus;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -92,6 +93,7 @@ public interface LessonRepository extends JpaRepository<Lesson, UUID> {
                l.id,
                l.youtubeUrl,
                l.lessonTopic,
+               l.status,
                l.tags,
                l.createdAt
            )
@@ -110,17 +112,18 @@ public interface LessonRepository extends JpaRepository<Lesson, UUID> {
                l.id,
                l.youtubeUrl,
                l.lessonTopic,
+               l.status,
                l.tags,
                l.createdAt
            )
            from Lesson l
            join l.user u
-           where l.status = :status
+           where l.status in :statuses
              and l.access = :access
              and u.email = :email
            """)
     Page<LessonLiteResponse> findLiteByStatusAndAccessAndEmail(
-            @Param("status") LessonStatus status,
+            @Param("statuses") Collection<LessonStatus> statuses,
             @Param("access") LessonAccess access,
             @Param("email") String email,
             Pageable pageable

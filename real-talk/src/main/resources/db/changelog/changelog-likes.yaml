@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-16-create-user-lesson-likes
+      author: backend
+
+      changes:
+        - createTable:
+            tableName: user_lesson_likes
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lesson_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: user_lesson_likes
+            columnNames: user_id, lesson_id
+            constraintName: uk_user_lesson
+
+
+        - addForeignKeyConstraint:
+            baseTableName: user_lesson_likes
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_user_lesson_likes_user
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: user_lesson_likes
+            baseColumnNames: lesson_id
+            referencedTableName: lessons
+            referencedColumnNames: lesson_id
+            constraintName: fk_user_lesson_likes_lesson
+            onDelete: CASCADE
+
+        - createIndex:
+            indexName: idx_user_lesson_likes_user
+            tableName: user_lesson_likes
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            indexName: idx_user_lesson_likes_lesson
+            tableName: user_lesson_likes
+            columns:
+              - column:
+                  name: lesson_id

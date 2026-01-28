@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import real.talk.model.dto.lesson.LessonCreateRequest;
 import real.talk.model.dto.lesson.LessonFilter;
@@ -95,11 +96,13 @@ public class LessonService {
      * Используется на странице OpenLibrary.
      */
     public Page<LessonLiteResponse> getPublicLessonsLite(LessonFilter f) {
-        Pageable pageable = buildPageable(f.getPage(), f.getSize());
+        Pageable pageable = buildPageable(f.getPage(), f.getSize(), f.getSort());
         String email = f.getEmail();
         if (email != null) {
             return lessonRepository.findLiteByStatusAndAccessAndEmail(
-                    LessonStatus.READY,
+                    List.of(LessonStatus.READY,
+                            LessonStatus.PENDING,
+                            LessonStatus.PROCESSING),
                     LessonAccess.PUBLIC,
                     email,
                     pageable
@@ -114,7 +117,7 @@ public class LessonService {
     }
 
     public Page<LessonLiteResponse> getMyLessonsLite(LessonFilter f) {
-        Pageable pageable = buildPageable(f.getPage(), f.getSize());
+        Pageable pageable = buildPageable(f.getPage(), f.getSize(), f.getSort());
         Page<LessonLiteResponse> page = lessonRepository.findLiteByStatusAndAccess(
                 LessonStatus.READY,
                 LessonAccess.PUBLIC,
@@ -135,7 +138,7 @@ public class LessonService {
 
     //Перегрузка с фильтрами — теперь постранично + сортировка (белый список) */
     public Page<LessonGeneratedByLlm> getPublicReadyLessons(LessonFilter f) {
-        Pageable pageable = buildPageable(f.getPage(), f.getSize()); // только page/size
+        Pageable pageable = buildPageable(f.getPage(), f.getSize(), f.getSort()); // только page/size
         // разберём sort=language,-lesson_topic → s1,s2 токены
         String[] sortTokens = toSortTokens(f.getSort());
         Page<Lesson> page = lessonRepository.findPublicReadyFilteredPaged(
@@ -152,10 +155,15 @@ public class LessonService {
     }
 
     // ===== helpers =====
-    private Pageable buildPageable(Integer page, Integer size) {
+    private Pageable buildPageable(Integer page, Integer size, String sortParam) {
         int p = (page == null || page < 0) ? 0 : page;
         int s = (size == null || size <= 0) ? 10 : Math.min(size, 50);
-        return PageRequest.of(p, s);
+        Sort.Direction direction = sortParam.startsWith("-") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        String sortField = sortParam.startsWith("-") || sortParam.startsWith("+")
+                ? sortParam.substring(1)
+                : sortParam;
+
+        return PageRequest.of(p, s, Sort.by(direction, sortField));
     }
 
     /**

@@ -1,0 +1,88 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-words
+      author: backend
+      changes:
+        - createTable:
+            tableName: words
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: lesson_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: term
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: quote
+                  type: text
+
+              - column:
+                  name: translation
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: translated_explanation
+                  type: text
+
+              - column:
+                  name: another_example
+                  type: text
+
+              - column:
+                  name: time_code
+                  type: double
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+        - addForeignKeyConstraint:
+            baseTableName: words
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_words_user
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: words
+            baseColumnNames: lesson_id
+            referencedTableName: lessons
+            referencedColumnNames: lesson_id
+            constraintName: fk_words_lesson
+            onDelete: SET NULL
+
+        - createIndex:
+            tableName: words
+            indexName: idx_words_user_id
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: words
+            indexName: idx_words_lesson_id
+            columns:
+              - column:
+                  name: lesson_id

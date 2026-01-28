@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-word-sets
+      author: backend
+      changes:
+        - createTable:
+            tableName: word_sets
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: word_count
+                  type: integer
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: archived
+                  type: boolean
+                  defaultValueBoolean: false
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+        - addForeignKeyConstraint:
+            baseTableName: word_sets
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_word_sets_user
+            onDelete: CASCADE
+
+        - createIndex:
+            tableName: word_sets
+            indexName: idx_word_sets_user_id
+            columns:
+              - column:
+                  name: user_id

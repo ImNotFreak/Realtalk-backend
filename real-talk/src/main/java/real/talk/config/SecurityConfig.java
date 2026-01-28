@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
@@ -105,7 +106,7 @@ public class SecurityConfig {
                             });
                             userService.saveUser(user);
 
-                            String token = jwtService.generateToken(user.getEmail(), user.getName(), user.getRole());
+                            String token = jwtService.generateToken(user.getEmail(), user.getName(), user.getRole(), user.getUserId());
                             response.sendRedirect(frontendUrl + "/login/success?token=" + token);
                         })
                 );
@@ -117,7 +118,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOrigins(List.of(frontendUrl));
-        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        cfg.setAllowedMethods(List.of("GET","POST","PUT", "PATCH" ,"DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","X-Requested-With","Origin"));
         cfg.setAllowCredentials(true);
         cfg.setMaxAge(3600L);

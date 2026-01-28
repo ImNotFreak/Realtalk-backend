@@ -50,7 +50,7 @@ class LessonsController {
             @RequestParam(name = "grammar_contains", required = false) String grammarContains,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
-            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "createdAt,desc") String sort,
             @RequestParam(required = false) String email
     ) {
         var filter = LessonFilter.builder()

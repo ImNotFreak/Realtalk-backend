@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-15-create-user-lesson-history
+      author: backend
+
+      changes:
+        - createTable:
+            tableName: user_lesson_history
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: lesson_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: last_opened_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: open_count
+                  type: INT
+                  defaultValueNumeric: 1
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: user_lesson_history
+            columnNames: user_id, lesson_id
+            constraintName: uq_user_lesson_history
+
+        - addForeignKeyConstraint:
+            baseTableName: user_lesson_history
+            baseColumnNames: lesson_id
+            referencedTableName: lessons
+            referencedColumnNames: lesson_id
+            constraintName: fk_history_lesson
+            onDelete: CASCADE
+
+        - createIndex:
+            tableName: user_lesson_history
+            indexName: idx_history_user_time
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: last_opened_at

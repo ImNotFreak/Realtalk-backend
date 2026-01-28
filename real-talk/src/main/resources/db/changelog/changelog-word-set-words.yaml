@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-word-set-words
+      author: backend
+      changes:
+        - createTable:
+            tableName: word_set_words
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: word_set_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: word_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: position
+                  type: int
+
+              - column:
+                  name: added_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+        - addForeignKeyConstraint:
+            baseTableName: word_set_words
+            baseColumnNames: word_set_id
+            referencedTableName: word_sets
+            referencedColumnNames: id
+            constraintName: fk_word_set_words_set
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: word_set_words
+            baseColumnNames: word_id
+            referencedTableName: words
+            referencedColumnNames: id
+            constraintName: fk_word_set_words_word
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: word_set_words
+            columnNames: word_set_id, word_id
+            constraintName: uq_word_set_word
+
+        - createIndex:
+            tableName: word_set_words
+            indexName: idx_word_set_words_set_id
+            columns:
+              - column:
+                  name: word_set_id

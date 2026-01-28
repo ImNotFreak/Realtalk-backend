@@ -1,0 +1,102 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-folder-table
+      author: backend
+      changes:
+        - createTable:
+            tableName: folder
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: folder
+            columnNames: user_id, name
+            constraintName: uq_folder_user_name
+
+        - addForeignKeyConstraint:
+            baseTableName: folder
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_folder_user
+            onDelete: CASCADE
+
+  - changeSet:
+      id: create-folder-lesson-table
+      author: backend
+      changes:
+        - createTable:
+            tableName: folder_lesson
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: folder_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lesson_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: folder_lesson
+            baseColumnNames: folder_id
+            referencedTableName: folder
+            referencedColumnNames: id
+            constraintName: fk_folderlesson_folder
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: folder_lesson
+            baseColumnNames: lesson_id
+            referencedTableName: lessons
+            referencedColumnNames: lesson_id
+            constraintName: fk_folderlesson_lesson
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: folder_lesson
+            columnNames: folder_id, lesson_id
+            constraintName: uq_folderlesson_folder_lesson

@@ -11,5 +11,4 @@ public class RealTalkApplication {
     public static void main(String[] args) {
         SpringApplication.run(RealTalkApplication.class, args);
     }
-
 }
