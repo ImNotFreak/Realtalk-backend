@@ -6,19 +6,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import real.talk.model.dto.lesson.LessonCreateRequest;
-import real.talk.model.dto.lesson.LessonFilter;
-import real.talk.model.dto.lesson.LessonGeneratedByLlm;
+import real.talk.model.dto.lesson.*;
 import real.talk.model.entity.Lesson;
 import real.talk.model.entity.User;
 import real.talk.model.entity.enums.LessonAccess;
 import real.talk.model.entity.enums.LessonStatus;
-import real.talk.repository.lesson.LessonRepository;
-import real.talk.model.dto.lesson.LessonLiteResponse;
-import real.talk.model.dto.lesson.LessonFullResponse;
 import real.talk.model.entity.enums.UserRole;
-import real.talk.repository.subscription.SubscriptionRepository;
-import real.talk.repository.user.UserRepository;
+import real.talk.repository.lesson.LessonRepository;
 import real.talk.service.access.AccessControlService;
 
 import java.time.Instant;
@@ -32,8 +26,6 @@ import java.util.UUID;
 public class LessonService {
 
     private final LessonRepository lessonRepository;
-    private final SubscriptionRepository subscriptionRepository;
-    private final UserRepository userRepository;
     private final AccessControlService accessControlService;
 
     public Lesson createLesson(User user, LessonCreateRequest lessonRequest) {
