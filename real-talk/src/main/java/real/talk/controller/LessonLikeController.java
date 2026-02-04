@@ -21,38 +21,32 @@ class LessonLikeController {
 
     @PostMapping("/{lessonId}/like")
     public ResponseEntity<Void> likeLesson(@PathVariable UUID lessonId,
-                                           @AuthenticationPrincipal Jwt jwt) {
-
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        lessonLikeService.likeLesson(userId, lessonId);
+            @AuthenticationPrincipal real.talk.model.entity.User user) {
+        lessonLikeService.likeLesson(user.getUserId(), lessonId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lessonId}/like")
     public ResponseEntity<Void> unlikeLesson(@PathVariable UUID lessonId,
-                                             @AuthenticationPrincipal Jwt jwt) {
-
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        lessonLikeService.unlikeLesson(userId, lessonId);
+            @AuthenticationPrincipal real.talk.model.entity.User user) {
+        lessonLikeService.unlikeLesson(user.getUserId(), lessonId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/ids")
-    public ResponseEntity<List<UUID>> getLikedLessonIds(@AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        return ResponseEntity.ok(lessonLikeService.getLikedLessonIds(userId));
+    public ResponseEntity<List<UUID>> getLikedLessonIds(@AuthenticationPrincipal real.talk.model.entity.User user) {
+        return ResponseEntity.ok(lessonLikeService.getLikedLessonIds(user.getUserId()));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<LessonLikeResponse>> getLikedLessons(@AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        return ResponseEntity.ok(lessonLikeService.getLikedLessons(userId));
+    public ResponseEntity<List<LessonLikeResponse>> getLikedLessons(
+            @AuthenticationPrincipal real.talk.model.entity.User user) {
+        return ResponseEntity.ok(lessonLikeService.getLikedLessons(user.getUserId()));
     }
 
     @GetMapping("/total")
-    public ResponseEntity<Long> getTotalLikes(@AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        long total = lessonLikeService.getTotalLikes(userId);
+    public ResponseEntity<Long> getTotalLikes(@AuthenticationPrincipal real.talk.model.entity.User user) {
+        long total = lessonLikeService.getTotalLikes(user.getUserId());
         return ResponseEntity.ok(total);
     }
 }

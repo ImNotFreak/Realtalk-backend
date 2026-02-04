@@ -33,7 +33,7 @@ spring:
 
 logging:
   level:
-    root: ERROR
+    root: WARN
 
 gladia:
   create-request:
@@ -69,3 +69,11 @@ server:
     remoteip:
       remote-ip-header: x-forwarded-for
       protocol-header: x-forwarded-proto
+
+paddle:
+  webhook:
+   secret: ${WEBHOOK_TOKEN}
+  price:
+    smart: ${PRICE_SMART}
+    plus: ${PRICE_PLUS}
+    open-library: ${PRICE_OPEN_LIB}

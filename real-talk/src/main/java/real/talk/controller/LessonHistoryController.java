@@ -28,28 +28,23 @@ public class LessonHistoryController {
 
     @PostMapping("/lesson/{lessonId}/open")
     public ResponseEntity<Void> trackOpen(@PathVariable UUID lessonId,
-                                          @AuthenticationPrincipal Jwt jwt) {
-
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        historyService.trackLessonOpen(userId, lessonId);
+            @AuthenticationPrincipal real.talk.model.entity.User user) {
+        historyService.trackLessonOpen(user.getUserId(), lessonId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("")
     public Map<String, List<LessonHistoryResponse>> getHistory(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal real.talk.model.entity.User user,
             @RequestParam(defaultValue = "READY") LessonStatus status,
             @RequestParam(defaultValue = "PUBLIC") LessonAccess access,
             Pageable pageable) {
-
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        return historyService.getHistory(userId, status, access, pageable);
+        return historyService.getHistory(user.getUserId(), status, access, pageable);
     }
 
     @GetMapping("/total")
-    public ResponseEntity<Long> getTotalHistory(@AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        long total = historyService.getTotalHistory(userId);
+    public ResponseEntity<Long> getTotalHistory(@AuthenticationPrincipal real.talk.model.entity.User user) {
+        long total = historyService.getTotalHistory(user.getUserId());
         return ResponseEntity.ok(total);
     }
 }

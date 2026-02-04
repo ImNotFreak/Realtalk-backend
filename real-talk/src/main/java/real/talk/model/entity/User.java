@@ -32,14 +32,21 @@ public class User {
     @Column(name = "telegram")
     private String telegram;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private UserRole role =  UserRole.USER;
+    private UserRole role = UserRole.USER;
 
     @Column(name = "lesson_count")
     private Integer lessonCount;
 
     @Column(name = "duration")
     private Double duration;
+
+    @Column(name = "paddle_customer_id")
+    private String paddleCustomerId;
+
+    @Column(name = "lesson_builder_minutes")
+    private Integer lessonBuilderMinutes = 0;
 
     @Column(name = "created_at")
     private Instant createdAt;

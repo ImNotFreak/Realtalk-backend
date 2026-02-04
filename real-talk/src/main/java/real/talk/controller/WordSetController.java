@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import real.talk.model.dto.words.WordResponse;
 import real.talk.model.dto.words.WordSetResponse;
-import real.talk.model.entity.words.Word;
 import real.talk.service.words.WordBankService;
 import real.talk.service.words.WordSetService;
 
@@ -23,7 +22,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class WordSetController {
 
-
     private final WordSetService wordSetService;
     private final WordBankService wordBankService;
 
@@ -33,11 +31,14 @@ public class WordSetController {
      * Добавляем слова урока в Word Bank пользователя.
      * Если слова уже есть для этого lessonId, ничего не делаем.
      */
+    /**
+     * Добавляем слова урока в Word Bank пользователя.
+     * Если слова уже есть для этого lessonId, ничего не делаем.
+     */
     @PostMapping("/add")
-    public ResponseEntity<Void> addLessonWords(@AuthenticationPrincipal Jwt jwt,
-                                               @RequestParam UUID lessonId) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        wordBankService.addLessonWordsToUser(userId, lessonId);
+    public ResponseEntity<Void> addLessonWords(@AuthenticationPrincipal real.talk.model.entity.User user,
+            @RequestParam UUID lessonId) {
+        wordBankService.addLessonWordsToUser(user.getUserId(), lessonId);
         return ResponseEntity.ok().build();
     }
 
@@ -45,15 +46,14 @@ public class WordSetController {
      * Получаем все слова пользователя (Word Bank)
      */
     @GetMapping("/bank")
-    public ResponseEntity<Page<WordResponse>> getWordBank(@AuthenticationPrincipal Jwt jwt,
-                                                          @RequestParam(defaultValue = "0") int page,
-                                                          @RequestParam(defaultValue = "50") int size,
-                                                          @RequestParam(defaultValue = "term") String sortBy,
-                                                          @RequestParam(defaultValue = "asc") String sortDir) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
+    public ResponseEntity<Page<WordResponse>> getWordBank(@AuthenticationPrincipal real.talk.model.entity.User user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size,
+            @RequestParam(defaultValue = "term") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<WordResponse> wordsPage = wordBankService.getAllWordsForUser(userId, pageable);
+        Page<WordResponse> wordsPage = wordBankService.getAllWordsForUser(user.getUserId(), pageable);
         return ResponseEntity.ok(wordsPage);
     }
 
@@ -63,10 +63,9 @@ public class WordSetController {
      * Создаём новый Word Set
      */
     @PostMapping
-    public ResponseEntity<WordSetResponse> createWordSet(@AuthenticationPrincipal Jwt jwt,
-                                                         @RequestParam String name) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        WordSetResponse set = wordSetService.createWordSet(userId, name);
+    public ResponseEntity<WordSetResponse> createWordSet(@AuthenticationPrincipal real.talk.model.entity.User user,
+            @RequestParam String name) {
+        WordSetResponse set = wordSetService.createWordSet(user.getUserId(), name);
         return ResponseEntity.ok(set);
     }
 
@@ -74,11 +73,12 @@ public class WordSetController {
      * Получаем все Word Sets пользователя
      */
     @GetMapping
-    public ResponseEntity<List<WordSetResponse>> getWordSets(@AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        List<WordSetResponse> sets = wordSetService.getWordSetsForUser(userId);
+    public ResponseEntity<List<WordSetResponse>> getWordSets(
+            @AuthenticationPrincipal real.talk.model.entity.User user) {
+        List<WordSetResponse> sets = wordSetService.getWordSetsForUser(user.getUserId());
         return ResponseEntity.ok(sets);
     }
+
     /**
      * Удаляем Word Set
      */
@@ -93,7 +93,7 @@ public class WordSetController {
      */
     @PatchMapping("/{id}/rename")
     public ResponseEntity<WordSetResponse> renameWordSet(@PathVariable UUID id,
-                                                         @RequestParam String name) {
+            @RequestParam String name) {
         WordSetResponse set = wordSetService.renameWordSet(id, name);
         return ResponseEntity.ok(set);
     }
@@ -101,9 +101,9 @@ public class WordSetController {
     /**
      * Добавляем слова в Word Set
      */
-    @PostMapping("/{id}/words")
+    @PostMapping("/set/{id}")
     public ResponseEntity<Void> addWordsToSet(@PathVariable UUID id,
-                                              @RequestBody List<UUID> wordIds) {
+            @RequestBody List<UUID> wordIds) {
         wordSetService.addWordsToSet(id, wordIds);
         return ResponseEntity.ok().build();
     }
@@ -111,7 +111,7 @@ public class WordSetController {
     /**
      * Получаем слова Word Set в порядке позиции
      */
-    @GetMapping("/{id}/words")
+    @GetMapping("/set/{id}")
     public ResponseEntity<List<WordResponse>> getWordsInSet(@PathVariable UUID id) {
         return ResponseEntity.ok(wordSetService.getWordsInSet(id));
     }
@@ -119,17 +119,16 @@ public class WordSetController {
     /**
      * Удаляем слово из Word Set
      */
-    @DeleteMapping("/{id}/words/{wordId}")
+    @DeleteMapping("/set/{id}")
     public ResponseEntity<Void> removeWordFromSet(@PathVariable UUID id,
-                                                  @PathVariable UUID wordId) {
-        wordSetService.removeWordFromSet(id, wordId);
+            @RequestBody List<UUID> wordIds) {
+        wordSetService.removeWordsFromSet(id, wordIds);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/total")
-    public ResponseEntity<Long> getTotalSets(@AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        long total = wordSetService.getTotalSets(userId);
+    @GetMapping("/set/total")
+    public ResponseEntity<Long> getTotalSets(@AuthenticationPrincipal real.talk.model.entity.User user) {
+        long total = wordSetService.getTotalSets(user.getUserId());
         return ResponseEntity.ok(total);
     }
 }

@@ -12,4 +12,5 @@ public interface WordSetWordRepository extends JpaRepository<WordSetWord, UUID> 
     List<WordSetWord> findByWordSetIdOrderByPositionAsc(UUID wordSetId);
     Optional<WordSetWord> findByWordSetIdAndWordId(UUID wordSetId, UUID wordId);
     void deleteByWordSetIdAndWordId(UUID wordSetId, UUID wordId);
+    void deleteByWordSetIdAndWordIdIn(UUID wordSetId, List<UUID> wordIds);
 }

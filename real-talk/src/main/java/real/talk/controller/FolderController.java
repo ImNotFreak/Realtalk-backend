@@ -21,24 +21,22 @@ class FolderController {
 
     // Получить все папки пользователя
     @GetMapping("")
-    public ResponseEntity<List<FolderResponse>> getFolders(@AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        return ResponseEntity.ok(folderService.getUserFolders(userId));
+    public ResponseEntity<List<FolderResponse>> getFolders(@AuthenticationPrincipal real.talk.model.entity.User user) {
+        return ResponseEntity.ok(folderService.getUserFolders(user.getUserId()));
     }
 
     // Создать папку
     @PostMapping("")
-    public ResponseEntity<FolderCreateResponse> createFolder(@AuthenticationPrincipal Jwt jwt,
-                                                             @RequestBody FolderCreateRequest folderCreateRequest) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        return ResponseEntity.ok(folderService.createFolder(userId, folderCreateRequest.getName()));
+    public ResponseEntity<FolderCreateResponse> createFolder(@AuthenticationPrincipal real.talk.model.entity.User user,
+            @RequestBody FolderCreateRequest folderCreateRequest) {
+        return ResponseEntity.ok(folderService.createFolder(user.getUserId(), folderCreateRequest.getName()));
     }
 
     // Переименовать папку
     @PutMapping("/{folderId}")
     public ResponseEntity<FolderRenameResponse> renameFolder(
-                                               @PathVariable Long folderId,
-                                               @RequestBody FolderRenameRequest folderRenameRequest) {
+            @PathVariable Long folderId,
+            @RequestBody FolderRenameRequest folderRenameRequest) {
         return ResponseEntity.ok(folderService.renameFolder(folderId, folderRenameRequest.getName()));
     }
 
@@ -51,29 +49,27 @@ class FolderController {
 
     // Добавить урок в папку
     @PostMapping("/{folderId}/lessons")
-    public ResponseEntity<Void> addLesson(@AuthenticationPrincipal Jwt jwt,
-                                          @PathVariable Long folderId,
-                                          @RequestBody AddLessonToFolderRequest addLessonToFolderRequest) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        folderLessonService.addLessonToFolder(userId, folderId, addLessonToFolderRequest.lessonId());
+    public ResponseEntity<Void> addLesson(@AuthenticationPrincipal real.talk.model.entity.User user,
+            @PathVariable Long folderId,
+            @RequestBody AddLessonToFolderRequest addLessonToFolderRequest) {
+        folderLessonService.addLessonToFolder(user.getUserId(), folderId, addLessonToFolderRequest.lessonId());
         return ResponseEntity.ok().build();
     }
 
     // Удалить урок из папки
     @DeleteMapping("/{folderId}/lessons/{lessonId}")
-    public ResponseEntity<Void> removeLesson(@AuthenticationPrincipal Jwt jwt,
-                                             @PathVariable Long folderId,
-                                             @PathVariable UUID lessonId) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        folderLessonService.removeLessonFromFolder(userId, folderId, lessonId);
+    public ResponseEntity<Void> removeLesson(@AuthenticationPrincipal real.talk.model.entity.User user,
+            @PathVariable Long folderId,
+            @PathVariable UUID lessonId) {
+        folderLessonService.removeLessonFromFolder(user.getUserId(), folderId, lessonId);
         return ResponseEntity.noContent().build();
     }
 
     // Получить все уроки в папке
     @GetMapping("/{folderId}/lessons")
-    public ResponseEntity<List<FolderLessonResponse>> getLessons(@AuthenticationPrincipal Jwt jwt,
-                                                                 @PathVariable Long folderId) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("userId"));
-        return ResponseEntity.ok(folderLessonService.getLessonsInFolder(folderId, userId));
+    public ResponseEntity<List<FolderLessonResponse>> getLessons(
+            @AuthenticationPrincipal real.talk.model.entity.User user,
+            @PathVariable Long folderId) {
+        return ResponseEntity.ok(folderLessonService.getLessonsInFolder(folderId, user.getUserId()));
     }
 }

@@ -1,6 +1,5 @@
 package real.talk.controller;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +10,13 @@ import real.talk.model.entity.User;
 import real.talk.service.lesson.LessonService;
 import real.talk.service.user.UserService;
 
-
 import java.util.List;
 import java.util.UUID;
 
 import static real.talk.util.filters.LessonFilterNormalizer.*;
 
 @RestController
-@RequestMapping("api/v1/lessons")
+@RequestMapping("/api/v1/lessons")
 @RequiredArgsConstructor
 @Slf4j
 class LessonsController {
@@ -51,8 +49,7 @@ class LessonsController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(defaultValue = "createdAt,desc") String sort,
-            @RequestParam(required = false) String email
-    ) {
+            @RequestParam(required = false) String email) {
         var filter = LessonFilter.builder()
                 .language(blankToNull(language))
                 .languageLevel(blankToNull(languageLevel))
@@ -67,8 +64,28 @@ class LessonsController {
         if (!normalized.equals(filter)) {
             log.info("Normalized public-lessons params: from={} to={}", filter, normalized);
         }
-        // теперь берём ЛЁГКИЙ список (meta) без тяжёлого JSON data
-        var resultPage = lessonService.getPublicLessonsLite(normalized);
+
+        // Identify usage
+        User currentUser = null;
+        try {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
+                    .getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+                if (auth.getPrincipal() instanceof org.springframework.security.oauth2.core.user.OAuth2User oauthUser) {
+                    String email1 = oauthUser.getAttribute("email");
+                    currentUser = userService.getUserByEmail(email1).orElse(null);
+                } else if (auth
+                        .getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
+                    currentUser = userService.getUserByEmail(userDetails.getUsername()).orElse(null);
+                } else if (auth.getPrincipal() instanceof User) {
+                    currentUser = (User) auth.getPrincipal();
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Failed to resolve user in LessonsController", e);
+        }
+
+        var resultPage = lessonService.getPublicLessonsLite(normalized, currentUser);
         return ResponseEntity.ok(resultPage.getContent());
     }
 

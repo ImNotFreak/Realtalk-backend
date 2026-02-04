@@ -23,6 +23,7 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final real.talk.service.user.UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -35,16 +36,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 Jwt jwt = jwtService.parseToken(token);
                 String email = jwtService.extractEmail(token); // пример
-                String role = jwtService.extractRole(token);   // пример
+                String role = jwtService.extractRole(token); // пример
 
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
-                    JwtAuthenticationToken authentication = new JwtAuthenticationToken(jwt, authorities);
+                    real.talk.model.entity.User userDetails = userService.getUserByEmail(email).orElse(null);
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);;
+                    if (userDetails != null) {
+                        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                        // Use UsernamePasswordAuthenticationToken to hold the User entity as principal
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, authorities);
+
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
             } catch (Exception e) {
-                // невалидный токен -> оставляем без аутентификации, дальше сработает entry point 401
+                // невалидный токен -> оставляем без аутентификации, дальше сработает entry
+                // point 401
             }
         }
         chain.doFilter(request, response);

@@ -4,11 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7af36ec2-78fb-4b5f-8183-6cc93473f5c0" name="Changes" comment="">
+    <list default="true" id="7af36ec2-78fb-4b5f-8183-6cc93473f5c0" name="Changes" comment="home page">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/FolderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/FolderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/LessonHistoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/LessonHistoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/LessonLikeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/LessonLikeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/LessonsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/LessonsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/WordSetController.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/WordSetController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/handler/ControllerExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/controller/handler/ControllerExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/model/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/model/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/model/entity/enums/UserRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/model/entity/enums/UserRole.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/repository/lesson/LessonRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/repository/lesson/LessonRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/repository/words/WordSetWordRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/repository/words/WordSetWordRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/service/auth/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/service/auth/JwtAuthenticationFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/service/lesson/LessonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/service/lesson/LessonService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/service/lesson/LessonTaskScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/service/lesson/LessonTaskScheduler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/service/words/WordSetService.java" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/java/real/talk/service/words/WordSetService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/real-talk/src/main/resources/db/changelog/changelog-master.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/real-talk/src/main/resources/db/changelog/changelog-master.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,16 +47,6 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="real-talk" type="f1a62948:ProjectNode" />
               </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="real-talk" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="real-talk" type="f1a62948:ProjectNode" />
-                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
-              </path>
             </expand>
             <select />
           </tree_state>
@@ -53,6 +57,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Spring Repository" />
+        <option value="Spring Service" />
+        <option value="Spring REST Controller" />
         <option value="Class" />
       </list>
     </option>
@@ -73,14 +80,21 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/ImNotFreak/Realtalk-backend.git&quot;,
-    &quot;accountId&quot;: &quot;bc83d968-2c3b-4cb6-93c1-032400f198e8&quot;
+    &quot;url&quot;: &quot;https://github.com/ImNotFreak/EnglishLessons.git&quot;,
+    &quot;accountId&quot;: &quot;7387879d-7d15-4397-b60b-b2baddb051b2&quot;
   }
+}</component>
+  <component name="HttpClientOnboardingState">{
+  &quot;isOnboardingCommentShown&quot;: true
 }</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -92,22 +106,31 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Gradle.Build real-talk.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;Spring Boot.RealTalkApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/lesson-lite-full&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/user/IdeaProjects/Realtalk-backend&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/sasha/IdeaProjects/EnglishLessons/real-talk/src/main/resources/db/changelog&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\sasha\\AppData\\Local\\Programs\\IntelliJ IDEA Ultimate\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -116,6 +139,14 @@
     ]
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\sasha\IdeaProjects\EnglishLessons\real-talk\src\main\resources\db\changelog" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="real.talk.model.dto.folder" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="RealTalkApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <envs>
@@ -137,8 +168,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
+        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.138" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.138" />
       </set>
     </attachedChunks>
   </component>
@@ -159,10 +190,147 @@
       <workItem from="1761840266685" duration="1310000" />
       <workItem from="1761917852908" duration="18000" />
       <workItem from="1761918613606" duration="18631000" />
+      <workItem from="1762103035065" duration="320000" />
+      <workItem from="1762108030173" duration="217000" />
+      <workItem from="1762168697957" duration="4869000" />
+      <workItem from="1762248912440" duration="5186000" />
+      <workItem from="1762327561012" duration="9748000" />
+      <workItem from="1762425087893" duration="5478000" />
+      <workItem from="1762769907485" duration="4272000" />
+      <workItem from="1762844718950" duration="10349000" />
+      <workItem from="1762940446079" duration="3851000" />
+      <workItem from="1763193689755" duration="5971000" />
+      <workItem from="1763364224193" duration="1081000" />
+      <workItem from="1763813500005" duration="1290000" />
+      <workItem from="1763884511346" duration="3374000" />
+      <workItem from="1763999312930" duration="1527000" />
+      <workItem from="1764058866727" duration="1828000" />
+      <workItem from="1764167902100" duration="3067000" />
+      <workItem from="1764226927786" duration="3431000" />
+      <workItem from="1764313821563" duration="2990000" />
+      <workItem from="1764408171086" duration="2203000" />
+      <workItem from="1764442052918" duration="610000" />
+      <workItem from="1764677639749" duration="699000" />
+      <workItem from="1764689823337" duration="131000" />
+      <workItem from="1764699857689" duration="2268000" />
+      <workItem from="1764744899994" duration="7811000" />
+      <workItem from="1764845270233" duration="1204000" />
+      <workItem from="1765130786780" duration="1668000" />
+      <workItem from="1765275257023" duration="1177000" />
+      <workItem from="1765357460607" duration="47000" />
+      <workItem from="1765468160062" duration="529000" />
+      <workItem from="1765553931006" duration="7061000" />
+      <workItem from="1765653702268" duration="1873000" />
+      <workItem from="1765893691540" duration="47000" />
+      <workItem from="1766666889580" duration="419000" />
+      <workItem from="1767539453158" duration="631000" />
+      <workItem from="1768208308590" duration="133000" />
+      <workItem from="1768405619925" duration="653000" />
+      <workItem from="1768466814010" duration="8919000" />
+      <workItem from="1768547846726" duration="13726000" />
+      <workItem from="1768644209752" duration="18482000" />
+      <workItem from="1768678307041" duration="8180000" />
+      <workItem from="1768735877984" duration="10836000" />
+      <workItem from="1768914266007" duration="2049000" />
+      <workItem from="1768980080295" duration="9408000" />
+      <workItem from="1769163914429" duration="2240000" />
+      <workItem from="1769186872056" duration="1750000" />
+      <workItem from="1769198332524" duration="521000" />
+      <workItem from="1769203410782" duration="34000" />
+      <workItem from="1769585497397" duration="3311000" />
+      <workItem from="1769669936576" duration="7395000" />
+      <workItem from="1769781371437" duration="13107000" />
+      <workItem from="1769848584782" duration="15328000" />
+      <workItem from="1769950234169" duration="9550000" />
+      <workItem from="1770047600436" duration="1899000" />
+      <workItem from="1770188853011" duration="4426000" />
+      <workItem from="1770228891812" duration="181000" />
+      <workItem from="1770229086177" duration="760000" />
+      <workItem from="1770229966503" duration="134000" />
+      <workItem from="1770230131776" duration="698000" />
     </task>
+    <task id="LOCAL-00001" summary="My lessons function">
+      <option name="closed" value="true" />
+      <created>1762071179671</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1762071179671</updated>
+    </task>
+    <task id="LOCAL-00002" summary="My lessons function">
+      <option name="closed" value="true" />
+      <created>1762260405684</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1762260405684</updated>
+    </task>
+    <task id="LOCAL-00003" summary="config">
+      <option name="closed" value="true" />
+      <created>1763364638502</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1763364638502</updated>
+    </task>
+    <task id="LOCAL-00004" summary="config">
+      <option name="closed" value="true" />
+      <created>1763813539737</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1763813539737</updated>
+    </task>
+    <task id="LOCAL-00005" summary="home page">
+      <option name="closed" value="true" />
+      <created>1769585636533</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1769585636533</updated>
+    </task>
+    <task id="LOCAL-00006" summary="home page">
+      <option name="closed" value="true" />
+      <created>1769585856641</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1769585856641</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="My lessons function" />
+    <MESSAGE value="config" />
+    <MESSAGE value="home page" />
+    <option name="LAST_COMMIT_MESSAGE" value="home page" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="org.springframework.web.HttpRequestMethodNotSupportedException" package="org.springframework.web" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="org.springframework.web.method.annotation.MethodArgumentTypeMismatchException" package="org.springframework.web.method.annotation" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/real-talk/src/main/java/real/talk/service/access/AccessControlService.java</url>
+          <line>24</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="real.talk.model.dto.lesson.LessonGeneratedByLlm$LexicalExercise" memberName="items" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
 </project>

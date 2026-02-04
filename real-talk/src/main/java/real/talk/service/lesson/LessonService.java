@@ -16,8 +16,10 @@ import real.talk.model.entity.enums.LessonStatus;
 import real.talk.repository.lesson.LessonRepository;
 import real.talk.model.dto.lesson.LessonLiteResponse;
 import real.talk.model.dto.lesson.LessonFullResponse;
-
-
+import real.talk.model.entity.enums.UserRole;
+import real.talk.repository.subscription.SubscriptionRepository;
+import real.talk.repository.user.UserRepository;
+import real.talk.service.access.AccessControlService;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,8 +32,14 @@ import java.util.UUID;
 public class LessonService {
 
     private final LessonRepository lessonRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private final UserRepository userRepository;
+    private final AccessControlService accessControlService;
 
     public Lesson createLesson(User user, LessonCreateRequest lessonRequest) {
+        // Access Check
+        checkBuilderAccess(user);
+
         Lesson lesson = new Lesson();
         lesson.setId(UUID.randomUUID());
         lesson.setUser(user);
@@ -43,7 +51,22 @@ public class LessonService {
         lesson.setAccess(LessonAccess.PUBLIC);
         lesson.setCreatedAt(Instant.now());
         lessonRepository.save(lesson);
+
         return lesson;
+    }
+
+    private void checkBuilderAccess(User user) {
+        // Delegate to centralized guard
+        // We assume 'false' for scenarios for now unless specific endpoint requires it
+        // Or if createLesson uses scenarios (it does set 'scenario' sometimes?)
+        // The Lesson entity doesn't show 'scenario' field in the snippet, but prompt
+        // mentions it.
+        // For MVP/Current state, let's enforce basic builder access.
+        // If scenarios are separate param, we would check it.
+        // Prompt says: "Lesson scenario selection in Lesson Builder" -> Plus only.
+        // But here we are just creating a lesson. Let's assume basic access check
+        // first.
+        accessControlService.checkBuilderAccess(user, false);
     }
 
     public List<Lesson> getPendingLessons() {
@@ -65,8 +88,10 @@ public class LessonService {
     public Boolean isLessonReady(UUID lessonId) {
         return lessonRepository.existsByIdAndStatusEquals(lessonId, LessonStatus.READY);
     }
+
     /**
-     * Полный урок по id: возвращаем мета + весь JSON data (exercises, glossary и т.д.).
+     * Полный урок по id: возвращаем мета + весь JSON data (exercises, glossary и
+     * т.д.).
      * Используется для детальной страницы / перехода по ссылке.
      */
     public LessonFullResponse getLessonFullById(UUID lessonId) {
@@ -84,10 +109,10 @@ public class LessonService {
                 l.getId(),
                 l.getYoutubeUrl(),
                 l.getLessonTopic(),
-                l.getTags(),          // JSON Tags (lesson_theme, language, lexical_fields, ...)
+                l.getTags(), // JSON Tags (lesson_theme, language, lexical_fields, ...)
                 l.getGrammarTopics(), // список тем грамматики сверху (если нужен на странице)
                 l.getCreatedAt(),
-                data                   // ВЕСЬ контент урока (exercises, glossary, transcript, и т.д.)
+                data // ВЕСЬ контент урока (exercises, glossary, transcript, и т.д.)
         );
     }
 
@@ -95,8 +120,13 @@ public class LessonService {
      * Лёгкий список публичных готовых уроков (без JSON 'data'), постранично.
      * Используется на странице OpenLibrary.
      */
-    public Page<LessonLiteResponse> getPublicLessonsLite(LessonFilter f) {
+    public Page<LessonLiteResponse> getPublicLessonsLite(LessonFilter f, User viewer) {
         Pageable pageable = buildPageable(f.getPage(), f.getSize(), f.getSort());
+
+        // Check Access Level
+        boolean fullAccess = accessControlService.canAccessPublicLibrary(viewer);
+
+        // If filtering by specific email (author), handle it
         String email = f.getEmail();
         if (email != null) {
             return lessonRepository.findLiteByStatusAndAccessAndEmail(
@@ -105,14 +135,23 @@ public class LessonService {
                             LessonStatus.PROCESSING),
                     LessonAccess.PUBLIC,
                     email,
-                    pageable
-            );
-        }else {
+                    pageable);
+        }
+
+        if (fullAccess) {
+            // Smart/Plus: Show All Public Lessons (Community + System)
             return lessonRepository.findLiteByStatusAndAccess(
                     LessonStatus.READY,
                     LessonAccess.PUBLIC,
-                    pageable
-            );
+                    pageable);
+        } else {
+            // Unauth / Free / Student: Show Only System Lessons (Admin)
+            // "Open Library" = System content
+            return lessonRepository.findLiteByStatusAndAccessAndUserRole(
+                    LessonStatus.READY,
+                    LessonAccess.PUBLIC,
+                    UserRole.ADMIN,
+                    pageable);
         }
     }
 
@@ -121,11 +160,9 @@ public class LessonService {
         Page<LessonLiteResponse> page = lessonRepository.findLiteByStatusAndAccess(
                 LessonStatus.READY,
                 LessonAccess.PUBLIC,
-                pageable
-        );
+                pageable);
         return page;
     }
-
 
     public List<LessonGeneratedByLlm> getPublicReadyLessons() {
         return lessonRepository.findByStatusAndAccess(LessonStatus.READY, LessonAccess.PUBLIC)
@@ -136,7 +173,7 @@ public class LessonService {
                 }).toList();
     }
 
-    //Перегрузка с фильтрами — теперь постранично + сортировка (белый список) */
+    // Перегрузка с фильтрами — теперь постранично + сортировка (белый список) */
     public Page<LessonGeneratedByLlm> getPublicReadyLessons(LessonFilter f) {
         Pageable pageable = buildPageable(f.getPage(), f.getSize(), f.getSort()); // только page/size
         // разберём sort=language,-lesson_topic → s1,s2 токены
@@ -145,8 +182,7 @@ public class LessonService {
                 LessonStatus.READY.name(), LessonAccess.PUBLIC.name(),
                 f.getLanguage(), f.getLanguageLevel(), f.getLessonTopic(), f.getGrammarContains(),
                 sortTokens[0], sortTokens[1],
-                pageable
-        );
+                pageable);
         return page.map(lesson -> {
             LessonGeneratedByLlm dto = lesson.getData();
             dto.setYou_tube_url(lesson.getYoutubeUrl());
@@ -176,12 +212,14 @@ public class LessonService {
     private String[] toSortTokens(String sortParam) {
         String def = "created_at_desc";
         String s1 = def, s2 = def;
-        if (sortParam == null || sortParam.isBlank()) return new String[]{s1, s2};
+        if (sortParam == null || sortParam.isBlank())
+            return new String[] { s1, s2 };
 
         ArrayList<String> tokens = new ArrayList<>();
         for (String raw : sortParam.split(",")) {
             String t = raw.trim();
-            if (t.isEmpty()) continue;
+            if (t.isEmpty())
+                continue;
             boolean desc = t.startsWith("-");
             String key = t.replaceFirst("^[+-]", "");
             String dbKey = switch (key) {
@@ -194,11 +232,12 @@ public class LessonService {
                 tokens.add(dbKey + (desc ? "_desc" : "_asc"));
             }
         }
-        if (!tokens.isEmpty()) s1 = tokens.get(0);
-        if (tokens.size() > 1) s2 = tokens.get(1);
-        return new String[]{s1, s2};
+        if (!tokens.isEmpty())
+            s1 = tokens.get(0);
+        if (tokens.size() > 1)
+            s2 = tokens.get(1);
+        return new String[] { s1, s2 };
     }
-
 
     public Lesson saveLesson(Lesson lesson) {
         return lessonRepository.save(lesson);

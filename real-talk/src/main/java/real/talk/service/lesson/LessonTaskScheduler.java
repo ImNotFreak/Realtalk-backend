@@ -31,9 +31,9 @@ public class LessonTaskScheduler {
 
     @Scheduled(cron = "${lesson.ready-lesson.cron}")
     @Transactional
-    public void processReadyLessons(){
+    public void processReadyLessons() {
         List<Lesson> lessonsWithLlmDone = lessonService.getLessonsWithLlmDone();
-        if(lessonsWithLlmDone == null || lessonsWithLlmDone.isEmpty()){
+        if (lessonsWithLlmDone == null || lessonsWithLlmDone.isEmpty()) {
             log.info("Lessons with Llm Done not found");
             return;
         }
@@ -52,7 +52,8 @@ public class LessonTaskScheduler {
                     });
 
             LessonGeneratedByLlm lessonData = llm.getData();
-            List<TranscriptionResultResponse.Utterance> utterances = gladia.getData().getResult().getTranscription().getUtterances();
+            List<TranscriptionResultResponse.Utterance> utterances = gladia.getData().getResult().getTranscription()
+                    .getUtterances();
             List<LessonGeneratedByLlm.GlossaryItem> glossary = lessonData.getGlossary();
 
             log.info("📖 Урок id={} содержит {} элементов в glossary и {} utterances",
@@ -66,20 +67,28 @@ public class LessonTaskScheduler {
             log.info("✅ Урок id={} обновлен и сохранен со статусом READY", lesson.getId());
 
             User user = lesson.getUser();
-            user.setDuration(user.getDuration() + gladia.getData().getFile().getAudioDuration());
+            double audioDurationSeconds = gladia.getData().getFile().getAudioDuration();
+            user.setDuration(user.getDuration() + audioDurationSeconds);
             user.setLessonCount(user.getLessonCount() + 1);
+
+            // Subtract minutes from quota
+            if (user.getLessonBuilderMinutes() != null) {
+                int lessonMinutes = (int) Math.ceil(audioDurationSeconds / 60.0);
+                user.setLessonBuilderMinutes(Math.max(0, user.getLessonBuilderMinutes() - lessonMinutes));
+            }
+
             userService.saveUser(user);
 
-            log.info("User [{}] updated: duration -> {}, lessons -> {}",
+            log.info("User [{}] updated: duration -> {}, lessons -> {}, minutes remaining -> {}",
                     user.getUserId(),
                     user.getDuration(),
-                    user.getLessonCount()
-            );
+                    user.getLessonCount(),
+                    user.getLessonBuilderMinutes());
         });
     }
 
     private void setGlossaryTimeCode(List<LessonGeneratedByLlm.GlossaryItem> glossary,
-                                     List<TranscriptionResultResponse.Utterance> utterances) {
+            List<TranscriptionResultResponse.Utterance> utterances) {
 
         LevenshteinDistance levenshtein = new LevenshteinDistance();
 

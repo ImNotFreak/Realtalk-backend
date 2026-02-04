@@ -27,7 +27,6 @@ import real.talk.service.auth.JwtService;
 import real.talk.service.user.UserService;
 import org.springframework.http.HttpMethod;
 
-
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -56,13 +55,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/lessons/public-lessons",
-                                "/api/v1/lessons/*"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                )
+                                "/api/v1/lessons/*")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/paddle/webhook")
+                        .permitAll()
+                        .anyRequest().authenticated())
                 // ВАЖНО: для API вместо редиректа отдаём 401
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);;
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        ;
 
         return http.build();
     }
@@ -76,8 +78,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/oauth2/**").permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .oauth2Login(oauth -> oauth
                         .successHandler((request, response, authentication) -> {
                             OAuth2User principal = (OAuth2User) authentication.getPrincipal();
@@ -106,10 +107,10 @@ public class SecurityConfig {
                             });
                             userService.saveUser(user);
 
-                            String token = jwtService.generateToken(user.getEmail(), user.getName(), user.getRole(), user.getUserId());
+                            String token = jwtService.generateToken(user.getEmail(), user.getName(), user.getRole(),
+                                    user.getUserId());
                             response.sendRedirect(frontendUrl + "/login/success?token=" + token);
-                        })
-                );
+                        }));
 
         return http.build();
     }
@@ -118,8 +119,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOrigins(List.of(frontendUrl));
-        cfg.setAllowedMethods(List.of("GET","POST","PUT", "PATCH" ,"DELETE","OPTIONS"));
-        cfg.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","X-Requested-With","Origin"));
+        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "X-Requested-With", "Origin"));
         cfg.setAllowCredentials(true);
         cfg.setMaxAge(3600L);
 

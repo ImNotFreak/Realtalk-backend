@@ -90,8 +90,9 @@ public class WordSetService {
         }).toList();
     }
 
-    public void removeWordFromSet(UUID wordSetId, UUID wordId) {
-        wordSetWordRepository.deleteByWordSetIdAndWordId(wordSetId, wordId);
+    @Transactional
+    public void removeWordsFromSet(UUID wordSetId, List<UUID> wordIds) {
+        wordSetWordRepository.deleteByWordSetIdAndWordIdIn(wordSetId, wordIds);
     }
 
     public void deleteWordSet(UUID wordSetId) {
