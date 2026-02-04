@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-student-teacher-links-table
+      author: backend
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            - tableExists:
+                tableName: student_teacher_links
+      changes:
+        - createTable:
+            tableName: student_teacher_links
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: teacher_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_student_teacher_teacher
+                    references: users(user_id)
+              - column:
+                  name: student_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_student_teacher_student
+                    references: users(user_id)
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueDate: CURRENT_TIMESTAMP

@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-paddle-columns-to-users
+      author: backend
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            - columnExists:
+                tableName: users
+                columnName: paddle_customer_id
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: paddle_customer_id
+                  type: varchar(255)
+              - column:
+                  name: lesson_builder_minutes
+                  type: int
+                  defaultValueNumeric: 0
+  - changeSet:
+      id: update-user-roles-check-constraint
+      author: backend
+      changes:
+        - sql:
+            sql: "ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check"
+        - sql:
+            sql: "ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('USER', 'ADMIN', 'STUDENT', 'OPEN_LIBRARY', 'SMART', 'PLUS', 'PRO', 'UNAUTHORIZED'))"
+  - changeSet:
+      id: create-subscriptions-table
+      author: antigravity
+      changes:
+        - createTable:
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_subscriptions_user
+                    references: users(user_id)
+              - column:
+                  name: paddle_subscription_id
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+              - column:
+                  name: paddle_customer_id
+                  type: varchar(255)
+              - column:
+                  name: status
+                  type: varchar(50)
+              - column:
+                  name: plan
+                  type: varchar(50)
+              - column:
+                  name: next_billed_at
+                  type: timestamp
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp

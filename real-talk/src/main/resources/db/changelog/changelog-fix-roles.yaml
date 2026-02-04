@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: fix-user-roles-enum-string
+      author: backend
+      changes:
+        - sql:
+            sql: "UPDATE users SET role = 'USER' WHERE role = '0'"
+        - sql:
+            sql: "UPDATE users SET role = 'ADMIN' WHERE role = '1'"
