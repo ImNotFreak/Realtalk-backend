@@ -32,6 +32,11 @@ databaseChangeLog:
   - changeSet:
       id: create-subscriptions-table
       author: antigravity
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            - tableExists:
+                tableName: subscriptions
       changes:
         - createTable:
             tableName: subscriptions
