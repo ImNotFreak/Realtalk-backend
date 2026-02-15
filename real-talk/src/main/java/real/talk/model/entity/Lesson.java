@@ -66,4 +66,8 @@ public class Lesson {
 
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "lesson_shared_users", joinColumns = @JoinColumn(name = "lesson_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private java.util.Set<User> sharedUsers = new java.util.HashSet<>();
 }

@@ -11,6 +11,8 @@ import real.talk.model.entity.enums.SubscriptionStatus;
 import real.talk.model.entity.enums.UserRole;
 import real.talk.repository.subscription.SubscriptionRepository;
 
+import java.util.Comparator;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -54,9 +56,10 @@ public class AccessControlService {
         return new UserAccessDto(
                 user.getUserId().toString(),
                 user.getEmail(),
-                user.getName(), // Assuming avatar field exists or is picture
+                user.getName(),
                 user.getRole(),
                 plan,
+                (sub != null) ? sub.getPaddleCustomerId() : null,
                 getRemainingMinutes(user),
                 perms);
     }
@@ -85,7 +88,8 @@ public class AccessControlService {
         if (user.getRole() == UserRole.STUDENT)
             return true;
 
-        return hasActivePlan(user, SubscriptionPlan.OPEN_LIBRARY, SubscriptionPlan.SMART, SubscriptionPlan.PLUS);
+        return hasActivePlan(user, SubscriptionPlan.OPEN_LIBRARY, SubscriptionPlan.SMART, SubscriptionPlan.PLUS,
+                SubscriptionPlan.PRO);
     }
 
     /**
@@ -119,7 +123,7 @@ public class AccessControlService {
         }
 
         // Scenario Check
-        if (requiresScenarios && sub.getPlan() != SubscriptionPlan.PLUS) {
+        if (requiresScenarios && !hasPlanAtLeast(sub.getPlan(), SubscriptionPlan.PLUS)) {
             throw new AccessDeniedException("Lesson Scenarios require Plus plan.");
         }
 
@@ -143,7 +147,7 @@ public class AccessControlService {
         if (user.getRole() == UserRole.ADMIN)
             return true;
 
-        return hasActivePlan(user, SubscriptionPlan.PLUS);
+        return hasActivePlan(user, SubscriptionPlan.PLUS, SubscriptionPlan.PRO);
     }
 
     // --- Shared Link Logic ---
@@ -195,8 +199,24 @@ public class AccessControlService {
         return subscriptionRepository.findByUserUserId(user.getUserId())
                 .stream()
                 .filter(s -> s.getStatus() == SubscriptionStatus.active || s.getStatus() == SubscriptionStatus.trialing)
-                .findFirst()
+                .max(Comparator.comparingInt(s -> getPlanPriority(s.getPlan())))
                 .orElse(null);
+    }
+
+    private boolean hasPlanAtLeast(SubscriptionPlan actualPlan, SubscriptionPlan minimumPlan) {
+        return getPlanPriority(actualPlan) >= getPlanPriority(minimumPlan);
+    }
+
+    private int getPlanPriority(SubscriptionPlan plan) {
+        if (plan == null) {
+            return -1;
+        }
+        return switch (plan) {
+            case OPEN_LIBRARY -> 0;
+            case SMART -> 1;
+            case PLUS -> 2;
+            case PRO -> 3;
+        };
     }
 
     // Inner RuntimeException for simplicity, or use global one

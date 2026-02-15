@@ -33,7 +33,7 @@ spring:
 
 logging:
   level:
-    root: WARN
+    root: ERROR
 
 gladia:
   create-request:
@@ -71,9 +71,14 @@ server:
       protocol-header: x-forwarded-proto
 
 paddle:
+  api:
+    key: ${PADDLE_API_KEY}
+    url: ${PADDLE_API_URL:https://sandbox-api.paddle.com}
   webhook:
    secret: ${WEBHOOK_TOKEN}
   price:
     smart: ${PRICE_SMART}
     plus: ${PRICE_PLUS}
     open-library: ${PRICE_OPEN_LIB}
+    100-mins-start: ${100_MIN_START}
+    100-mins-plus: ${100_MIN_PLUS}

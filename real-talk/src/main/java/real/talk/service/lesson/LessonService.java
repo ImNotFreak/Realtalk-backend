@@ -13,6 +13,7 @@ import real.talk.model.entity.enums.LessonAccess;
 import real.talk.model.entity.enums.LessonStatus;
 import real.talk.model.entity.enums.UserRole;
 import real.talk.repository.lesson.LessonRepository;
+import real.talk.repository.user.UserRepository;
 import real.talk.service.access.AccessControlService;
 
 import java.time.Instant;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class LessonService {
 
     private final LessonRepository lessonRepository;
+    private final UserRepository userRepository;
     private final AccessControlService accessControlService;
 
     public Lesson createLesson(User user, LessonCreateRequest lessonRequest) {
@@ -233,5 +235,40 @@ public class LessonService {
 
     public Lesson saveLesson(Lesson lesson) {
         return lessonRepository.save(lesson);
+    }
+
+    public void shareLesson(UUID lessonId, UUID studentId) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
+
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+        lesson.getSharedUsers().add(student);
+        lessonRepository.save(lesson);
+    }
+
+    public void unshareLesson(UUID lessonId, UUID studentId) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
+
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+        lesson.getSharedUsers().remove(student);
+        lessonRepository.save(lesson);
+    }
+
+    public List<real.talk.model.dto.student.StudentResponse> getSharedUsers(UUID lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
+        return lesson.getSharedUsers().stream()
+                .map(u -> new real.talk.model.dto.student.StudentResponse(u.getUserId(), u.getName(), u.getEmail(),
+                        null))
+                .toList();
+    }
+
+    public List<LessonLiteResponse> getSharedLessons(User user) {
+        return lessonRepository.findSharedLessons(user.getUserId());
     }
 }

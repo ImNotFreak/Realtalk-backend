@@ -60,6 +60,10 @@ public class WordSet {
                 .toList();
     }
 
+    @ManyToMany
+    @JoinTable(name = "word_set_shared_users", joinColumns = @JoinColumn(name = "word_set_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private java.util.Set<User> sharedWith = new java.util.HashSet<>();
+
     public void updateWordCount() {
         this.wordCount = wordSetWords.size();
     }

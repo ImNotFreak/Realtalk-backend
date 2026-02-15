@@ -7,6 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import real.talk.model.entity.Subscription;
 import real.talk.model.entity.User;
 import real.talk.model.entity.enums.SubscriptionPlan;
@@ -18,6 +23,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Optional;
 
 @Slf4j
@@ -28,9 +34,16 @@ public class PaddleService {
     private final SubscriptionRepository subscriptionRepository;
     private final UserService userService;
     private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
 
     @Value("${paddle.webhook.secret}")
     private String webhookSecret;
+
+    @Value("${paddle.api.key}")
+    private String paddleApiKey;
+
+    @Value("${paddle.api.url}")
+    private String paddleApiUrl;
 
     // Plans map (Paddle Price ID -> Internal Plan)
     // You should preferably put these in properties or DB, but hardcoded for now is
@@ -45,7 +58,12 @@ public class PaddleService {
     @Value("${paddle.price.plus:}")
     private String plusPriceId;
 
-    // ...
+    @Value("${paddle.price.100-mins-start:}")
+    private String mins100StartPriceId;
+
+    @Value("${paddle.price.100-mins-plus:}")
+    private String mins100PlusPriceId;
+
 
     private SubscriptionPlan determinePlan(JsonNode data) {
         // Parse items to find priceId
@@ -110,7 +128,9 @@ public class PaddleService {
                 case "subscription.canceled":
                     handleSubscriptionCanceled(data);
                     break;
-                // Add "transaction.completed" if needed for one-time payments or initial sub
+                case "transaction.completed":
+                    handleTransactionCompleted(data);
+                    break;
                 default:
                     log.debug("Ignored event type: {}", eventType);
             }
@@ -190,6 +210,55 @@ public class PaddleService {
         userService.saveUser(user);
     }
 
+    private void handleTransactionCompleted(JsonNode data) {
+        log.info("Handling transaction.completed: {}", data.path("id").asText());
+
+        // Parse items to see if it's one of our "Add minutes" products
+        JsonNode items = data.path("items");
+        boolean isAddMinutes = false;
+        if (items.isArray()) {
+            for (JsonNode item : items) {
+                String priceId = item.path("price_id").asText();
+                if (priceId.equals(mins100StartPriceId) || priceId.equals(mins100PlusPriceId)) {
+                    isAddMinutes = true;
+                    break;
+                }
+            }
+        }
+
+        if (!isAddMinutes) {
+            log.info("Transaction does not contain 'Add minutes' product. Ignoring.");
+            return;
+        }
+
+        // Find user by custom_data.email or customer_id
+        JsonNode customData = data.path("custom_data");
+        User user = null;
+        if (customData.has("email")) {
+            String email = customData.get("email").asText();
+            user = userService.getUserByEmail(email).orElse(null);
+        } else {
+            String customerId = data.path("customer_id").asText();
+            // Assuming customer_id can be used to find user if email is missing
+            // But usually we pass email in customData.
+            // Let's check subscription linking if user is null?
+            // For now, let's stick to email as it's passed from frontend in
+            // paddleService.openCheckout
+            log.warn("No email in custom_data for transaction {}", data.path("id").asText());
+        }
+
+        if (user == null) {
+            log.error("Could not link transaction to any user. Data: {}", customData.toString());
+            return;
+        }
+
+        // Increment minutes
+        int currentMinutes = user.getLessonBuilderMinutes() != null ? user.getLessonBuilderMinutes() : 0;
+        user.setLessonBuilderMinutes(currentMinutes + 100);
+        userService.saveUser(user);
+        log.info("Added 100 minutes to user {}. New total: {}", user.getEmail(), user.getLessonBuilderMinutes());
+    }
+
     private void handleSubscriptionCanceled(JsonNode data) {
         String paddleSubId = data.path("id").asText();
         Optional<Subscription> subOpt = subscriptionRepository.findByPaddleSubscriptionId(paddleSubId);
@@ -219,6 +288,50 @@ public class PaddleService {
                 .filter(s -> s.getStatus() == SubscriptionStatus.active)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public String getPortalSession(User user) {
+        if (user.getPaddleCustomerId() == null) {
+            log.warn("User {} does not have a Paddle Customer ID", user.getEmail());
+            return null;
+        }
+
+        String apiKey = paddleApiKey != null ? paddleApiKey.trim() : null;
+        if (apiKey == null || apiKey.isEmpty() || apiKey.startsWith("${")) {
+            log.error("Paddle API Key is NOT configured or remains an unresolved placeholder: {}", apiKey);
+            return null;
+        }
+
+        try {
+            String url = paddleApiUrl + "/customers/" + user.getPaddleCustomerId() + "/portal-sessions";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + apiKey);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+            HttpEntity<String> entity = new HttpEntity<>("{}", headers);
+
+            log.info("Requesting Paddle Portal session for customer: {} (URL: {})", user.getPaddleCustomerId(), url);
+            ResponseEntity<JsonNode> response = restTemplate.postForEntity(url, entity, JsonNode.class);
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                String portalUrl = response.getBody().path("data").path("urls").path("general").path("overview")
+                        .asText();
+                log.info("Successfully generated Paddle Portal URL");
+                return portalUrl;
+            } else {
+                log.error("Failed to generate Paddle Portal session. Status: {}. Response: {}",
+                        response.getStatusCode(), response.getBody());
+                return null;
+            }
+        } catch (org.springframework.web.client.HttpClientErrorException e) {
+            log.error("Paddle API error: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            return null;
+        } catch (Exception e) {
+            log.error("Error generating Paddle Portal session", e);
+            return null;
+        }
     }
 
     private boolean verifySignature(String signature, String payload) {

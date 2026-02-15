@@ -32,7 +32,7 @@ public class LessonHistoryService {
                 historyRepository.getLessonsWithHistory(status, access, userId, pageable);
 
         Map<String, List<LessonHistoryResponse>> grouped = new HashMap<>();
-        grouped.put("yesterday", new ArrayList<>());
+        grouped.put("recent", new ArrayList<>());
         grouped.put("lastWeek", new ArrayList<>());
         grouped.put("thisMonth", new ArrayList<>());
 
@@ -41,8 +41,8 @@ public class LessonHistoryService {
             Instant openedAt = lesson.getLastOpenedAt();
             if (openedAt == null) continue; // можно игнорировать или добавлять в отдельный список
 
-            if (openedAt.isAfter(now.minus(1, ChronoUnit.DAYS))) {
-                grouped.get("yesterday").add(lesson);
+            if (openedAt.isAfter(now.minus(1, ChronoUnit.MINUTES))) {
+                grouped.get("recent").add(lesson);
             } else if (openedAt.isAfter(now.minus(7, ChronoUnit.DAYS))) {
                 grouped.get("lastWeek").add(lesson);
             } else if (openedAt.isAfter(now.minus(30, ChronoUnit.DAYS))) {

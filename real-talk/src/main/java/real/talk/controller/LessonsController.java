@@ -98,4 +98,48 @@ class LessonsController {
         return ResponseEntity.ok(lessonService.getLessonFullById(lessonId));
     }
 
+    @PostMapping("/{lessonId}/share")
+    public ResponseEntity<Void> shareLesson(@PathVariable UUID lessonId, @RequestParam UUID studentId) {
+        lessonService.shareLesson(lessonId, studentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{lessonId}/unshare")
+    public ResponseEntity<Void> unshareLesson(@PathVariable UUID lessonId, @RequestParam UUID studentId) {
+        lessonService.unshareLesson(lessonId, studentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{lessonId}/shared-users")
+    public ResponseEntity<List<real.talk.model.dto.student.StudentResponse>> getSharedUsers(
+            @PathVariable UUID lessonId) {
+        return ResponseEntity.ok(lessonService.getSharedUsers(lessonId));
+    }
+
+    @GetMapping("/shared")
+    public ResponseEntity<List<LessonLiteResponse>> getSharedLessons() {
+        // Resolve user
+        User currentUser = null;
+        try {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
+                    .getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+                if (auth.getPrincipal() instanceof User) {
+                    currentUser = (User) auth.getPrincipal();
+                } else if (auth
+                        .getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
+                    currentUser = userService.getUserByEmail(userDetails.getUsername()).orElseThrow();
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Failed to resolve user in LessonsController", e);
+        }
+
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        return ResponseEntity.ok(lessonService.getSharedLessons(currentUser));
+    }
+
 }

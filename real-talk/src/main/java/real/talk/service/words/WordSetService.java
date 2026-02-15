@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import real.talk.model.dto.words.WordResponse;
 import real.talk.model.dto.words.WordSetResponse;
+import real.talk.model.entity.User;
 import real.talk.model.entity.words.Word;
 import real.talk.model.entity.words.WordSet;
 import real.talk.model.entity.words.WordSetWord;
@@ -58,7 +59,8 @@ public class WordSetService {
             // проверяем, есть ли уже слово в сете
             boolean exists = wordSet.getWordSetWords().stream()
                     .anyMatch(wsWord -> wsWord.getWord().getId().equals(wordId));
-            if (exists) continue;
+            if (exists)
+                continue;
 
             Word word = wordRepository.findById(wordId)
                     .orElseThrow(() -> new RuntimeException("Word not found"));
@@ -113,8 +115,7 @@ public class WordSetService {
                             word.getTranslation(),
                             word.getTranslatedExplanation(),
                             word.getAnotherExample(),
-                            word.getTimeCode()
-                    );
+                            word.getTimeCode());
                 })
                 .toList();
     }
@@ -137,5 +138,33 @@ public class WordSetService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return wordSetRepository.countByUser(user);
+    }
+
+    @Transactional
+    public void shareWordSet(UUID wordSetId, UUID studentId) {
+        WordSet wordSet = wordSetRepository.findById(wordSetId)
+                .orElseThrow(() -> new RuntimeException("WordSet not found"));
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+        wordSet.getSharedWith().add(student);
+        wordSetRepository.save(wordSet);
+    }
+
+    @Transactional(readOnly = true)
+    public List<WordSetResponse> getSharedWordSets(UUID studentId) {
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+        return wordSetRepository.findBySharedWithContains(student).stream()
+                .map(set -> {
+                    set.updateWordCount();
+                    return WordSetResponse.builder()
+                            .id(set.getId())
+                            .name(set.getName())
+                            .wordCount(set.getWordCount())
+                            .build();
+                })
+                .toList();
     }
 }

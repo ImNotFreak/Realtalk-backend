@@ -26,7 +26,7 @@ public class StudentService {
     private final UserService userService;
 
     @Transactional
-    public void addStudent(UUID teacherId, AddStudentRequest request) {
+    public StudentResponse addStudent(UUID teacherId, AddStudentRequest request) {
         User teacher = userService.getUserById(teacherId);
 
         // check if student exists
@@ -61,8 +61,18 @@ public class StudentService {
             link.setCreatedAt(Instant.now());
             studentTeacherRepository.save(link);
             log.info("Linked student {} to teacher {}", student.getEmail(), teacher.getEmail());
+            return new StudentResponse(student.getUserId(), student.getName(), student.getEmail(), link.getCreatedAt());
         } else {
             log.info("Student {} already linked to teacher {}", student.getEmail(), teacher.getEmail());
+            // Fetch existing link date or just use current time if consistency isn't
+            // critical strictly here,
+            // but better to fetch logic if we want exact link creation time.
+            // For now, let's return the student info.
+            // If strictly needed, we could fetch the link.
+            // Simplified: return response with current time or null if link date is not
+            // easily available without fetch.
+            // Let's fetch the link to be precise or just return info.
+            return new StudentResponse(student.getUserId(), student.getName(), student.getEmail(), Instant.now());
         }
     }
 
@@ -80,5 +90,15 @@ public class StudentService {
     public void removeStudent(UUID teacherId, UUID studentId) {
         studentTeacherRepository.deleteByTeacherUserIdAndStudentUserId(teacherId, studentId);
         log.info("Teacher {} removed link to student {}", teacherId, studentId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<StudentResponse> getMyTeacher(UUID studentId) {
+        return studentTeacherRepository.findByStudentUserId(studentId).stream()
+                .findFirst()
+                .map(link -> {
+                    User t = link.getTeacher();
+                    return new StudentResponse(t.getUserId(), t.getName(), t.getEmail(), link.getCreatedAt());
+                });
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import real.talk.model.dto.words.WordResponse;
 import real.talk.model.dto.words.WordSetResponse;
+import real.talk.model.entity.User;
 import real.talk.service.words.WordBankService;
 import real.talk.service.words.WordSetService;
 
@@ -36,7 +37,7 @@ public class WordSetController {
      * Если слова уже есть для этого lessonId, ничего не делаем.
      */
     @PostMapping("/add")
-    public ResponseEntity<Void> addLessonWords(@AuthenticationPrincipal real.talk.model.entity.User user,
+    public ResponseEntity<Void> addLessonWords(@AuthenticationPrincipal User user,
             @RequestParam UUID lessonId) {
         wordBankService.addLessonWordsToUser(user.getUserId(), lessonId);
         return ResponseEntity.ok().build();
@@ -46,7 +47,7 @@ public class WordSetController {
      * Получаем все слова пользователя (Word Bank)
      */
     @GetMapping("/bank")
-    public ResponseEntity<Page<WordResponse>> getWordBank(@AuthenticationPrincipal real.talk.model.entity.User user,
+    public ResponseEntity<Page<WordResponse>> getWordBank(@AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
             @RequestParam(defaultValue = "term") String sortBy,
@@ -63,7 +64,7 @@ public class WordSetController {
      * Создаём новый Word Set
      */
     @PostMapping
-    public ResponseEntity<WordSetResponse> createWordSet(@AuthenticationPrincipal real.talk.model.entity.User user,
+    public ResponseEntity<WordSetResponse> createWordSet(@AuthenticationPrincipal User user,
             @RequestParam String name) {
         WordSetResponse set = wordSetService.createWordSet(user.getUserId(), name);
         return ResponseEntity.ok(set);
@@ -74,7 +75,7 @@ public class WordSetController {
      */
     @GetMapping
     public ResponseEntity<List<WordSetResponse>> getWordSets(
-            @AuthenticationPrincipal real.talk.model.entity.User user) {
+            @AuthenticationPrincipal User user) {
         List<WordSetResponse> sets = wordSetService.getWordSetsForUser(user.getUserId());
         return ResponseEntity.ok(sets);
     }
@@ -127,8 +128,20 @@ public class WordSetController {
     }
 
     @GetMapping("/set/total")
-    public ResponseEntity<Long> getTotalSets(@AuthenticationPrincipal real.talk.model.entity.User user) {
+    public ResponseEntity<Long> getTotalSets(@AuthenticationPrincipal User user) {
         long total = wordSetService.getTotalSets(user.getUserId());
         return ResponseEntity.ok(total);
+    }
+
+    @PostMapping("/{id}/share")
+    public ResponseEntity<Void> shareWordSet(@PathVariable UUID id, @RequestParam UUID studentId) {
+        wordSetService.shareWordSet(id, studentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/shared")
+    public ResponseEntity<List<WordSetResponse>> getSharedWordSets(
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(wordSetService.getSharedWordSets(user.getUserId()));
     }
 }

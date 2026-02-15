@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-create-lesson-shared-users
+      author: backend
+      changes:
+        - createTable:
+            tableName: lesson_shared_users
+            columns:
+              - column:
+                  name: lesson_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: lesson_shared_users
+            columnNames: lesson_id, user_id
+            constraintName: pk_lesson_shared_users
+
+        - addForeignKeyConstraint:
+            baseTableName: lesson_shared_users
+            baseColumnNames: lesson_id
+            referencedTableName: lessons
+            referencedColumnNames: lesson_id
+            constraintName: fk_lesson_shared_users_lesson
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: lesson_shared_users
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_lesson_shared_users_user
+            onDelete: CASCADE

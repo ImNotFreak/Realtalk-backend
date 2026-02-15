@@ -26,3 +26,8 @@ databaseChangeLog:
       file: db/changelog/changelog-fix-roles.yaml
   - include:
       file: db/changelog/changelog-student-teacher.yaml
+
+  - include:
+      file: db/changelog/changelog-word-set-shared-users.yaml
+  - include:
+      file: db/changelog/changelog-lesson-shared-users.yaml

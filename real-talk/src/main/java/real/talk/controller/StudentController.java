@@ -20,10 +20,10 @@ public class StudentController {
     private final StudentService studentService;
 
     @PostMapping
-    public ResponseEntity<Void> addStudent(@AuthenticationPrincipal User user,
+    public ResponseEntity<StudentResponse> addStudent(@AuthenticationPrincipal User user,
             @RequestBody AddStudentRequest request) {
-        studentService.addStudent(user.getUserId(), request);
-        return ResponseEntity.ok().build();
+        StudentResponse response = studentService.addStudent(user.getUserId(), request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
@@ -36,5 +36,12 @@ public class StudentController {
             @PathVariable UUID studentId) {
         studentService.removeStudent(user.getUserId(), studentId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/teacher")
+    public ResponseEntity<StudentResponse> getMyTeacher(@AuthenticationPrincipal User user) {
+        return studentService.getMyTeacher(user.getUserId())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

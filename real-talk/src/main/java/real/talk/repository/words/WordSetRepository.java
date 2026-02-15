@@ -10,6 +10,10 @@ import java.util.UUID;
 
 public interface WordSetRepository extends JpaRepository<WordSet, UUID> {
     List<WordSet> findByUserUserId(UUID userId);
+
     Optional<WordSet> findByIdAndUserUserId(UUID id, UUID userId);
+
     long countByUser(User user);
+
+    List<WordSet> findBySharedWithContains(User user);
 }

@@ -15,6 +15,7 @@ public class UserAccessDto {
     private String name;
     private UserRole role;
     private SubscriptionPlan plan;
+    private String paddleCustomerId;
     private Integer lessonBuilderMinutes;
     private Permissions permissions;
 

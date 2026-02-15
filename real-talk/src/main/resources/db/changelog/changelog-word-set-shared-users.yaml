@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-word-set-shared-users
+      author: backend
+      changes:
+        - createTable:
+            tableName: word_set_shared_users
+            columns:
+              - column:
+                  name: word_set_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: word_set_shared_users
+            columnNames: word_set_id, user_id
+            constraintName: pk_word_set_shared_users
+
+        - addForeignKeyConstraint:
+            baseTableName: word_set_shared_users
+            baseColumnNames: word_set_id
+            referencedTableName: word_sets
+            referencedColumnNames: id
+            constraintName: fk_word_set_shared_users_word_set
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: word_set_shared_users
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_word_set_shared_users_user
+            onDelete: CASCADE

@@ -3,8 +3,10 @@ package real.talk.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import real.talk.model.entity.Subscription;
+import real.talk.model.entity.User;
 import real.talk.service.paddle.PaddleService;
 
 @Slf4j
@@ -37,20 +39,14 @@ public class PaddleController {
         }
     }
 
-    @GetMapping("/my-subscription")
-    public ResponseEntity<Subscription> getMySubscription() {
-        // Resolve user... simplified for this example, normally simpler with annotation
-        // But Controller doesn't have User injected directly in method unless
-        // configured
-        // We will return 401 if logic fails or handle standard auth
-        // Ignoring full Auth resolution code here as it duplicates LessonsController
-        // logic
-        // I will assume SecurityContext works.
-        // Actually, just returning "Not Implemented" properly without User util is
-        // hard.
-        // I'll skip adding the endpoint to Controller to avoid adding buggy auth logic
-        // without testing.
-        // The Service method is enough for internal use.
-        return ResponseEntity.notFound().build();
+    @GetMapping("/portal-session")
+    public ResponseEntity<String> getPortalSession(
+            @AuthenticationPrincipal User user) {
+        String portalUrl = paddleService.getPortalSession(user);
+        if (portalUrl != null) {
+            return ResponseEntity.ok(portalUrl);
+        } else {
+            return ResponseEntity.status(500).body("Could not generate portal session");
+        }
     }
 }
