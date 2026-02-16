@@ -172,3 +172,10 @@ databaseChangeLog:
               - column:
                   name: email
                   type: VARCHAR(255)
+
+  - changeSet:
+      id: drop-white-list
+      author: antigravity
+      changes:
+        - dropTable:
+            tableName: white_list
