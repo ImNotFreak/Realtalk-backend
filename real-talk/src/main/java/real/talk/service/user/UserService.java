@@ -55,4 +55,8 @@ public class UserService {
         return userRepository.findUserByEmail(email);
     }
 
+    public Optional<User> getUserByPaddleCustomerId(String paddleCustomerId) {
+        return userRepository.findByPaddleCustomerId(paddleCustomerId);
+    }
+
 }

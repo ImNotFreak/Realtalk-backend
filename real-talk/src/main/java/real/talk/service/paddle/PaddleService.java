@@ -213,15 +213,36 @@ public class PaddleService {
     private void handleTransactionCompleted(JsonNode data) {
         log.info("Handling transaction.completed: {}", data.path("id").asText());
 
-        // Parse items to see if it's one of our "Add minutes" products
+        // Parse items to see if it's one of our "Add minutes" products.
+        // Paddle transaction items contain price.id, while details.line_items contain price_id.
         JsonNode items = data.path("items");
         boolean isAddMinutes = false;
+        int totalMinutesToAdd = 0;
         if (items.isArray()) {
             for (JsonNode item : items) {
-                String priceId = item.path("price_id").asText();
+                String priceId = item.path("price").path("id").asText();
+                if (priceId == null || priceId.isEmpty()) {
+                    priceId = item.path("price_id").asText();
+                }
+                int quantity = item.path("quantity").asInt(1);
                 if (priceId.equals(mins100StartPriceId) || priceId.equals(mins100PlusPriceId)) {
                     isAddMinutes = true;
-                    break;
+                    totalMinutesToAdd += 100 * quantity;
+                }
+            }
+        }
+
+        // Fallback in case event producer only sends details.line_items.
+        if (!isAddMinutes) {
+            JsonNode lineItems = data.path("details").path("line_items");
+            if (lineItems.isArray()) {
+                for (JsonNode lineItem : lineItems) {
+                    String priceId = lineItem.path("price_id").asText();
+                    int quantity = lineItem.path("quantity").asInt(1);
+                    if (priceId.equals(mins100StartPriceId) || priceId.equals(mins100PlusPriceId)) {
+                        isAddMinutes = true;
+                        totalMinutesToAdd += 100 * quantity;
+                    }
                 }
             }
         }
@@ -231,32 +252,39 @@ public class PaddleService {
             return;
         }
 
-        // Find user by custom_data.email or customer_id
+        if (totalMinutesToAdd <= 0) {
+            totalMinutesToAdd = 100;
+        }
+
+        // Find user by custom_data.email or customer_id.
         JsonNode customData = data.path("custom_data");
         User user = null;
         if (customData.has("email")) {
             String email = customData.get("email").asText();
             user = userService.getUserByEmail(email).orElse(null);
-        } else {
-            String customerId = data.path("customer_id").asText();
-            // Assuming customer_id can be used to find user if email is missing
-            // But usually we pass email in customData.
-            // Let's check subscription linking if user is null?
-            // For now, let's stick to email as it's passed from frontend in
-            // paddleService.openCheckout
-            log.warn("No email in custom_data for transaction {}", data.path("id").asText());
         }
 
         if (user == null) {
-            log.error("Could not link transaction to any user. Data: {}", customData.toString());
+            String customerId = data.path("customer_id").asText();
+            if (customerId != null && !customerId.isEmpty()) {
+                user = userService.getUserByPaddleCustomerId(customerId).orElse(null);
+            } else {
+                log.warn("No email in custom_data and no customer_id for transaction {}", data.path("id").asText());
+            }
+        }
+
+        if (user == null) {
+            log.error("Could not link transaction {} to any user. custom_data: {}, customer_id: {}",
+                    data.path("id").asText(), customData.toString(), data.path("customer_id").asText());
             return;
         }
 
         // Increment minutes
         int currentMinutes = user.getLessonBuilderMinutes() != null ? user.getLessonBuilderMinutes() : 0;
-        user.setLessonBuilderMinutes(currentMinutes + 100);
+        user.setLessonBuilderMinutes(currentMinutes + totalMinutesToAdd);
         userService.saveUser(user);
-        log.info("Added 100 minutes to user {}. New total: {}", user.getEmail(), user.getLessonBuilderMinutes());
+        log.info("Added {} minutes to user {}. New total: {}",
+                totalMinutesToAdd, user.getEmail(), user.getLessonBuilderMinutes());
     }
 
     private void handleSubscriptionCanceled(JsonNode data) {
