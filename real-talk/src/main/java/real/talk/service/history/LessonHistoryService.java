@@ -45,7 +45,7 @@ public class LessonHistoryService {
                 grouped.get("recent").add(lesson);
             } else if (openedAt.isAfter(now.minus(7, ChronoUnit.DAYS))) {
                 grouped.get("lastWeek").add(lesson);
-            } else if (openedAt.isAfter(now.minus(30, ChronoUnit.DAYS))) {
+            } else if (openedAt.isAfter(now.minus(14, ChronoUnit.DAYS))) {
                 grouped.get("thisMonth").add(lesson);
             }
         }
