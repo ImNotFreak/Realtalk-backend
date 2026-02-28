@@ -19,6 +19,8 @@ import real.talk.service.user.UserService;
 
 import java.util.List;
 
+import static java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -38,7 +40,15 @@ public class LessonTaskScheduler {
             return;
         }
 
-        lessonsWithLlmDone.forEach(lesson -> {
+        log.info("Starting concurrent ready lessons check for {} tasks", lessonsWithLlmDone.size());
+        try (var executor = newVirtualThreadPerTaskExecutor()) {
+            lessonsWithLlmDone.forEach(lesson -> executor.submit(() -> processReadyLesson(lesson)));
+        }
+        log.info("Finished submitting ready lessons to executor");
+    }
+
+    private void processReadyLesson(Lesson lesson) {
+        try {
             log.info("▶️ Обработка урока id={} (статус={})", lesson.getId(), lesson.getStatus());
             GladiaData gladia = gladiaService.getGladiaDataByLessonIdAndStatusDone(lesson.getId())
                     .orElseThrow(() -> {
@@ -84,7 +94,9 @@ public class LessonTaskScheduler {
                     user.getDuration(),
                     user.getLessonCount(),
                     user.getLessonBuilderMinutes());
-        });
+        } catch (Exception e) {
+            log.error("Ошибка при обработке готового урока id={}", lesson.getId(), e);
+        }
     }
 
     private void setGlossaryTimeCode(List<LessonGeneratedByLlm.GlossaryItem> glossary,

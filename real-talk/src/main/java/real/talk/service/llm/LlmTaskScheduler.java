@@ -14,7 +14,8 @@ import real.talk.service.transcription.GladiaService;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
+
+import static java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor;
 
 @Service
 @RequiredArgsConstructor
@@ -27,32 +28,43 @@ public class LlmTaskScheduler {
     private final LlmDataService llmDataService;
 
     @Scheduled(cron = "${llm.generate-lesson.cron}")
-    public void processPendingLessons(){
-        Optional<Lesson> processingLesson = lessonService.getLessonWithGladiaDone();
+    public void processPendingLessons() {
+        List<Lesson> processingLessons = lessonService.getBatchProcessingLessonsWithGladiaDone(10);
 
-        if (processingLesson.isPresent()) {
-            Lesson lesson = processingLesson.get();
-            try {
-                log.info("Обрабатываем урок: id={}", lesson.getId());
-                GladiaData data = gladiaService.getGladiaDataByLessonIdAndStatusDone(lesson.getId())
-                        .orElseThrow(() -> new RuntimeException("Gladia Data Not Generated yet for lesson " + lesson.getId()));
+        if (processingLessons == null || processingLessons.isEmpty()) {
+            return;
+        }
 
+        log.info("Starting concurrent processing for {} lessons", processingLessons.size());
 
-                log.info("GladiaData найдено для урока id={}", lesson.getId());
-                LessonGeneratedByLlm generatedLesson = gptLessonService.createLesson(lesson, data);
-                log.info("Урок сгенерирован GPT для урока id={}", lesson.getId());
+        try (var executor = newVirtualThreadPerTaskExecutor()) {
+            processingLessons.forEach(lesson -> executor.submit(() -> processLesson(lesson)));
+        }
 
-                LlmData llmData = new LlmData();
-                llmData.setLesson(lesson);
-                llmData.setStatus(DataStatus.DONE);
-                llmData.setData(generatedLesson);
-                llmData.setCreatedAt(Instant.now());
-                llmDataService.save(llmData);
-                log.info("Сгенерированные данные LLM сохранены для урока id={}", lesson.getId());
+        log.info("Finished submitting batches to executor");
+    }
 
-            } catch (Exception e) {
-                log.error("Ошибка при обработке урока id={}", lesson.getId(), e);
-            }
+    private void processLesson(Lesson lesson) {
+        try {
+            log.info("Обрабатываем урок: id={}", lesson.getId());
+            GladiaData data = gladiaService.getGladiaDataByLessonIdAndStatusDone(lesson.getId())
+                    .orElseThrow(
+                            () -> new RuntimeException("Gladia Data Not Generated yet for lesson " + lesson.getId()));
+
+            log.info("GladiaData найдено для урока id={}", lesson.getId());
+            LessonGeneratedByLlm generatedLesson = gptLessonService.createLesson(lesson, data);
+            log.info("Урок сгенерирован GPT для урока id={}", lesson.getId());
+
+            LlmData llmData = new LlmData();
+            llmData.setLesson(lesson);
+            llmData.setStatus(DataStatus.DONE);
+            llmData.setData(generatedLesson);
+            llmData.setCreatedAt(Instant.now());
+            llmDataService.save(llmData);
+            log.info("Сгенерированные данные LLM сохранены для урока id={}", lesson.getId());
+
+        } catch (Exception e) {
+            log.error("Ошибка при обработке урока id={}", lesson.getId(), e);
         }
     }
 }

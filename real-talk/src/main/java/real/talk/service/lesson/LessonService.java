@@ -75,6 +75,10 @@ public class LessonService {
         return lessonRepository.findProcessingLessonWithGladiaDone();
     }
 
+    public List<Lesson> getBatchProcessingLessonsWithGladiaDone(int limit) {
+        return lessonRepository.findBatchProcessingLessonsWithGladiaDone(limit);
+    }
+
     public List<Lesson> getLessonsWithLlmDone() {
         return lessonRepository.findProcessingLessonsWithLlmDone();
     }

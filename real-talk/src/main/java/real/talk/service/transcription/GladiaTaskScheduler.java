@@ -15,6 +15,8 @@ import real.talk.service.lesson.LessonService;
 import java.time.Instant;
 import java.util.List;
 
+import static java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -28,10 +30,19 @@ public class GladiaTaskScheduler {
     public void processGladiaRequest() {
         List<Lesson> pendingLessons = lessonService.getPendingLessons();
 
-        if (pendingLessons == null || pendingLessons.isEmpty()) return;
+        if (pendingLessons == null || pendingLessons.isEmpty())
+            return;
 
-        pendingLessons.forEach(lesson -> {
-            log.info("Processing lesson {}", lesson);
+        log.info("Starting concurrent gladia requests for {} lessons", pendingLessons.size());
+        try (var executor = newVirtualThreadPerTaskExecutor()) {
+            pendingLessons.forEach(lesson -> executor.submit(() -> processLessonRequest(lesson)));
+        }
+        log.info("Finished submitting gladia requests to executor");
+    }
+
+    private void processLessonRequest(Lesson lesson) {
+        try {
+            log.info("Processing lesson {}", lesson.getId());
             lesson.setStatus(LessonStatus.PROCESSING);
             PreRecorderResponse preRecorderResponse = transcriptionService.transcribeAudio(lesson.getYoutubeUrl());
             GladiaData gladiaData = new GladiaData();
@@ -41,25 +52,39 @@ public class GladiaTaskScheduler {
             gladiaData.setCreatedAt(Instant.now());
             gladiaService.saveGladiaData(gladiaData);
             lessonService.saveLesson(lesson);
-            log.info("Finished processing lesson {}", lesson);
-        });
+            log.info("Finished processing lesson {}", lesson.getId());
+        } catch (Exception e) {
+            log.error("Error processing lesson {}", lesson.getId(), e);
+        }
     }
 
     @Scheduled(cron = "${gladia.get-response.cron}")
     public void processGladiaResponse() {
         List<GladiaData> gladiaDataByStatus = gladiaService.getGladiaDataByStatusCreated();
 
-        if (gladiaDataByStatus == null || gladiaDataByStatus.isEmpty()) return;
+        if (gladiaDataByStatus == null || gladiaDataByStatus.isEmpty())
+            return;
 
-        gladiaDataByStatus.forEach(gladiaData -> {
+        log.info("Starting concurrent gladia responses check for {} tasks", gladiaDataByStatus.size());
+        try (var executor = newVirtualThreadPerTaskExecutor()) {
+            gladiaDataByStatus.forEach(gladiaData -> executor.submit(() -> processGladiaDataResponse(gladiaData)));
+        }
+        log.info("Finished submitting gladia responses to executor");
+    }
+
+    private void processGladiaDataResponse(GladiaData gladiaData) {
+        try {
             log.info("Processing gladiaRequest {}", gladiaData.getGladiaRequestId());
-            TranscriptionResultResponse transcriptionResult = transcriptionService.getTranscriptionResult(gladiaData.getGladiaRequestId());
+            TranscriptionResultResponse transcriptionResult = transcriptionService
+                    .getTranscriptionResult(gladiaData.getGladiaRequestId());
             if (transcriptionResult.getStatus().equals("done")) {
                 gladiaData.setStatus(DataStatus.DONE);
                 gladiaData.setData(transcriptionResult);
                 gladiaService.saveGladiaData(gladiaData);
-                log.info("Finished processing gladiaRequest {}", gladiaData);
+                log.info("Finished processing gladiaRequest {}", gladiaData.getGladiaRequestId());
             }
-        });
+        } catch (Exception e) {
+            log.error("Error checking response for {}", gladiaData.getGladiaRequestId(), e);
+        }
     }
 }
