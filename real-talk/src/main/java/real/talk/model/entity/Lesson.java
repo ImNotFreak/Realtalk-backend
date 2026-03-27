@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import real.talk.model.dto.lesson.LessonGeneratedByLlm;
+import real.talk.model.dto.lesson.GeneratedPreset;
+
+import real.talk.model.dto.lesson.Tags;
 import real.talk.model.entity.enums.LessonAccess;
 import real.talk.model.entity.enums.LessonStatus;
 
@@ -40,12 +42,21 @@ public class Lesson {
     @Column(name = "youtube_url")
     private String youtubeUrl;
 
+    @Column(name = "segment_start_min")
+    private Double segmentStartMin;
+
+    @Column(name = "segment_end_min")
+    private Double segmentEndMin;
+
     @Column(name = "tags")
     @JdbcTypeCode(SqlTypes.JSON)
-    private LessonGeneratedByLlm.Tags tags;
+    private Tags tags;
 
     @Column(name = "lesson_topic")
     private String lessonTopic;
+
+    @Column(name = "preset", length = 100)
+    private String preset;
 
     @Column(name = "grammar_topics")
     private List<String> grammarTopics;
@@ -62,7 +73,7 @@ public class Lesson {
 
     @Column(name = "data")
     @JdbcTypeCode(SqlTypes.JSON)
-    private LessonGeneratedByLlm data;
+    private GeneratedPreset data;
 
     @Column(name = "created_at")
     private Instant createdAt;

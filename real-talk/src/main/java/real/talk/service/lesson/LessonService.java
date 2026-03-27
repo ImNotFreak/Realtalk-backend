@@ -26,6 +26,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LessonService {
 
+    private static final String DEFAULT_PRESET = "claudia";
+
     private final LessonRepository lessonRepository;
     private final UserRepository userRepository;
     private final AccessControlService accessControlService;
@@ -33,20 +35,63 @@ public class LessonService {
     public Lesson createLesson(User user, LessonCreateRequest lessonRequest) {
         // Access Check
         checkBuilderAccess(user);
+        validateYoutubeLink(lessonRequest.getYoutubeLink());
+        validateSegment(lessonRequest.getSegmentStartMin(), lessonRequest.getSegmentEndMin());
 
         Lesson lesson = new Lesson();
         lesson.setId(UUID.randomUUID());
         lesson.setUser(user);
         lesson.setLanguage(lessonRequest.getLanguage());
         lesson.setLanguageLevel(lessonRequest.getLanguageLevel());
-        lesson.setGrammarTopics(lessonRequest.getGrammarTopics().stream().limit(3).toList());
-        lesson.setYoutubeUrl(lessonRequest.getYoutubeLink());
+        lesson.setGrammarTopics(normalizeGrammarTopics(lessonRequest.getGrammarTopics()));
+        lesson.setPreset(resolvePreset(lessonRequest.getPreset()));
+        lesson.setYoutubeUrl(lessonRequest.getYoutubeLink().trim());
+        lesson.setSegmentStartMin(lessonRequest.getSegmentStartMin());
+        lesson.setSegmentEndMin(lessonRequest.getSegmentEndMin());
         lesson.setStatus(LessonStatus.PENDING);
         lesson.setAccess(LessonAccess.PUBLIC);
         lesson.setCreatedAt(Instant.now());
         lessonRepository.save(lesson);
 
         return lesson;
+    }
+
+    private String resolvePreset(String preset) {
+        return (preset == null || preset.isBlank()) ? DEFAULT_PRESET : preset.trim();
+    }
+
+    private void validateYoutubeLink(String youtubeLink) {
+        if (youtubeLink == null || youtubeLink.isBlank()) {
+            throw new IllegalArgumentException("youtubeLink is required");
+        }
+    }
+
+    private List<String> normalizeGrammarTopics(List<String> grammarTopics) {
+        if (grammarTopics == null || grammarTopics.isEmpty()) {
+            return List.of();
+        }
+        return grammarTopics.stream()
+                .filter(topic -> topic != null && !topic.isBlank())
+                .map(String::trim)
+                .limit(3)
+                .toList();
+    }
+
+    private void validateSegment(Double segmentStartMin, Double segmentEndMin) {
+        boolean hasStart = segmentStartMin != null;
+        boolean hasEnd = segmentEndMin != null;
+        if (hasStart != hasEnd) {
+            throw new IllegalArgumentException("segmentStartMin and segmentEndMin must be provided together");
+        }
+        if (!hasStart) {
+            return;
+        }
+        if (segmentStartMin < 0 || segmentEndMin <= 0) {
+            throw new IllegalArgumentException("Segment bounds must be positive");
+        }
+        if (segmentEndMin <= segmentStartMin) {
+            throw new IllegalArgumentException("segmentEndMin must be greater than segmentStartMin");
+        }
     }
 
     private void checkBuilderAccess(User user) {
@@ -97,11 +142,7 @@ public class LessonService {
                 .orElseThrow(() -> new IllegalArgumentException("Lesson not found: " + lessonId));
 
         // youtubeUrl лежит в колонке, а основной контент — в JSON 'data'
-        LessonGeneratedByLlm data = l.getData();
-        if (data != null) {
-            // дублируем ссылку из колоноки, чтобы фронт мог брать единообразно
-            data.setYou_tube_url(l.getYoutubeUrl());
-        }
+        GeneratedPreset data = l.getData();
 
         return new LessonFullResponse(
                 l.getId(),
@@ -162,17 +203,13 @@ public class LessonService {
         return page;
     }
 
-    public List<LessonGeneratedByLlm> getPublicReadyLessons() {
+    public List<GeneratedPreset> getPublicReadyLessons() {
         return lessonRepository.findByStatusAndAccess(LessonStatus.READY, LessonAccess.PUBLIC)
-                .stream().map(lesson -> {
-                    LessonGeneratedByLlm lessonData = lesson.getData();
-                    lessonData.setYou_tube_url(lesson.getYoutubeUrl());
-                    return lessonData;
-                }).toList();
+                .stream().map(Lesson::getData).toList();
     }
 
     // Перегрузка с фильтрами — теперь постранично + сортировка (белый список) */
-    public Page<LessonGeneratedByLlm> getPublicReadyLessons(LessonFilter f) {
+    public Page<GeneratedPreset> getPublicReadyLessons(LessonFilter f) {
         Pageable pageable = buildPageable(f.getPage(), f.getSize(), f.getSort()); // только page/size
         // разберём sort=language,-lesson_topic → s1,s2 токены
         String[] sortTokens = toSortTokens(f.getSort());
@@ -182,8 +219,7 @@ public class LessonService {
                 sortTokens[0], sortTokens[1],
                 pageable);
         return page.map(lesson -> {
-            LessonGeneratedByLlm dto = lesson.getData();
-            dto.setYou_tube_url(lesson.getYoutubeUrl());
+            GeneratedPreset dto = lesson.getData();
             return dto;
         });
     }

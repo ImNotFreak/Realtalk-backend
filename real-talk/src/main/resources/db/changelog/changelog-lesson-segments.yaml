@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-lesson-segment-columns
+      author: codex
+      changes:
+        - addColumn:
+            tableName: lessons
+            columns:
+              - column:
+                  name: segment_start_min
+                  type: DOUBLE
+              - column:
+                  name: segment_end_min
+                  type: DOUBLE

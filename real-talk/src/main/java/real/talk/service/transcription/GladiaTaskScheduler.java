@@ -43,6 +43,12 @@ public class GladiaTaskScheduler {
     private void processLessonRequest(Lesson lesson) {
         try {
             log.info("Processing lesson {}", lesson.getId());
+            if (lesson.getYoutubeUrl() == null || lesson.getYoutubeUrl().isBlank()) {
+                lesson.setStatus(LessonStatus.ERROR);
+                lessonService.saveLesson(lesson);
+                log.error("Lesson {} has empty youtubeUrl. Marked as ERROR", lesson.getId());
+                return;
+            }
             lesson.setStatus(LessonStatus.PROCESSING);
             PreRecorderResponse preRecorderResponse = transcriptionService.transcribeAudio(lesson.getYoutubeUrl());
             GladiaData gladiaData = new GladiaData();
@@ -54,6 +60,8 @@ public class GladiaTaskScheduler {
             lessonService.saveLesson(lesson);
             log.info("Finished processing lesson {}", lesson.getId());
         } catch (Exception e) {
+            lesson.setStatus(LessonStatus.ERROR);
+            lessonService.saveLesson(lesson);
             log.error("Error processing lesson {}", lesson.getId(), e);
         }
     }

@@ -28,12 +28,12 @@ spring:
             redirect-uri: "${BASE_URL}/login/oauth2/code/google"
   ai:
     openai:
-      model: gpt-3.5-turbo
+      model: gpt-5.3-chat-latest
       api-key: ${GPT_API_KEY}
 
 logging:
   level:
-    root: ERROR
+    root: INFO
 
 gladia:
   create-request:
@@ -41,7 +41,7 @@ gladia:
   get-response:
     cron: "0 */5 * * * ?"
   api:
-    key: a37d25af-66b4-4744-ac18-5b725cc3c6b8
+    key: 501b18d0-e068-4d15-a83b-b2535ae035ff
 
 llm:
   generate-lesson:

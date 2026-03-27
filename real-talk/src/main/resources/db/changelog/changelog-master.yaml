@@ -31,3 +31,9 @@ databaseChangeLog:
       file: db/changelog/changelog-word-set-shared-users.yaml
   - include:
       file: db/changelog/changelog-lesson-shared-users.yaml
+  - include:
+      file: db/changelog/changelog-lesson-preset.yaml
+  - include:
+      file: db/changelog/changelog-lesson-segments.yaml
+  - include:
+      file: db/changelog/changelog-words-translation-nullable.yaml

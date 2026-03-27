@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
-import real.talk.model.dto.lesson.LessonGeneratedByLlm;
-import real.talk.model.entity.Lesson;
+import real.talk.model.dto.lesson.PresetClaudia;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,7 +22,7 @@ class RealTalkApplicationTests {
                 new ClassPathResource("prompts/lesson.json").getFile().toPath()
         );
 
-        LessonGeneratedByLlm lessonGeneratedByLlm = objectMapper.readValue(lessonJson, LessonGeneratedByLlm.class);
+        PresetClaudia lessonGeneratedByLlm = objectMapper.readValue(lessonJson, PresetClaudia.class);
 
         System.out.println(lessonGeneratedByLlm);
     }

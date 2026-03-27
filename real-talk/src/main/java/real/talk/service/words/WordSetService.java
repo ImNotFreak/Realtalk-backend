@@ -109,9 +109,10 @@ public class WordSetService {
                     Word word = wordSetWord.getWord();
                     return new WordResponse(
                             word.getId(),
-                            word.getLesson().getId(),
+                            word.getLesson() != null ? word.getLesson().getId() : null,
                             word.getTerm(),
                             word.getQuote(),
+                            word.getTranslatedExplanation(),
                             word.getTranslation(),
                             word.getTranslatedExplanation(),
                             word.getAnotherExample(),

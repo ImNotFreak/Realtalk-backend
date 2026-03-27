@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-lesson-preset-column
+      author: codex
+      changes:
+        - addColumn:
+            tableName: lessons
+            columns:
+              - column:
+                  name: preset
+                  type: VARCHAR(100)
+                  defaultValue: claudia
+                  constraints:
+                    nullable: false

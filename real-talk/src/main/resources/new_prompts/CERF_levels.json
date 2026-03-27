@@ -1,0 +1,161 @@
+{
+  "id": "cefr_levels",
+  "supported_levels": ["A2", "B1", "B2", "C1"],
+  "global_rules": [
+    "This config controls linguistic difficulty only.",
+    "Do not use it to change lesson structure, block order, item counts, or exercise type.",
+    "Pedagogical block logic belongs to the preset, not to this config.",
+    "If preset rules and level rules interact, preserve preset structure and apply level rules only to wording, complexity, and clarity.",
+    "Keep all learner-facing language natural, concise, and reusable."
+  ],
+  "levels": {
+    "A2": {
+      "vocabulary": {
+        "allow": ["high-frequency everyday words", "simple collocations", "clear concrete nouns and verbs"],
+        "prefer": ["short reusable phrases", "simple chunks from real speech"],
+        "avoid": ["abstract nouns", "opaque idioms", "specialized terminology"]
+      },
+      "word_bank": {
+        "meaning_style": ["very short", "very clear", "concrete", "plain language"],
+        "example_style": ["short", "easy to parse", "close to transcript wording"]
+      },
+      "sentences": {
+        "target_length": "short",
+        "structure": ["mostly simple sentences", "one clear idea per sentence", "limited subordination"]
+      },
+      "abstraction": {
+        "prefer": ["concrete topics", "visible actions", "direct feelings", "practical meaning"],
+        "avoid": ["nuanced critique", "implicit argumentation", "conceptual framing"]
+      },
+      "instructions": {
+        "style": ["very clear", "direct", "short"]
+      },
+      "explanations": {
+        "style": ["very simple", "example-first", "minimal terminology"]
+      },
+      "grammar_note": {
+        "terminology": "minimal",
+        "rule_style": ["short", "clear", "practical", "example-led"]
+      },
+      "speaking": {
+        "prompt_style": ["personal", "concrete", "easy to answer"],
+        "expected_length": "1-3 short sentences",
+        "support_allowed": ["sentence starters", "clear personal examples"]
+      },
+      "distractors": {
+        "difficulty": "easy_to_moderate"
+      }
+    },
+    "B1": {
+      "vocabulary": {
+        "allow": ["common everyday vocabulary", "useful collocations", "common phrasal verbs", "conversational adjectives and nouns"],
+        "prefer": ["natural chunks", "frequent multi-word expressions", "clear opinion and experience language"],
+        "avoid": ["highly specialized terminology", "opaque idioms", "very literary wording"]
+      },
+      "word_bank": {
+        "meaning_style": ["short", "clear", "learner-friendly", "not dictionary-heavy"],
+        "example_style": ["short", "natural", "close to transcript wording"]
+      },
+      "sentences": {
+        "target_length": "short_to_medium",
+        "structure": ["mostly simple and compound sentences", "some subordination", "clear logical flow"]
+      },
+      "abstraction": {
+        "prefer": ["everyday reasoning", "simple opinions", "clear cause and effect", "personal reflection"],
+        "avoid": ["dense theoretical framing", "highly implicit meaning"]
+      },
+      "instructions": {
+        "style": ["clear", "direct", "brief"]
+      },
+      "explanations": {
+        "style": ["simple", "practical", "minimal but useful terminology"]
+      },
+      "grammar_note": {
+        "terminology": "light",
+        "rule_style": ["short", "clear", "contrast only if helpful"]
+      },
+      "speaking": {
+        "prompt_style": ["personal", "experience-based", "light opinion"],
+        "expected_length": "2-4 sentences",
+        "support_allowed": ["simple reasoning", "basic comparison", "personal examples"]
+      },
+      "distractors": {
+        "difficulty": "moderate"
+      }
+    },
+    "B2": {
+      "vocabulary": {
+        "allow": ["broad general vocabulary", "useful abstract vocabulary", "less frequent collocations", "strong phrasal verbs and idiomatic chunks"],
+        "prefer": ["precise multi-word expressions", "natural spoken phrases", "language for argument, contrast, and interpretation"],
+        "avoid": ["obscure niche terminology unless transcript-essential", "overly literary phrasing"]
+      },
+      "word_bank": {
+        "meaning_style": ["short", "precise", "natural", "still learner-friendly"],
+        "example_style": ["concise", "natural", "slightly denser if needed"]
+      },
+      "sentences": {
+        "target_length": "medium",
+        "structure": ["clear multi-clause sentences", "controlled subordination", "more varied sentence patterns"]
+      },
+      "abstraction": {
+        "prefer": ["interpretation", "trade-offs", "motivation", "broader implications"],
+        "avoid": ["needlessly dense conceptual language"]
+      },
+      "instructions": {
+        "style": ["clear", "efficient", "natural"]
+      },
+      "explanations": {
+        "style": ["concise", "clear", "contrastive when useful"]
+      },
+      "grammar_note": {
+        "terminology": "moderate",
+        "rule_style": ["precise", "brief", "contrastive when useful"]
+      },
+      "speaking": {
+        "prompt_style": ["opinion-based", "comparative", "interpretive"],
+        "expected_length": "3-6 sentences",
+        "support_allowed": ["reasons", "examples", "comparisons", "light nuance"]
+      },
+      "distractors": {
+        "difficulty": "moderate_to_challenging"
+      }
+    },
+    "C1": {
+      "vocabulary": {
+        "allow": ["broad and nuanced vocabulary", "idiomatic spoken expressions", "precise collocations", "discourse-marking language"],
+        "prefer": ["subtle contrasts", "high-utility nuanced phrasing", "natural argumentation language"],
+        "avoid": ["gratuitously obscure wording", "rare terminology unless transcript-essential"]
+      },
+      "word_bank": {
+        "meaning_style": ["short", "precise", "natural", "non-academic unless needed"],
+        "example_style": ["natural", "compact", "can be slightly more layered"]
+      },
+      "sentences": {
+        "target_length": "medium_to_long",
+        "structure": ["flexible complex sentences", "natural subordination", "dense but clear phrasing"]
+      },
+      "abstraction": {
+        "prefer": ["nuance", "implication", "stance", "critique", "interpretation"],
+        "avoid": ["unnecessary jargon", "overwritten academic style"]
+      },
+      "instructions": {
+        "style": ["concise", "clear", "adult", "natural"]
+      },
+      "explanations": {
+        "style": ["brief", "precise", "efficient", "can include concise terminology"]
+      },
+      "grammar_note": {
+        "terminology": "controlled",
+        "rule_style": ["brief", "precise", "nuanced if useful"]
+      },
+      "speaking": {
+        "prompt_style": ["analytical", "reflective", "nuanced opinion"],
+        "expected_length": "4-8 sentences",
+        "support_allowed": ["examples", "implications", "contrast", "qualified opinion"]
+      },
+      "distractors": {
+        "difficulty": "challenging_but_fair"
+      }
+    }
+  }
+}

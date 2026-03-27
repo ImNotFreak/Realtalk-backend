@@ -44,8 +44,7 @@ public class Word {
     private String quote;
 
     @Size(max = 255)
-    @NotNull
-    @Column(name = "translation", nullable = false)
+    @Column(name = "translation")
     private String translation;
 
     @Size(max = 255)

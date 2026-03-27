@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: words-translation-nullable
+      author: codex
+      changes:
+        - dropNotNullConstraint:
+            tableName: words
+            columnName: translation
+            columnDataType: varchar(255)

@@ -1,0 +1,193 @@
+{
+  "id":"claudia",
+  "output_contract": {
+    "generation_mode": "hydrated_lesson",
+    "hydration": {
+      "static_merged_by_backend": false,
+      "supported_output_modes": ["dynamic_only", "hydrated_lesson"],
+      "default_final_output_mode": "hydrated_lesson"
+    },
+    "blocks":[
+      {
+        "id":"warm_up",
+        "type":"warm_up",
+        "order":1,
+        "is_static_block":false,
+        "static":{
+          "title":"Exercise 1 – Warm up",
+          "instruction":"Based on the thumbnail and title choose what you think this video is about. Share why in 2–3 short sentences."
+        },
+        "source_inputs":["video_title","transcript_analysis.main_idea"],
+        "interaction_type":"multiple_choice",
+        "dynamic":{"options_per_item":3,"fields":["options","correct_answer"]},
+        "output_schema":{"content":{"options":"string[3]","correct_answer":"string"}},
+        "generation_rules":[
+          "Generate exactly 3 topic options based on the video title and the overall meaning of the transcript. One option must best match the segment. The other two must be plausible but less accurate. Each option must be a short topic label or topic phrase, not a full sentence. Do not start options with 'It is about'. Do not reveal narrow details, spoilers, quotes, or exact facts from the transcript."
+        ]
+      },
+      {
+        "id":"vocabulary_unlock",
+        "type":"vocabulary_unlock",
+        "order":2,
+        "is_static_block":false,
+        "static":{
+          "title":"Exercise 2 – Vocabulary unlock",
+          "instruction":"Let’s go through the key vocabulary before we dive in. Choose the correct meaning before you watch. Then make 1 sentence with each word or quickly discuss them with your teacher."
+        },
+        "source_inputs":["word_bank"],
+        "interaction_type":"matching",
+        "dynamic":{"items":6,"fields":["terms","meanings","answer_pairs"]},
+        "output_schema":{"content":{"terms":"string[6]","meanings":"string[6]","answer_pairs":"array[6][2]"}},
+        "generation_rules":[
+          "Use only word_bank.",
+          "Select exactly 6 items.",
+          "Use only expression and meaning.",
+          "Shuffle the order of terms.",
+          "Shuffle the order of meanings independently.",
+          "Do not keep the original word_bank order.",
+          "answer_pairs must contain the correct mappings for the shuffled terms and meanings."
+        ]
+      },
+      {
+        "id": "big_picture",
+        "type": "big_picture",
+        "order": 3,
+        "is_static_block": false,
+        "static": {
+          "title": "Exercise 3 — The big picture",
+          "instruction": "Listen once. What’s the segment mostly about? Explain your answer in 2–3 sentences."
+        },
+        "source_inputs": ["transcript_analysis.main_idea"],
+        "interaction_type": "multiple_choice",
+        "dynamic": {
+          "options_per_item": 3,
+          "fields": ["options", "correct_answer"]
+        },
+        "output_schema": {
+          "content": {
+            "options": "string[3]",
+            "correct_answer": "string"
+          }
+        },
+        "generation_rules": [
+          "Generate exactly 3 options.",
+          "Generate exactly 1 clearly correct answer.",
+          "The correct_answer must match one of the 3 options exactly.",
+          "All 3 options must describe the segment’s main idea, not minor details.",
+          "Make the 3 options clearly distinguishable from each other in meaning.",
+          "The correct option must reflect the actual central message of the segment.",
+          "Wrong options must be plausible but clearly less accurate: for example too narrow, too broad, based on a false cause, or expressing an unsupported conclusion.",
+          "Avoid options that overlap too much semantically.",
+          "Do not generate a question field.",
+          "Do not generate multiple items.",
+          "Keep wording CEFR-appropriate for the target learner level.",
+          "Base the task only on the provided transcript segment."
+        ]
+      },
+      {
+        "id":"fact_check",
+        "type":"fact_check",
+        "order":4,
+        "is_static_block":false,
+        "static":{
+          "title":"Exercise 4 – Fact check",
+          "instruction":"Listen again. Are these statements True or False?"
+        },
+        "source_inputs":["transcript_analysis.key_points"],
+        "interaction_type":"true_false",
+        "dynamic":{"items":6,"fields":["statements","answers"]},
+        "output_schema":{"content":{"statements":"string[6]","answers":"boolean[6]"}},
+        "generation_rules":[
+          "Use only transcript_analysis.key_points.",
+          "Create exactly 6 statements.",
+          "Half must be true.",
+          "Half must be false.",
+          "False statements must modify details from key_points."
+        ]
+      },
+      {
+        "id":"grammar_note",
+        "type":"grammar_note",
+        "order":5,
+        "is_static_block":false,
+        "static":{
+          "title":"Exercise 5A – Grammar note",
+          "instruction":"Quick checkpoint before we move on. Read the notes below and make sure they make sense. They’ll make the next exercises much easier."
+        },
+        "source_inputs":["grammar_topic_config","transcript_analysis.grammar_evidence"],
+        "interaction_type":"explanation",
+        "dynamic":{"fields":["example","grammar_rule","contrast_or_common_mistake"]},
+        "output_schema":{"content":{"example":"string","grammar_rule":"string","contrast_or_common_mistake":"string"}},
+        "generation_rules":[
+          "grammar_topic_config is the source of truth.",
+          "grammar_evidence is optional.",
+          "If needed, create one short example aligned with the transcript topic."
+        ]
+      },
+      {
+        "id":"make_the_right_choice",
+        "type":"make_the_right_choice",
+        "order":6,
+        "is_static_block":false,
+        "static":{
+          "title":"Exercise 5B – Make the right choice",
+          "instruction":"Choose the best option for each sentence. Then briefly explain why. What in the context made it the best choice?"
+        },
+        "source_inputs":["grammar_topic_config","transcript_analysis.grammar_evidence"],
+        "interaction_type":"multiple_choice",
+        "dynamic":{"items":6,"options_per_item":3,"fields":["items"]},
+        "output_schema":{"content":{"items":[{"sentence":"string","options":"string[3]","correct_answer":"string"}]}},
+        "generation_rules":[
+          "Generate 6 items.",
+          "Focus only on the target grammar topic.",
+          "Use grammar_evidence when possible; otherwise create short transcript-aligned sentences.",
+          "Each item must be an object with sentence, options, and correct_answer.",
+          "correct_answer must match one of the item's options exactly."
+        ]
+      },
+      {
+        "id":"fix_it",
+        "type":"fix_it",
+        "order":7,
+        "is_static_block":false,
+        "static":{
+          "title":"Exercise 5C – Fix it",
+          "instruction":"Correct the mistake."
+        },
+        "source_inputs":["grammar_topic_config"],
+        "interaction_type":"correction",
+        "dynamic":{"items":6,"fields":["items"]},
+        "output_schema":{"content":{"items":[{"incorrect":"string","correct":"string"}]}},
+        "generation_rules":[
+          "Generate 6 items.",
+          "Each sentence must contain one clear grammar mistake.",
+          "Return incorrect and corrected versions.",
+          "Each item must be an object with incorrect and correct.",
+          "correct must never be null or empty."
+        ]
+      },
+      {
+        "id":"real_talk",
+        "type":"real_talk",
+        "order":8,
+        "is_static_block":true,
+        "static":{
+          "title":"Exercise 6 – Real talk",
+          "instruction":"Talk about the idea in this video segment: what happened / what the speaker says, and what you think about it? Try to use today’s grammar and new vocabulary.",
+          "questions":[
+            "Main point: What is this segment mainly about?",
+            "One detail: Mention one specific thing you heard (a fact, example, or moment).",
+            "Meaning: What message is the speaker trying to send?",
+            "Your take: Do you agree / relate / disagree? Why?",
+            "Real-life link: Connect it to a real example.",
+            "Wrap-up: Sum it up in one sentence."
+          ]
+        },
+        "source_inputs":[],
+        "interaction_type":"static",
+        "dynamic":{},
+        "output_schema":{}
+      }
+    ]
+  }
+}

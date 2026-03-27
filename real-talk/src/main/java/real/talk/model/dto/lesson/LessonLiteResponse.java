@@ -1,6 +1,5 @@
 package real.talk.model.dto.lesson;
 
-import real.talk.model.dto.lesson.LessonGeneratedByLlm;
 import real.talk.model.entity.enums.LessonStatus;
 
 import java.time.Instant;
@@ -15,6 +14,6 @@ public record LessonLiteResponse(
         String youtubeUrl,
         String lessonTopic,
         LessonStatus status,
-        LessonGeneratedByLlm.Tags tags,
+        Tags tags,
         Instant createdAt
 ) {}

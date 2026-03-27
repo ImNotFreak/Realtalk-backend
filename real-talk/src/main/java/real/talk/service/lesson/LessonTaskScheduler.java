@@ -2,12 +2,12 @@ package real.talk.service.lesson;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.text.similarity.LevenshteinDistance;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import real.talk.model.dto.gladia.TranscriptionResultResponse;
-import real.talk.model.dto.lesson.LessonGeneratedByLlm;
+
+import real.talk.model.dto.lesson.GeneratedPreset;
+import real.talk.model.dto.lesson.Tags;
 import real.talk.model.entity.GladiaData;
 import real.talk.model.entity.Lesson;
 import real.talk.model.entity.LlmData;
@@ -18,8 +18,6 @@ import real.talk.service.transcription.GladiaService;
 import real.talk.service.user.UserService;
 
 import java.util.List;
-
-import static java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +30,6 @@ public class LessonTaskScheduler {
     private final UserService userService;
 
     @Scheduled(cron = "${lesson.ready-lesson.cron}")
-    @Transactional
     public void processReadyLessons() {
         List<Lesson> lessonsWithLlmDone = lessonService.getLessonsWithLlmDone();
         if (lessonsWithLlmDone == null || lessonsWithLlmDone.isEmpty()) {
@@ -40,11 +37,9 @@ public class LessonTaskScheduler {
             return;
         }
 
-        log.info("Starting concurrent ready lessons check for {} tasks", lessonsWithLlmDone.size());
-        try (var executor = newVirtualThreadPerTaskExecutor()) {
-            lessonsWithLlmDone.forEach(lesson -> executor.submit(() -> processReadyLesson(lesson)));
-        }
-        log.info("Finished submitting ready lessons to executor");
+        log.info("Starting ready lessons check for {} tasks", lessonsWithLlmDone.size());
+        lessonsWithLlmDone.forEach(this::processReadyLesson);
+        log.info("Finished processing ready lessons");
     }
 
     private void processReadyLesson(Lesson lesson) {
@@ -61,29 +56,37 @@ public class LessonTaskScheduler {
                         return new RuntimeException("LlmData not found");
                     });
 
-            LessonGeneratedByLlm lessonData = llm.getData();
-            List<TranscriptionResultResponse.Utterance> utterances = gladia.getData().getResult().getTranscription()
-                    .getUtterances();
-            List<LessonGeneratedByLlm.GlossaryItem> glossary = lessonData.getGlossary();
+            GeneratedPreset lessonData = llm.getData();
 
-            log.info("📖 Урок id={} содержит {} элементов в glossary и {} utterances",
-                    lesson.getId(), glossary.size(), utterances.size());
 
-            setGlossaryTimeCode(glossary, utterances);
-            lesson.setTags(lessonData.getTags());
+            Tags tags = Tags.builder()
+                    .lexical_fields(List.of(lessonData.getTag()))
+                    .language(lesson.getLanguage())
+                    .language_level(lesson.getLanguageLevel())
+                    .preset(lesson.getPreset())
+                    .build();
+
+            lesson.setTags(tags);
             lesson.setData(lessonData);
             lesson.setStatus(LessonStatus.READY);
             lessonService.saveLesson(lesson);
             log.info("✅ Урок id={} обновлен и сохранен со статусом READY", lesson.getId());
 
-            User user = lesson.getUser();
-            double audioDurationSeconds = gladia.getData().getFile().getAudioDuration();
-            user.setDuration(user.getDuration() + audioDurationSeconds);
-            user.setLessonCount(user.getLessonCount() + 1);
+            User user = userService.getUserById(lesson.getUser().getUserId());
+            double audioDurationSeconds = gladia.getData() != null
+                    && gladia.getData().getFile() != null
+                    && gladia.getData().getFile().getAudioDuration() != null
+                            ? gladia.getData().getFile().getAudioDuration()
+                            : 0.0;
+            double billableDurationSeconds = resolveBillableDurationSeconds(lesson, audioDurationSeconds);
+            double currentDuration = user.getDuration() == null ? 0.0 : user.getDuration();
+            int currentLessonCount = user.getLessonCount() == null ? 0 : user.getLessonCount();
+            user.setDuration(currentDuration + billableDurationSeconds);
+            user.setLessonCount(currentLessonCount + 1);
 
             // Subtract minutes from quota
             if (user.getLessonBuilderMinutes() != null) {
-                int lessonMinutes = (int) Math.ceil(audioDurationSeconds / 60.0);
+                int lessonMinutes = (int) Math.ceil(billableDurationSeconds / 60.0);
                 user.setLessonBuilderMinutes(Math.max(0, user.getLessonBuilderMinutes() - lessonMinutes));
             }
 
@@ -99,57 +102,20 @@ public class LessonTaskScheduler {
         }
     }
 
-    private void setGlossaryTimeCode(List<LessonGeneratedByLlm.GlossaryItem> glossary,
-            List<TranscriptionResultResponse.Utterance> utterances) {
-
-        LevenshteinDistance levenshtein = new LevenshteinDistance();
-
-        for (LessonGeneratedByLlm.GlossaryItem item : glossary) {
-            String quote = item.getQuote();
-            boolean matched = false;
-
-            // 🔹 1. Пробуем точное вхождение
-            for (TranscriptionResultResponse.Utterance utterance : utterances) {
-                if (utterance.getText().contains(quote) || quote.contains(utterance.getText())) {
-                    item.setTimeCode(Math.floor(utterance.getStart()));
-                    log.info("✅ Exact match: \"{}\" ↔ \"{}\" (time={})",
-                            quote, utterance.getText(), utterance.getStart());
-                    matched = true;
-                    break;
-                }
-            }
-
-            // 🔹 2. Если не нашли — fuzzy matching
-            if (!matched) {
-                TranscriptionResultResponse.Utterance bestMatch = null;
-                int bestDistance = Integer.MAX_VALUE;
-
-                for (TranscriptionResultResponse.Utterance utterance : utterances) {
-                    int distance = levenshtein.apply(quote, utterance.getText());
-                    if (distance < bestDistance) {
-                        bestDistance = distance;
-                        bestMatch = utterance;
-                    }
-                }
-
-                if (bestMatch != null) {
-                    double similarity = 1 - (double) bestDistance /
-                            Math.max(quote.length(), bestMatch.getText().length());
-
-                    if (similarity >= 0.6) {
-                        item.setTimeCode(Math.floor(bestMatch.getStart()));
-                        log.info("🤝 Fuzzy match: \"{}\" ↔ \"{}\" (similarity={}%, time={})",
-                                quote, bestMatch.getText(),
-                                String.format("%.2f", similarity * 100),
-                                bestMatch.getStart());
-                    } else {
-                        log.warn("❌ No reliable match for \"{}\". Best candidate: \"{}\" (similarity={}%)",
-                                quote,
-                                bestMatch.getText(),
-                                String.format("%.2f", similarity * 100));
-                    }
-                }
-            }
+    private double resolveBillableDurationSeconds(Lesson lesson, double audioDurationSeconds) {
+        Double segmentStartMin = lesson.getSegmentStartMin();
+        Double segmentEndMin = lesson.getSegmentEndMin();
+        if (segmentStartMin == null || segmentEndMin == null) {
+            return audioDurationSeconds;
         }
+        double segmentStartSec = segmentStartMin * 60.0;
+        double segmentEndSec = segmentEndMin * 60.0;
+
+        double normalizedStart = Math.max(0.0, Math.min(segmentStartSec, audioDurationSeconds));
+        double normalizedEnd = Math.max(0.0, Math.min(segmentEndSec, audioDurationSeconds));
+        if (normalizedEnd <= normalizedStart) {
+            return 0.0;
+        }
+        return normalizedEnd - normalizedStart;
     }
 }

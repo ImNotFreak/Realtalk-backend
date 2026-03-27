@@ -23,6 +23,7 @@ public class WordResponse {
     private UUID lessonId;
     private String term;
     private String quote;
+    private String meaning;
     private String translation;
     private String translatedExplanation;
     private String anotherExample;

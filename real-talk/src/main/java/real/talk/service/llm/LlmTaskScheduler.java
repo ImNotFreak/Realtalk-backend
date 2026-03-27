@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import real.talk.model.dto.lesson.LessonGeneratedByLlm;
+import real.talk.model.dto.lesson.GeneratedPreset;
+
 import real.talk.model.entity.GladiaData;
 import real.talk.model.entity.Lesson;
 import real.talk.model.entity.LlmData;
@@ -52,7 +53,7 @@ public class LlmTaskScheduler {
                             () -> new RuntimeException("Gladia Data Not Generated yet for lesson " + lesson.getId()));
 
             log.info("GladiaData найдено для урока id={}", lesson.getId());
-            LessonGeneratedByLlm generatedLesson = gptLessonService.createLesson(lesson, data);
+            GeneratedPreset generatedLesson = gptLessonService.createLesson(lesson, data);
             log.info("Урок сгенерирован GPT для урока id={}", lesson.getId());
 
             LlmData llmData = new LlmData();
