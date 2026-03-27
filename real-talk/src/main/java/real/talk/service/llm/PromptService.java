@@ -147,7 +147,7 @@ public class PromptService {
         candidates.add("new_prompts/" + normalized + ".json");
 
         if (DEFAULT_PRESET.equals(normalized)) {
-            candidates.add("new_prompts/\u0421laudia.json");
+            candidates.add("new_prompts/Claudia.json");
         }
 
         for (String candidate : candidates) {
