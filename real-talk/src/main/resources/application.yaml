@@ -28,12 +28,14 @@ spring:
             redirect-uri: "${BASE_URL}/login/oauth2/code/google"
   ai:
     openai:
-      model: gpt-5.3-chat-latest
       api-key: ${GPT_API_KEY}
+      chat:
+        options:
+          model: ${OPENAI_MODEL:gpt-5.3-chat-latest}
 
 logging:
   level:
-    root: INFO
+    root: ERROR
 
 gladia:
   create-request:
