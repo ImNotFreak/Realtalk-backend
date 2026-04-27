@@ -160,11 +160,8 @@ public class LessonService {
      * Лёгкий список публичных готовых уроков (без JSON 'data'), постранично.
      * Используется на странице OpenLibrary.
      */
-    public Page<LessonLiteResponse> getPublicLessonsLite(LessonFilter f, User viewer) {
+    public Page<LessonLiteResponse> getPublicLessonsLite(LessonFilter f) {
         Pageable pageable = buildPageable(f.getPage(), f.getSize(), f.getSort());
-
-        // Check Access Level
-        boolean fullAccess = accessControlService.canAccessPublicLibrary(viewer);
 
         // If filtering by specific email (author), handle it
         String email = f.getEmail();
@@ -177,22 +174,10 @@ public class LessonService {
                     email,
                     pageable);
         }
-
-        if (fullAccess) {
-            // Smart/Plus: Show All Public Lessons (Community + System)
-            return lessonRepository.findLiteByStatusAndAccess(
-                    LessonStatus.READY,
-                    LessonAccess.PUBLIC,
-                    pageable);
-        } else {
-            // Unauth / Free / Student: Show Only System Lessons (Admin)
-            // "Open Library" = System content
-            return lessonRepository.findLiteByStatusAndAccessAndUserRole(
-                    LessonStatus.READY,
-                    LessonAccess.PUBLIC,
-                    UserRole.ADMIN,
-                    pageable);
-        }
+        return lessonRepository.findLiteByStatusAndAccess(
+                LessonStatus.READY,
+                LessonAccess.PUBLIC,
+                pageable);
     }
 
     public Page<LessonLiteResponse> getMyLessonsLite(LessonFilter f) {

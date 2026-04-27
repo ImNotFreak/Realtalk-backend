@@ -11,6 +11,7 @@ import real.talk.model.entity.enums.SubscriptionStatus;
 import real.talk.model.entity.enums.UserRole;
 import real.talk.repository.subscription.SubscriptionRepository;
 
+import java.time.Instant;
 import java.util.Comparator;
 
 @Slf4j
@@ -196,11 +197,23 @@ public class AccessControlService {
     }
 
     private Subscription getActiveSubscription(User user) {
+        Instant now = Instant.now();
         return subscriptionRepository.findByUserUserId(user.getUserId())
                 .stream()
-                .filter(s -> s.getStatus() == SubscriptionStatus.active || s.getStatus() == SubscriptionStatus.trialing)
+                .filter(s -> isCurrentSubscription(s, now))
                 .max(Comparator.comparingInt(s -> getPlanPriority(s.getPlan())))
                 .orElse(null);
+    }
+
+    private boolean isCurrentSubscription(Subscription subscription, Instant now) {
+        if (subscription.getStatus() == SubscriptionStatus.active
+                || subscription.getStatus() == SubscriptionStatus.trialing) {
+            return true;
+        }
+
+        return subscription.getStatus() == SubscriptionStatus.canceled
+                && subscription.getNextBilledAt() != null
+                && subscription.getNextBilledAt().isAfter(now);
     }
 
     private boolean hasPlanAtLeast(SubscriptionPlan actualPlan, SubscriptionPlan minimumPlan) {

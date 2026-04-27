@@ -85,3 +85,5 @@ paddle:
     open-library: ${PRICE_OPEN_LIB}
     100-mins-start: ${100_MIN_START}
     100-mins-plus: ${100_MIN_PLUS}
+  subscription-expiration:
+    cron: 0 0 * * * *

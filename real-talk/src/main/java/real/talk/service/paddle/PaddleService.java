@@ -145,7 +145,6 @@ public class PaddleService {
         String paddleSubId = data.path("id").asText();
         String customerId = data.path("customer_id").asText();
         String statusStr = data.path("status").asText();
-        String nextBilledAtStr = data.path("next_billed_at").asText(); // ISO 8601
 
         // Find user
         // Try to find by existing subscription linking
@@ -194,8 +193,9 @@ public class PaddleService {
         subscription.setPaddleCustomerId(customerId);
         subscription.setStatus(status);
         subscription.setPlan(plan);
-        if (nextBilledAtStr != null && !nextBilledAtStr.isEmpty() && !nextBilledAtStr.equals("null")) {
-            subscription.setNextBilledAt(Instant.parse(nextBilledAtStr));
+        Instant subscriptionPeriodEnd = getSubscriptionPeriodEnd(data);
+        if (subscriptionPeriodEnd != null) {
+            subscription.setNextBilledAt(subscriptionPeriodEnd);
         }
         subscription.setUpdatedAt(Instant.now());
         if (subscription.getCreatedAt() == null) {
@@ -285,6 +285,22 @@ public class PaddleService {
         userService.saveUser(user);
         log.info("Added {} minutes to user {}. New total: {}",
                 totalMinutesToAdd, user.getEmail(), user.getLessonBuilderMinutes());
+    }
+
+    private Instant getSubscriptionPeriodEnd(JsonNode data) {
+        Instant nextBilledAt = parseInstant(data.path("next_billed_at").asText());
+        if (nextBilledAt != null) {
+            return nextBilledAt;
+        }
+
+        return parseInstant(data.path("current_billing_period").path("ends_at").asText());
+    }
+
+    private Instant parseInstant(String value) {
+        if (value == null || value.isEmpty() || value.equals("null")) {
+            return null;
+        }
+        return Instant.parse(value);
     }
 
     private void handleSubscriptionCanceled(JsonNode data) {

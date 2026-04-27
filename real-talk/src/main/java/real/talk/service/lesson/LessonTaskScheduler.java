@@ -64,6 +64,7 @@ public class LessonTaskScheduler {
                     .language(lesson.getLanguage())
                     .language_level(lesson.getLanguageLevel())
                     .preset(lesson.getPreset())
+                    .grammar_topics(lesson.getGrammarTopics())
                     .build();
 
             lesson.setTags(tags);

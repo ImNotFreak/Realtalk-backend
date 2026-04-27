@@ -3,7 +3,9 @@ package real.talk.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import real.talk.model.dto.lesson.*;
 import real.talk.model.entity.Lesson;
@@ -14,6 +16,7 @@ import real.talk.service.user.UserService;
 import java.util.List;
 import java.util.UUID;
 
+import static org.springframework.security.core.context.SecurityContextHolder.*;
 import static real.talk.util.filters.LessonFilterNormalizer.*;
 
 @RestController
@@ -66,27 +69,7 @@ class LessonsController {
             log.info("Normalized public-lessons params: from={} to={}", filter, normalized);
         }
 
-        // Identify usage
-        User currentUser = null;
-        try {
-            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
-                    .getContext().getAuthentication();
-            if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
-                if (auth.getPrincipal() instanceof org.springframework.security.oauth2.core.user.OAuth2User oauthUser) {
-                    String email1 = oauthUser.getAttribute("email");
-                    currentUser = userService.getUserByEmail(email1).orElse(null);
-                } else if (auth
-                        .getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
-                    currentUser = userService.getUserByEmail(userDetails.getUsername()).orElse(null);
-                } else if (auth.getPrincipal() instanceof User) {
-                    currentUser = (User) auth.getPrincipal();
-                }
-            }
-        } catch (Exception e) {
-            log.warn("Failed to resolve user in LessonsController", e);
-        }
-
-        var resultPage = lessonService.getPublicLessonsLite(normalized, currentUser);
+        var resultPage = lessonService.getPublicLessonsLite(normalized);
         return ResponseEntity.ok(resultPage.getContent());
     }
 
@@ -131,13 +114,12 @@ class LessonsController {
         // Resolve user
         User currentUser = null;
         try {
-            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
-                    .getContext().getAuthentication();
+            Authentication auth = getContext().getAuthentication();
             if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
                 if (auth.getPrincipal() instanceof User) {
                     currentUser = (User) auth.getPrincipal();
                 } else if (auth
-                        .getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
+                        .getPrincipal() instanceof UserDetails userDetails) {
                     currentUser = userService.getUserByEmail(userDetails.getUsername()).orElseThrow();
                 }
             }
